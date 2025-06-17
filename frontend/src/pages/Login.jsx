@@ -52,6 +52,7 @@ const Login = () => {
               className="logo-h align-self-center mb-4"
               src="/imgs/logo_vert_BYP.svg"
               alt={t("altText.logoBYPVertical", "BYP Vertical Logo")}
+              onClick={() => navigate("/")}
             />
 
             <form

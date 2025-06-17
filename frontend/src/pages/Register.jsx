@@ -67,9 +67,10 @@ const Register = () => {
     <div className="container-fluid my-5 d-flex justify-content-center align-items-center">
       <div className="col-lg-5 col-9 rounded p-5 h-100 d-flex flex-column justify-content-between bg-white">
         <img
-          className="row logo-h align-self-center"
+          className="row logo-h align-self-center cursor-pointer"
           src="/imgs/logo_vert_BYP.svg"
           alt={t("altText.logoBYPVertical", "BYP Vertical Logo")}
+          onClick={() => navigate("/")}
         />
 
         <form

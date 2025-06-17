@@ -2,6 +2,10 @@
   height: 100vh;
 }
 
+img {
+  cursor: pointer;
+}
+
 .card-login {
   height: 85%;
 }
