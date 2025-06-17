@@ -53,9 +53,12 @@ const Landing = () => {
           />
 
           <nav className="navbar navbar-expand-lg">
-            <button className="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <MdMenu size={24} />
-            </button>
+            <div className="row justify-content-end w-100">
+              <button className="navbar-toggler d-lg-none justify-content-end" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <MdMenu size={24} />
+              </button>
+            </div>
+            
 
             <div className="row collapse navbar-collapse d-lg-none" id="navbarNav">
               <ul className="col navbar-nav nav-group flex-column d-lg-none">

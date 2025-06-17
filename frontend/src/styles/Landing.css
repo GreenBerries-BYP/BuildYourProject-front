@@ -113,6 +113,13 @@
   margin: 10px;
   border: none;
 }
+.navbar-toggler:focus, 
+.navbar-toggler:active, 
+.navbar-toggler:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
 
 #navbarNav{
   display: absolute;
@@ -145,20 +152,20 @@
 }
 
 .link-borda-roxo {
-  color: var(--purple-dark-color);
+  color: var(--purple-dark-color) !important;
   border: 2px solid var(--purple-dark-color);
   background-color: transparent;
 }
 
 .link-borda-roxo:hover {
-  background-color: var(--purple-dark-color);
-  color: var(--white-color);
+  background-color: var(--purple-dark-color) ;
+  color: var(--white-color) !important;
   transform: scale(1.05);
 }
 
 .link-roxo {
   background: var(--btn-purple);
-  color: var(--white-color);
+  color: var(--white-color) !important;
   border: none;
 }
 
