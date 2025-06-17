@@ -1,5 +1,7 @@
 // Removed useState and api imports as they are not used
 import "../styles/Landing.css";
+import { MdMenu } from 'react-icons/md';
+
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
@@ -49,27 +51,77 @@ const Landing = () => {
             src="/imgs/logo-horiz.svg"
             alt={t("altText.logoBYP", "BYP Logo")}
           />
-          <div className="nav-group">
-            <a href="#inicio">{t("landing.nav.home", "home")}</a>
-            <a href="#ferramentas">{t("landing.nav.tools", "tools")}</a>
-            <a href="#preview">{t("landing.nav.preview", "preview")}</a>
-            <a href="#sobre">{t("landing.nav.aboutUs", "about us")}</a>
-          </div>
-          <div className="enter-group">
-            <button
-              onClick={toggleLanguage}
-              className="header-icon"
-              aria-label={t("header.changeLanguage")}
-            >
-              <img src={flagSrc} alt={flagAlt} className="bandeira" />
-            </button>
-            <a className="link-borda-roxo" onClick={() => navigate("/login")}>
-              {t("landing.nav.login", "Fazer login")}
-            </a>
-            <a className="link-roxo" onClick={() => navigate("/register")}>
-              {t("landing.nav.signUp", "Criar conta")}
-            </a>
-          </div>
+
+          <nav className="navbar navbar-expand-lg">
+            <div className="row justify-content-end w-100">
+              <button className="navbar-toggler d-lg-none justify-content-end" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <MdMenu size={24} />
+              </button>
+            </div>
+            
+
+            <div className="row collapse navbar-collapse d-lg-none" id="navbarNav">
+              <ul className="col navbar-nav nav-group flex-column d-lg-none">
+                <li className="nav-item">
+                  <a href="#inicio">{t("landing.nav.home", "home")}</a>
+                </li>
+                <li className="nav-item">
+                  <a href="#ferramentas">{t("landing.nav.tools", "tools")}</a>
+                </li>
+                <li className="nav-item">
+                  <a href="#preview">{t("landing.nav.preview", "preview")}</a>
+                </li>
+                <li className="nav-item">
+                  <a href="#sobre">{t("landing.nav.aboutUs", "about us")}</a>
+                </li>
+                
+              </ul>
+              <ul className="col navbar-nav nav-group flex-column d-lg-none">
+                <li>
+                  <button
+                    onClick={toggleLanguage}
+                    className="header-icon"
+                    aria-label={t("header.changeLanguage")}
+                  >
+                    <img src={flagSrc} alt={flagAlt} className="bandeira" />
+                  </button>
+                </li>
+                <li>
+                  <a className="link-borda-roxo" onClick={() => navigate("/login")}>
+                    {t("landing.nav.login", "Fazer login")}
+                  </a>
+                </li>
+                <li>
+                  <a className="link-roxo" onClick={() => navigate("/register")}>
+                    {t("landing.nav.signUp", "Criar conta")}
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="d-none d-lg-flex nav-group">
+              <a href="#inicio">{t("landing.nav.home", "home")}</a>
+              <a href="#ferramentas">{t("landing.nav.tools", "tools")}</a>
+              <a href="#preview">{t("landing.nav.preview", "preview")}</a>
+              <a href="#sobre">{t("landing.nav.aboutUs", "about us")}</a>
+            </div>
+            <div className="enter-group d-none d-lg-flex ">
+              <button
+                onClick={toggleLanguage}
+                className="header-icon"
+                aria-label={t("header.changeLanguage")}
+              >
+                <img src={flagSrc} alt={flagAlt} className="bandeira" />
+              </button>
+              <a className="link-borda-roxo" onClick={() => navigate("/login")}>
+                {t("landing.nav.login", "Fazer login")}
+              </a>
+              <a className="link-roxo" onClick={() => navigate("/register")}>
+                {t("landing.nav.signUp", "Criar conta")}
+              </a>
+            </div>
+          </nav>
+         
         </header>
 
         <div id="inicio">
@@ -91,8 +143,8 @@ const Landing = () => {
             </a>
           </div>
 
-          <div className="blocos-inicio">
-            <div className="bloco-roxo">
+          <div className="blocos-inicio row">
+            <div className="bloco-roxo col">
               <img
                 src="imgs/ideia.svg"
                 alt={t("altText.ideaIcon", "Idea icon")}
@@ -104,7 +156,7 @@ const Landing = () => {
                 )}
               </p>
             </div>
-            <div className="bloco-verde">
+            <div className="bloco-verde col">
               <p>
                 {t(
                   "landing.hero.block2Text",
@@ -112,7 +164,7 @@ const Landing = () => {
                 )}
               </p>
             </div>
-            <div className="bloco-lilas">
+            <div className="bloco-lilas col">
               <p>{t("landing.hero.block3TextPart1", "do planejamento")}</p>
               <img
                 src="imgs/trilha.svg"
@@ -120,7 +172,7 @@ const Landing = () => {
               />
               <p>{t("landing.hero.block3TextPart2", "à entrega final.")}</p>
             </div>
-            <div className="bloco-img">
+            <div className="bloco-img col">
               <img
                 src="imgs/img-workspace.jpg"
                 alt={t("altText.workspaceImage", "Workspace image")}
@@ -133,8 +185,8 @@ const Landing = () => {
           <h2 className="titulo-ferramentas">
             {t("landing.toolsInfo.title", "Conheça nossas ferramentas")}
           </h2>
-          <div className="grade-ferramentas">
-            <div className="bloco-ferramenta">
+          <div className="row grade-ferramentas">
+            <div className="bloco-ferramenta col-sm-5 col-lg-3">
               <img
                 src="imgs/decor-landing/icons-ferramentas/cube.svg"
                 alt={t("altText.cubeIcon", "Cube icon")}
@@ -154,7 +206,7 @@ const Landing = () => {
                 </p>
               </div>
             </div>
-            <div className="bloco-ferramenta">
+            <div className="bloco-ferramenta col-sm-5 col-lg-3">
               <img
                 src="imgs/decor-landing/icons-ferramentas/refresh.svg"
                 alt={t("altText.refreshIcon", "Refresh icon")}
@@ -174,7 +226,7 @@ const Landing = () => {
                 </p>
               </div>
             </div>
-            <div className="bloco-ferramenta">
+            <div className="bloco-ferramenta col-sm-5 col-lg-3">
               <img
                 src="imgs/decor-landing/icons-ferramentas/users.svg"
                 alt={t("altText.usersIcon", "Users icon")}
@@ -194,7 +246,7 @@ const Landing = () => {
                 </p>
               </div>
             </div>
-            <div className="bloco-ferramenta">
+            <div className="bloco-ferramenta col-sm-5 col-lg-3">
               <img
                 src="imgs/decor-landing/icons-ferramentas/notifications.svg"
                 alt={t("altText.notificationsIcon", "Notifications icon")}
@@ -214,7 +266,7 @@ const Landing = () => {
                 </p>
               </div>
             </div>
-            <div className="bloco-ferramenta">
+            <div className="bloco-ferramenta col-sm-5 col-lg-3">
               <img
                 src="imgs/decor-landing/icons-ferramentas/devices.svg"
                 alt={t("altText.devicesIcon", "Devices icon")}
@@ -234,7 +286,7 @@ const Landing = () => {
                 </p>
               </div>
             </div>
-            <div className="bloco-ferramenta">
+            <div className="bloco-ferramenta col-sm-5 col-lg-3">
               <img
                 src="imgs/decor-landing/icons-ferramentas/bot.svg"
                 alt={t("altText.botIcon", "Bot icon")}
@@ -253,16 +305,17 @@ const Landing = () => {
             </div>
           </div>
         </div>
-
+        
+        <img className="wave" src="/imgs/wave.svg" alt="" />{" "}
+        
         <div id="preview">
-          <img className="wave" src="/imgs/wave.svg" alt="" />{" "}
-          {/* Assuming wave is decorative */}
+          
           <h1>{t("landing.previewInfo.title", "Preview")}</h1>
           <p>{t("landing.previewInfo.subtitle", "Veja como é o BYP")}</p>
           <div
             id="carouselPreviewControls"
             className="carousel slide"
-            data-ride="carousel"
+            data-bs-ride="carousel"
           >
             <div className="carousel-inner">
               <div className="carousel-item active">
@@ -276,52 +329,43 @@ const Landing = () => {
                 <img
                   className="d-block w-100"
                   src="/imgs/preview-pages/com-modal.svg"
-                  alt={t(
-                    "landing.previewInfo.altCreateProject",
-                    "criar projeto"
-                  )}
+                  alt={t("landing.previewInfo.altCreateProject", "criar projeto")}
                 />
               </div>
               <div className="carousel-item">
                 <img
                   className="d-block w-100"
                   src="/imgs/preview-pages/visao-projeto.svg"
-                  alt={t(
-                    "landing.previewInfo.altViewProject",
-                    "visualizar projeto"
-                  )}
+                  alt={t("landing.previewInfo.altViewProject", "visualizar projeto")}
                 />
               </div>
             </div>
-            <a
+
+            <button
               className="carousel-control-prev"
-              href="#carouselPreviewControls"
-              role="button"
-              data-slide="prev"
+              type="button"
+              data-bs-target="#carouselPreviewControls"
+              data-bs-slide="prev"
             >
-              <span
-                className="carousel-control-prev-icon"
-                aria-hidden="true"
-              ></span>
-              <span className="sr-only">
+              <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span className="visually-hidden">
                 {t("landing.previewInfo.previousSlide", "Previous")}
               </span>
-            </a>
-            <a
+            </button>
+
+            <button
               className="carousel-control-next"
-              href="#carouselPreviewControls"
-              role="button"
-              data-slide="next"
+              type="button"
+              data-bs-target="#carouselPreviewControls"
+              data-bs-slide="next"
             >
-              <span
-                className="carousel-control-next-icon"
-                aria-hidden="true"
-              ></span>
-              <span className="sr-only">
+              <span className="carousel-control-next-icon" aria-hidden="true"></span>
+              <span className="visually-hidden">
                 {t("landing.previewInfo.nextSlide", "Next")}
               </span>
-            </a>
+            </button>
           </div>
+
         </div>
 
         <div id="sobre">
@@ -377,8 +421,8 @@ const Landing = () => {
         </div>
 
         <footer>
-          <div className="footer-start">
-            <div className="logos">
+          <div className="footer-start row">
+            <div className="logos col-lg-4 col-sm-4">
               <img
                 src="/imgs/logo-horiz.svg"
                 alt={t("altText.logoBYP", "BYP Logo")}
@@ -394,14 +438,18 @@ const Landing = () => {
                 alt={t("altText.logoGreenberries", "GreenBerries Logo")}
               />
             </div>
-            <div className="doc">
+            <div className="doc col-lg-4 col-sm-3">
               <h3>{t("landing.footer.documentationTitle", "Documentação")}</h3>
               <p>
                 {t("landing.footer.documentationLinkText", "Documentação:")}
-                <br /> https://www.overleaf.com/project/67f168707c869626a81a641f{" "}
+                <br /> 
+                <a className="text-dark" href="https://www.overleaf.com/project/67f168707c869626a81a641f">
+                https://www.overleaf.com/<br />project/<br />67f168707c869626a81a641f
+                </a>
+                {" "}
               </p>
             </div>
-            <div className="contatos">
+            <div className="contatos col-lg-4 col-sm-4">
               <h3>{t("landing.footer.contactsTitle", "Contatos")}</h3>
               <p>
                 {t("landing.footer.emailLabel", "Email:")} <br />
@@ -409,7 +457,10 @@ const Landing = () => {
               </p>
               <p>
                 {t("landing.footer.youtubeLabel", "Youtube:")} <br />
-                https://www.youtube.com/@GreenBerries-byp{" "}
+                <a className="text-dark" href="https://www.youtube.com/@GreenBerries-byp">
+                https://www.youtube.com/<br />@GreenBerries-byp
+                </a>
+                {" "}
               </p>
             </div>
           </div>

@@ -1,7 +1,7 @@
 .decor-items {
   position: absolute;
   width: 100%;
-  max-width: 129.3rem;
+  max-width: 90vw;
   margin: 0 auto;
   z-index: 2;
   top: 6.9rem;
@@ -10,7 +10,7 @@
 
 .decor-1 {
   position: absolute;
-  left: 16.1rem;
+  left: 3.38vw;
   top: 34.1rem;
   height: 2.7rem;
   background-color: var(--pink-color);
@@ -19,8 +19,8 @@
 
 .decor-2 {
   position: absolute;
-  left: 20.9rem;
-  top: 34.9rem;
+  left: 8.88vw;
+  top: 31.9rem;
   height: 3.7rem;
   background-color: var(--teal-bright-color);
   border-radius: 30px;
@@ -28,7 +28,7 @@
 
 .decor-3 {
   position: absolute;
-  left: 15.3rem;
+  left: 5.97vw;
   top: 41.9rem;
   height: 3.3rem;
   background-color: var(--purple-color);
@@ -37,7 +37,7 @@
 
 .decor-4 {
   position: absolute;
-  left: 108.2rem;
+  left: 79.35vw;
   top: 28.4rem;
   height: 4rem;
   background-color: var(--teal-bright-color);
@@ -46,7 +46,7 @@
 
 .decor-5 {
   position: absolute;
-  left: 115.2rem;
+  left: 83vw;
   top: 32.5rem;
   height: 4.1rem;
   background-color: var(--pink-bright-color);
@@ -57,6 +57,8 @@
   display: flex;
   width: 100%;
   justify-content: center;
+  align-items: center;
+  justify-self: center;
 }
 
 .landing-content {
@@ -64,7 +66,7 @@
   flex-direction: column;
   justify-content: flex-start;
   overflow: visible;
-  width: 129.3rem;
+  width: 90vw;
   margin-block: 6rem;
   background: var(--white-color);
 }
@@ -79,7 +81,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 2rem 4rem;
-  height: 10.3rem;
+  min-height: 10.3rem;
   transition: all 100ms ease;
 }
 
@@ -93,6 +95,7 @@
   flex-wrap: nowrap;
   gap: 2.5rem;
   font-size: 1.8rem;
+  padding-inline: 15px;
 }
 
 .nav-group a {
@@ -103,6 +106,27 @@
 
 .nav-group a:hover {
   transform: scale(1.05);
+}
+
+.navbar-toggler{
+  padding: 5px;
+  margin: 10px;
+  border: none;
+}
+.navbar-toggler:focus, 
+.navbar-toggler:active, 
+.navbar-toggler:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+
+#navbarNav{
+  display: absolute;
+
+}
+#navbarNav ul{
+  display: absolute;
 }
 
 .enter-group {
@@ -128,20 +152,20 @@
 }
 
 .link-borda-roxo {
-  color: var(--purple-dark-color);
+  color: var(--purple-dark-color) !important;
   border: 2px solid var(--purple-dark-color);
   background-color: transparent;
 }
 
 .link-borda-roxo:hover {
-  background-color: var(--purple-dark-color);
-  color: var(--white-color);
+  background-color: var(--purple-dark-color) ;
+  color: var(--white-color) !important;
   transform: scale(1.05);
 }
 
 .link-roxo {
-  color: var(--white-color);
   background: var(--btn-purple);
+  color: var(--white-color) !important;
   border: none;
 }
 
@@ -154,7 +178,7 @@
   display: flex;
   padding-top: 6rem;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   text-align: center;
   align-items: center;
 }
@@ -167,7 +191,7 @@
 }
 
 .titulo-inicio {
-  width: 96.2rem;
+  width: 90%;
   font-family: Sanchez;
   font-size: 5.5rem;
 }
@@ -189,11 +213,12 @@
   font-size: 2rem;
   display: flex;
   height: 40rem;
+  width: 100%;
   align-items: end;
   justify-content: space-between;
-  gap: 3rem;
   color: var(--white-color);
-  padding-bottom: 3rem;
+  gap: 1rem;
+  padding: 0 2rem 3rem 2rem;
 }
 
 .bloco-roxo {
@@ -202,7 +227,7 @@
   justify-content: space-between;
   align-items: flex-start;
   text-align: left;
-  width: 29rem;
+  max-width: 25rem;
   height: 34rem;
   border-radius: 10px;
   padding: 2rem;
@@ -218,7 +243,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 24rem;
+  max-width: 20rem;
   height: 25.2rem;
   border-radius: 10px;
   padding: 2rem;
@@ -230,7 +255,7 @@
   flex-direction: column;
   justify-content: space-between;
   text-align: left;
-  width: 26.2rem;
+  max-width: 20rem;
   height: 32.6rem;
   border-radius: 10px;
   padding: 2rem;
@@ -242,24 +267,12 @@
 }
 
 .bloco-img {
-  overflow: hidden;
-  object-fit: contain;
-  max-width: 32.5rem;
-  height: 41.8rem;
-  border-radius: 10px;
-}
-
-.bloco-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* ou use 'contain' se quiser ajustar sem cortar */
-  display: block;
-  border-radius: 10px; /* opcional, só se quiser que a imagem também seja arredondada */
+  display: none;
 }
 
 #ferramentas {
   padding-top: 6rem;
-  height: 100vh;
+  min-height: 100vh;
   background: var(--purple-dark-color);
   color: var(--white-color);
   display: flex;
@@ -287,7 +300,6 @@
   justify-content: space-between;
   align-items: flex-start;
   text-align: left;
-  width: 39.3rem;
   height: 27.5rem;
   border-radius: 15px;
   background: rgba(255, 255, 255, 0.1);
@@ -311,45 +323,39 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 #preview wave {
-  margin-bottom: 6rem;
-  max-height: 8rem;
+  margin: 0 0 6rem 0;
+  max-width: 100%;
 }
 
 #preview h1 {
   font-size: 5.5rem;
 }
+
 #preview p {
   font-size: 2.1rem;
 }
 
 .carousel {
-  width: 104.5rem;
-  height: 61.2rem;
+  width: 90%;
+  height: 50%;
 }
 
 .carousel-item img {
-  width: 114.5rem;
-  height: 61.2rem;
+  width: 90%;
+  height: 50%;
 }
 
-.carousel a {
-  width: 5rem;
-  height: 5rem;
-  border-radius: 50px;
-  background: var(--gray-color);
-  align-self: center;
-}
 
 #sobre {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 6rem;
-  height: 100vh;
+  min-height: 100vh;
   text-align: center;
   background: linear-gradient(
     180deg,
@@ -367,9 +373,12 @@
 }
 
 .sobre-content {
-  padding-top: 7rem;
+  padding-block: 7rem;
   display: flex;
   gap: 3.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .quem-somos h2 {
@@ -378,10 +387,9 @@
 }
 
 .quem-somos {
-  padding: 5rem;
+  padding: 4rem;
   background: var(--white-color);
-  width: 49.7rem;
-  height: 54.5rem;
+  width: 40%;
   text-align: left;
   font-size: 2rem;
   border-radius: 2rem;
@@ -390,9 +398,10 @@
 .integrantes {
   font-size: 2rem;
   margin-top: 1rem;
-  width: 68.6rem;
+  width: 50%;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 5rem;
 }
 
@@ -402,7 +411,7 @@
 }
 
 footer {
-  height: 37.2rem;
+  min-height: 37.2rem;
   padding: 4rem 2rem;
   display: flex;
   flex-direction: column;
@@ -428,4 +437,92 @@ footer h3 {
 .links {
   display: flex;
   gap: 3rem;
+}
+
+@media screen and (min-width: 1024px) {
+  .decor-items {
+    max-width: 75vw;
+  }
+
+  .decor-1 {
+    left: 3.38vw;
+    top: 34.1rem;
+  }
+
+  .decor-2 {
+    left: 8.88vw;
+    top: 31.9rem;
+  }
+
+  .decor-3 {
+    left: 5.97vw;
+    top: 41.9rem;
+  }
+
+  .decor-4 {
+    left: 59.35vw;
+    top: 28.4rem;
+  }
+
+  .decor-5 {
+    left: 63vw;
+    top: 32.5rem;
+  }
+
+  .landing-content {
+    width: 75vw;
+  }
+
+  .carousel button.carousel-control-prev,
+  .carousel button.carousel-control-next {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50px;
+    background: var(--gray-color);
+    align-self: center;
+  }
+
+  
+  .blocos-inicio {
+    width: 90%;
+    gap: 3rem;
+  }
+
+  .bloco-roxo {
+    max-width: 29rem;
+    height: 34rem;
+  }
+
+  .bloco-verde {
+    max-width: 24rem;
+    height: 25.2rem;
+  }
+
+  .bloco-lilas {
+    max-width: 26.2rem;
+    height: 32.6rem;
+  }
+
+  .bloco-img {
+    max-width: 32.5rem;
+    height: 41.8rem;
+  }
+
+  .bloco-img {
+    display: flex;
+    overflow: hidden;
+    object-fit: contain;
+    max-width: 32.5rem;
+    height: 41.8rem;
+    border-radius: 10px;
+  }
+
+  .bloco-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* ou use 'contain' se quiser ajustar sem cortar */
+    display: block;
+    border-radius: 10px; /* opcional, só se quiser que a imagem também seja arredondada */
+  }
+
 }
