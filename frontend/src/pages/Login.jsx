@@ -106,7 +106,7 @@ const Login = () => {
 
               <div className="d-flex align-items-center">
                 <input
-                  className="check-form me-2"
+                  className="check-form me-4"
                   type="checkbox"
                   id="manter_logado"
                 />
@@ -115,16 +115,16 @@ const Login = () => {
                 </label>
               </div>
 
-              <div className="d-flex justify-content-between gap-5">
+              <div className="row pt-5 d-flex justify-content-between gap-5">
                 <button
-                  className="btn-change-page flex-fill text-center"
+                  className="col-12 col-lg-5 mx-3 py-2 btn-change-page flex-fill text-center"
                   onClick={() => navigate("/register")}
                 >
                   {t("login.register")}
                 </button>
 
                 <button
-                  className="btn-acesso-verde flex-fill d-flex justify-content-center align-items-center"
+                  className="col-12 col-lg-5 mx-3 py-2 btn-acesso-verde flex-fill d-flex justify-content-center align-items-center"
                   type="submit"
                   disabled={loading}
                 >
