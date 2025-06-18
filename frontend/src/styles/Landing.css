@@ -10,7 +10,7 @@
 
 .decor-1 {
   position: absolute;
-  left: 3.38vw;
+  left: 2vw;
   top: 34.1rem;
   height: 2.7rem;
   background-color: var(--pink-color);
@@ -19,8 +19,8 @@
 
 .decor-2 {
   position: absolute;
-  left: 8.88vw;
-  top: 31.9rem;
+  left: 6vw;
+  top: 30.9rem;
   height: 3.7rem;
   background-color: var(--teal-bright-color);
   border-radius: 30px;
@@ -29,7 +29,7 @@
 .decor-3 {
   position: absolute;
   left: 5.97vw;
-  top: 41.9rem;
+  top: 40rem;
   height: 3.3rem;
   background-color: var(--purple-color);
   border-radius: 30px;
@@ -80,7 +80,7 @@
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 4rem;
+  padding:  2% 4%;
   min-height: 10.3rem;
   transition: all 100ms ease;
 }
@@ -92,6 +92,7 @@
 .nav-group {
   display: flex;
   justify-content: space-between;
+  align-items: end;
   flex-wrap: nowrap;
   gap: 2.5rem;
   font-size: 1.8rem;
@@ -101,6 +102,7 @@
 .nav-group a {
   color: var(--black-color);
   text-decoration: none;
+  text-align: center;
   transition: transform 300ms ease-in-out;
 }
 
@@ -125,8 +127,8 @@
   display: absolute;
 
 }
-#navbarNav ul{
-  display: absolute;
+#navbarNav li{
+  text-align: start;
 }
 
 .enter-group {
@@ -178,7 +180,6 @@
   display: flex;
   padding-top: 6rem;
   flex-direction: column;
-  min-height: 100vh;
   text-align: center;
   align-items: center;
 }
@@ -272,7 +273,6 @@
 
 #ferramentas {
   padding-top: 6rem;
-  min-height: 100vh;
   background: var(--purple-dark-color);
   color: var(--white-color);
   display: flex;
@@ -323,7 +323,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
 }
 
 #preview wave {
@@ -355,7 +354,6 @@
   flex-direction: column;
   align-items: center;
   padding-top: 6rem;
-  min-height: 100vh;
   text-align: center;
   background: linear-gradient(
     180deg,
@@ -389,7 +387,7 @@
 .quem-somos {
   padding: 4rem;
   background: var(--white-color);
-  width: 40%;
+  max-width: 80%;
   text-align: left;
   font-size: 2rem;
   border-radius: 2rem;
@@ -398,15 +396,18 @@
 .integrantes {
   font-size: 2rem;
   margin-top: 1rem;
-  width: 50%;
+  max-width: 80%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 5rem;
 }
+.integrantes > div{
+  padding: 0.5rem;
+}
 
 .integrantes img {
-  height: 17.4rem;
+  height: 90%;
   border-radius: 50%;
 }
 
