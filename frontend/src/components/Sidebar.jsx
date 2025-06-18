@@ -37,8 +37,8 @@ const Sidebar = ({ onToggle }) => {
     { icon: <MdLogout />, label: i18n.t('sideBar.logOut'), path: '/logout' },
   ];
 
-  const expandedWidth = '280px';
-  const collapsedWidth = '80px';
+  const expandedWidth = '28rem';
+  const collapsedWidth = '8rem';
 
   return (
     <div
