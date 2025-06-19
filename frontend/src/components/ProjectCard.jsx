@@ -27,10 +27,21 @@ const ProjectCard = ({
   const chartRef = useRef(null);
 
   useEffect(() => {
+    if (!btnRef.current) return;
+
     $(btnRef.current).popover({
       html: true,
-      content: `<button class="btn-popover">${t('buttons.deleteProject')}</button>`,
+      trigger:'focus',
+      content: `
+      <div class="card-popover">
+        <a class="btn-popover">${t('buttons.deleteProject')}</a>
+      </div>
+      `,
     });
+
+    return () => {
+      $(btnRef.current).popover('dispose'); 
+    };
   }, [t]);
 
   useEffect(() => {
@@ -68,10 +79,15 @@ const ProjectCard = ({
     <div className='project-card' onClick={onClick}>
         <div className="card-header">
             {nomeProjeto}
-            <button className='d-inline btn-more'  data-toggle="popover" data-content='
-              <button class="btn-popover">apagar projeto<button/>
-            '>
-
+            <button
+              onClick={e=>{
+                e.stopPropagation();
+              }}
+              ref={btnRef}
+              className='d-inline btn-more' 
+              data-toggle="popover" 
+              
+            >
                 <img src="/imgs/more_vert.svg" alt={t("altText.projectOptions", "Project options")} />
             </button>
         </div>
@@ -110,7 +126,3 @@ const ProjectCard = ({
 };
 
 export default ProjectCard;
-
-$(function () {
-  $('[data-toggle="popover"]').popover({ html: true })
-})

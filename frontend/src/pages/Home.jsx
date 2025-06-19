@@ -55,18 +55,20 @@ function Home() {
 
   const [projetos, setProjetos] = useState([]);
 
-useEffect(() => {
-  const carregarProjetos = async () => {
-    try {
-      const data = await fetchProjects();
-      setProjetos(data);
-    } catch (error) {
-      console.error('Erro ao carregar projetos:', error);
-    }
-  };
 
-  carregarProjetos();
-}, []);
+  useEffect(() => {
+    const carregarProjetos = async () => {
+      try {
+        const data = await fetchProjects();
+        
+        setProjetos(data);
+      } catch (error) {
+        console.error('Erro ao carregar projetos:', error);
+      }
+    };
+
+    carregarProjetos();
+  }, []);
 
 
   return (

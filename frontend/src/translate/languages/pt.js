@@ -116,6 +116,7 @@ const pt = {
     taskHeaderResponsible: "Responsável",
     taskHeaderStatus: "Status",
     taskHeaderDueDate: "Prazo",
+    collaboratorsTitle: "Colaboradores",
   },
   header: {
     title: "Build Your Project",

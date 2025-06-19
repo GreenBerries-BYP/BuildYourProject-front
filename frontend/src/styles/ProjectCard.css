@@ -15,6 +15,7 @@
 .card-header{
     display: flex;;
     justify-content: space-between;
+    align-items: center;
     background: var(--white-color);
     color: var(--black-color); 
     font-size: 2.5rem;
@@ -24,7 +25,10 @@
 }
 
 .btn-more{
-    width: 4.1rem;
+    width: 4rem;
+}
+.btn-more img{
+    width: 4rem;
 }
 
 .project-progress{
@@ -52,13 +56,21 @@
     flex-wrap: wrap;
 }
 
+.card-popover{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
 .btn-popover{
     font-size: 2rem;
     background: var(--white-color);
+    padding: 1rem;
+    border-radius: 10px;
     color: var(--black-color); 
-    padding: 0.5rem;
-    transition: color 300ms ease-in-out;
+    transition: color 400ms ease-in-out;
 }
+
 .btn-popover:hover{
-    color: var(--gray-color);
+    background: var(--gray-light-color);
 }
