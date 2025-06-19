@@ -113,9 +113,10 @@ const en = {
     createdBy: "Created by: {{adm}}",
     membersCount: "{{count}} member(s)",
     taskHeaderTask: "Task",
-    taskHeaderResponsible: "Responsible",
+    taskHeaderResponsible: "Assignee",
     taskHeaderStatus: "Status",
     taskHeaderDueDate: "Due Date",
+    collaboratorsTitle: "Collaborators",
   },
   header: {
     title: "Build Your Project",

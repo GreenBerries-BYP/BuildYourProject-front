@@ -343,11 +343,14 @@
   height: 50%;
 }
 
-.carousel-item img {
-  width: 90%;
-  height: 50%;
+.carousel button.carousel-control-prev,
+.carousel button.carousel-control-next {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50px;
+  background: var(--gray-color);
+  align-self: center;
 }
-
 
 #sobre {
   display: flex;
@@ -472,6 +475,11 @@ footer h3 {
 
   .landing-content {
     width: 75vw;
+  }
+
+  .carousel {
+    width: 80%;
+    height: 50%;
   }
 
   .carousel button.carousel-control-prev,

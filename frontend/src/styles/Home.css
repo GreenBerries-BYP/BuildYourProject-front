@@ -1,5 +1,6 @@
 .main-page-content {
-    min-height: calc(100vh - 80px);
+    margin-top: 8rem;
+    min-height: calc(100vh - 8rem);
     box-sizing: border-box;
 }
 
@@ -18,4 +19,12 @@
 
 body.no-scroll {
     overflow: hidden;
+}
+
+
+
+@media screen and (min-width: 768px) {
+    .main-page-content {
+        margin-top: 0;
+    }
 }
