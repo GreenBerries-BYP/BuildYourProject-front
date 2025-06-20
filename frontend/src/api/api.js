@@ -49,7 +49,7 @@ api.interceptors.response.use(
 // Função específica para buscar dados do usuário
 export const fetchUserData = async () => {
   try {
-    const response = await instance.get('/home/');
+    const response = await api.get('/home/');
     return response.data;
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -60,7 +60,7 @@ export const fetchUserData = async () => {
 // Função específica para buscar dados do projeto
 export const fetchProjects = async () => {
   try {
-    const response = await instance.get('/projetos/');
+    const response = await api.get('/projetos/');
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar projetos:', error);
