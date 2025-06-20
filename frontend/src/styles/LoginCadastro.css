@@ -2,6 +2,10 @@
   height: 100vh;
 }
 
+img {
+  cursor: pointer;
+}
+
 .card-login {
   height: fit-content;
   padding: 3rem 2rem;
@@ -108,6 +112,4 @@ label {
   text-decoration: none;
   transform: scale(1.05);
 }
-
-
 
