@@ -22,12 +22,12 @@ const Sidebar = ({ onToggle }) => {
 
   const topItems = [
     { icon: <MdHome />, label: i18n.t('sideBar.home'), path: '/home' },
-    { icon: <PiCirclesThreeFill />, label: i18n.t('sideBar.myProjects'), path: '/projetos' },
+    { icon: <PiCirclesThreeFill />, label: i18n.t('sideBar.myProjects'), path: '/home/projetos' },
     { icon: <MdOutlineTaskAlt />, label: i18n.t('sideBar.myTasks'), path: '/tarefas' },
     {
       icon: <MdShare />,
       label: i18n.t('sideBar.sharedWithMe'),
-      path: '/compartilhados'
+      path: '/home/compartilhados'
     },
     { icon: <MdOutlineCalendarMonth />, label: i18n.t('sideBar.googleCalendar'), path: '/calendario' },
   ];
@@ -53,11 +53,13 @@ const Sidebar = ({ onToggle }) => {
     >
       <div className="sidebar-menu">
         {topItems.map((item, index) => {
+
           return (
             <NavLink
               key={index}
               to={item.path}
               aria-label={item.label}
+              end={item.path === "/home"}
               className={({ isActive }) =>
                 `sidebar-item ${isActive ? 'on-page' : ''}`
               }
