@@ -1,6 +1,12 @@
 import axios from 'axios';
 import { getToken } from '../auth/auth';
 
+const dispatchToastEvent = (severity, summary, detail) => {
+  window.dispatchEvent(new CustomEvent('show-toast', {
+    detail: { severity, summary, detail }
+  }));
+}
+
 const instance = axios.create({
   baseURL: 'http://localhost:8000/api',
   headers: {
@@ -24,15 +30,48 @@ instance.interceptors.request.use(
 
 // Response interceptor para tratar erros globais
 instance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if(response.config.method !== 'get' && response.config.method !== 'head') {
+      const message = response.data?.message || 'Operation successful';
+      if (!response.config.handleErrorLocally) {
+        dispatchToastEvent('success', 'Success', message);
+      }
+    }
+    return response;
+  },
   (error) => {
     // Check if the request config has a flag to handle the error locally
     if (error.config && error.config.handleErrorLocally) {
-      return Promise.reject(error); // Skip global handling, error will be caught by the component
+      
+   return Promise.reject(error); // Skip global handling
+    }
+
+    let summary = 'Error';
+    let detail = 'An unexpected error occurred.';
+    let severity = 'error'; // Default severity
+
+    if (error.response) {
+      summary = `Error ${error.response.status}`;
+      detail = error.response.data?.message || error.response.data?.detail || 'Server error';
+      
+      if (error.response.status === 404) {
+        severity = 'warn';
+        detail = `Resource not found: ${error.config.url}`;
+      } else if (error.response.status >= 400 && error.response.status < 500) {
+        severity = 'warn'; // Or 'error' depending on how you want to treat client errors
+      }
+      // Server errors (5xx) will remain 'error'
+    } else if (error.request) {
+      summary = 'Network Error';
+      detail = 'No response received from server. Check your connection.';
+    } else {
+      detail = error.message;
     }
     
-    return Promise.reject(error);
-  }
+    dispatchToastEvent(severity, summary, detail);
+
+      return Promise.reject(error); // Skip global handling, error will be caught by the component
+    }
 );
 
 // Função específica para buscar dados do usuário
