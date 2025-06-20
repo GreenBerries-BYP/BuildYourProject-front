@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getToken } from '../auth/auth';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: 'https://byp-backend-o4ku.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
