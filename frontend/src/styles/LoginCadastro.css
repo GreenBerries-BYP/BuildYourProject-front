@@ -1,12 +1,13 @@
-.login {
+.login, .register{
   height: 100vh;
 }
+
 
 img {
   cursor: pointer;
 }
 
-.card-login {
+.card-login , .card-register{
   height: fit-content;
   padding: 3rem 2rem;
 }
