@@ -64,7 +64,7 @@ const Register = () => {
   };
 
   return (
-    <div className="container-fluid my-5 d-flex justify-content-center align-items-center">
+    <div className="container-fluid h-100 my-5 d-flex justify-content-center align-items-center">
       <div className="col-lg-6 col-9 rounded py-5 px-3 h-100 d-flex flex-column justify-content-between bg-white">
         <img
           className="row logo-h align-self-center cursor-pointer"
