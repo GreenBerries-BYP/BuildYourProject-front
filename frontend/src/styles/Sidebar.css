@@ -36,7 +36,9 @@ a {
 
 .sidebar-item {
   color: var(--purple-dark-color);
+  position:relative;
   font-size: 1.2rem;
+  z-index: 1;
   display: flex;
   align-items: center;
   transition: background 0.2s ease, color 0.2s ease;
@@ -76,18 +78,26 @@ a {
   padding-left: 0;
 }
 
+
+
 .sidebar-item.on-page::before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 2.8rem;
-  width: 80%;
-  height: 3.5rem;
+  left: -3rem;
+  top: 0;
+  width: 130%;
+  height: 100%;
   border-radius: 0 10px 10px 0;
-  z-index: -1;
+  z-index: 0;
   background-color: var(--on-page-link);
 }
 
 .sidebar-item.on-page {
   color: var(--black-color);
+}
+
+.sidebar.collapsed .sidebar-item.on-page::before  {
+  
+  width: 230%;
+  height: 100%;
 }

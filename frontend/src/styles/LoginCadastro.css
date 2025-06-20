@@ -1,13 +1,15 @@
-.login {
-  height: 100vh;
+.login, .register{
+  min-height: 100vh;
 }
+
 
 img {
   cursor: pointer;
 }
 
-.card-login {
-  height: 85%;
+.card-login , .card-register{
+  height: fit-content;
+  padding: 3rem 2rem;
 }
 
 .logo-h {
@@ -111,3 +113,4 @@ label {
   text-decoration: none;
   transform: scale(1.05);
 }
+
