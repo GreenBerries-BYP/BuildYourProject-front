@@ -49,7 +49,7 @@ const Login = () => {
 
           <div className="col-12 col-lg-5 d-flex flex-column">
             <img
-              className="logo-h align-self-center mb-4"
+              className="col-6 logo-h align-self-center mb-4"
               src="/imgs/logo_vert_BYP.svg"
               alt={t("altText.logoBYPVertical", "BYP Vertical Logo")}
             />
@@ -115,7 +115,7 @@ const Login = () => {
                 </label>
               </div>
 
-              <div className="row pt-5 d-flex justify-content-between gap-5">
+              <div className="row p-0 pt-5 d-flex justify-content-center w-100 align-items-center gap-5">
                 <button
                   className="col-12 col-lg-5 mx-3 py-2 btn-change-page flex-fill text-center"
                   onClick={() => navigate("/register")}

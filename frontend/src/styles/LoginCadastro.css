@@ -3,7 +3,8 @@
 }
 
 .card-login {
-  height: 85%;
+  height: fit-content;
+  padding: 3rem 2rem;
 }
 
 .logo-h {
