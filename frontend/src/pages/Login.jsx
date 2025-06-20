@@ -17,19 +17,13 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setErro("");
 
     try {
       const res = await api.post("/login/", { email, password: senha });
       saveToken(res.data.access);
       setTimeout(() => navigate("/home"), 300);
     } catch {
-      setErro(
-        t(
-          "login.invalidCredentials",
-          "Invalid credentials. Check your email and password."
-        )
-      );
+      return null
     } finally {
       setLoading(false);
     }
@@ -91,9 +85,6 @@ const Login = () => {
                   onChange={(e) => setSenha(e.target.value)}
                   required
                 />
-                {erro && (
-                  <div className="alert alert-danger text-center">{erro}</div>
-                )}
               </div>
 
               <div className="d-flex justify-content-end">

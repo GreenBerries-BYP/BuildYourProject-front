@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { getToken } from '../auth/auth';
+import toastService from './toastService';
 
-const instance = axios.create({
+const api = axios.create({
   baseURL: 'https://byp-backend-o4ku.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
@@ -9,7 +10,7 @@ const instance = axios.create({
 });
 
 // Add a request interceptor
-instance.interceptors.request.use(
+api.interceptors.request.use(
   async (config) => {
     const token = getToken();
     if (token) {
@@ -22,15 +23,25 @@ instance.interceptors.request.use(
   }
 );
 
-// Response interceptor para tratar erros globais
-instance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Check if the request config has a flag to handle the error locally
-    if (error.config && error.config.handleErrorLocally) {
-      return Promise.reject(error); // Skip global handling, error will be caught by the component
+// Response interceptor para tratar requisições globais
+// se precisar que alguma rota não pegue o toast, colocar um if com uma lista das rotas que não deve pegar
+api.interceptors.response.use(
+  (response) => {
+    const message = response.data?.message || 'Sua requisição foi realizada com sucesso!';
+    if (message) {
+      toastService.success('Sucesso', message);
     }
-    
+    return response;
+  },
+  (error) => {
+    if(error.message) {
+      const message = error.response?.data?.message || 'Ocorreu um erro inesperado.';
+      toastService.error('Erro', message);
+    } else if (error.request) {
+      toastService.error('Erro de conexão com o backend', 'Não foi possivel conectar ao servidor');
+    } else {
+      toastService.error('Erro desconhecido', error.message);
+    }
     return Promise.reject(error);
   }
 );
@@ -38,7 +49,7 @@ instance.interceptors.response.use(
 // Função específica para buscar dados do usuário
 export const fetchUserData = async () => {
   try {
-    const response = await instance.get('/home/');
+    const response = await api.get('/home/');
     return response.data;
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -49,7 +60,7 @@ export const fetchUserData = async () => {
 // Função específica para buscar dados do projeto
 export const fetchProjects = async () => {
   try {
-    const response = await instance.get('/projetos/');
+    const response = await api.get('/projetos/');
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar projetos:', error);
@@ -57,4 +68,4 @@ export const fetchProjects = async () => {
   }
 };
 
-export default instance;
+export default api;
