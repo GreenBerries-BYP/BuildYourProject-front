@@ -48,12 +48,12 @@ const Landing = () => {
       <div className="landing-content">
         <header id="landing_header">
           <img
-            className="col-6 col-lg-3"
+            className="col-4 col-lg-3"
             src="/imgs/logo-horiz.svg"
             alt={t("altText.logoBYP", "BYP Logo")}
           />
 
-          <nav className="col navbar navbar-expand-lg">
+          <nav className="d-lg-none navbar navbar-expand-lg p-0">
             <div className="row justify-content-end w-100">
               <button className="navbar-toggler d-lg-none justify-content-end" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <MdMenu size={24} />
@@ -62,7 +62,7 @@ const Landing = () => {
             
 
             <div className="row collapse navbar-collapse d-lg-none" id="navbarNav">
-              <ul className="navbar-nav nav-group flex-column d-lg-none pb-3">
+              <ul className="navbar-nav nav-group flex-column d-lg-none p-0 pb-3">
                 <li className="nav-item">
                   <a href="#inicio">{t("landing.nav.home", "home")}</a>
                 </li>
@@ -77,7 +77,7 @@ const Landing = () => {
                 </li>
               </ul>
 
-              <ul className="navbar-nav nav-group flex-column d-lg-none">
+              <ul className="navbar-nav nav-group flex-column d-lg-none justify-content-end">
                 <li>
                   <button
                     onClick={toggleLanguage}
@@ -101,14 +101,14 @@ const Landing = () => {
             </div>
           </nav>
 
-          <div className="col-5 d-none d-lg-flex nav-group">
+          <div className="col-5 col-xl-4 d-none d-lg-flex nav-group">
             <a href="#inicio">{t("landing.nav.home", "home")}</a>
             <a href="#ferramentas">{t("landing.nav.tools", "tools")}</a>
             <a href="#preview">{t("landing.nav.preview", "preview")}</a>
             <a href="#sobre">{t("landing.nav.aboutUs", "about us")}</a>
           </div>
 
-          <div className="col-5 enter-group d-none d-lg-flex ">
+          <div className="col-3 col-xl-4 enter-group d-none d-lg-flex ">
             <button
               onClick={toggleLanguage}
               className="header-icon"
