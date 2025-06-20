@@ -1,13 +1,8 @@
 import axios from 'axios';
 import { getToken } from '../auth/auth';
+import toastService from './toastService';
 
-const dispatchToastEvent = (severity, summary, detail) => {
-  window.dispatchEvent(new CustomEvent('show-toast', {
-    detail: { severity, summary, detail }
-  }));
-}
-
-const instance = axios.create({
+const api = axios.create({
   baseURL: 'https://byp-backend-o4ku.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
@@ -15,7 +10,7 @@ const instance = axios.create({
 });
 
 // Add a request interceptor
-instance.interceptors.request.use(
+api.interceptors.request.use(
   async (config) => {
     const token = getToken();
     if (token) {
@@ -28,50 +23,27 @@ instance.interceptors.request.use(
   }
 );
 
-// Response interceptor para tratar erros globais
-instance.interceptors.response.use(
+// Response interceptor para tratar requisições globais
+// se precisar que alguma rota não pegue o toast, colocar um if com uma lista das rotas que não deve pegar
+api.interceptors.response.use(
   (response) => {
-    if(response.config.method !== 'get' && response.config.method !== 'head') {
-      const message = response.data?.message || 'Operation successful';
-      if (!response.config.handleErrorLocally) {
-        dispatchToastEvent('success', 'Success', message);
-      }
+    const message = response.data?.message || 'Sua requisição foi realizada com sucesso!';
+    if (message) {
+      toastService.success('Sucesso', message);
     }
     return response;
   },
   (error) => {
-    // Check if the request config has a flag to handle the error locally
-    if (error.config && error.config.handleErrorLocally) {
-      
-   return Promise.reject(error); // Skip global handling
-    }
-
-    let summary = 'Error';
-    let detail = 'An unexpected error occurred.';
-    let severity = 'error'; // Default severity
-
-    if (error.response) {
-      summary = `Error ${error.response.status}`;
-      detail = error.response.data?.message || error.response.data?.detail || 'Server error';
-      
-      if (error.response.status === 404) {
-        severity = 'warn';
-        detail = `Resource not found: ${error.config.url}`;
-      } else if (error.response.status >= 400 && error.response.status < 500) {
-        severity = 'warn'; // Or 'error' depending on how you want to treat client errors
-      }
-      // Server errors (5xx) will remain 'error'
+    if(error.message) {
+      const message = error.response?.data?.message || 'Ocorreu um erro inesperado.';
+      toastService.error('Erro', message);
     } else if (error.request) {
-      summary = 'Network Error';
-      detail = 'No response received from server. Check your connection.';
+      toastService.error('Erro de conexão com o backend', 'Não foi possivel conectar ao servidor');
     } else {
-      detail = error.message;
+      toastService.error('Erro desconhecido', error.message);
     }
-    
-    dispatchToastEvent(severity, summary, detail);
-
-      return Promise.reject(error); // Skip global handling, error will be caught by the component
-    }
+    return Promise.reject(error);
+  }
 );
 
 // Função específica para buscar dados do usuário
@@ -96,4 +68,4 @@ export const fetchProjects = async () => {
   }
 };
 
-export default instance;
+export default api;
