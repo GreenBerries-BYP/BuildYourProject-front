@@ -19,44 +19,12 @@
 
 **Conteúdo**
 
-- [Instalar e rodar o projeto](#instalar-e-rodar-o-projeto)
-  - [Dependências globais](#dependências-globais)
-  - [Dependências locais](#dependências-locais)
-  - [Rodar o projeto](#rodar-o-projeto)
+- [Acessar o Projeto](#acessar-o-projeto)
 - [Equipe](#-equipe)
 
-## Instalar e rodar o projeto
+### Acessar o Projeto
+  Nosso projeto está hospedado no [render](https://render.com) e para acessá-lo, basta acessar este link ou [clicar aqui!](https://buildyourproject-front.onrender.com/)
 
-### Dependências globais
-
-- Python 3.10+
-- Node.js 18+
-
-### Dependências locais
-
-Com o repositório clonado:
-
-```bash
-# Backend
-cd backend
-poetry install
-poetry env activate 
-
-# Frontend
-cd ../frontend
-npm install
-```
-
-### Rodar o projeto
-```bash
-cd backend
-python manage.py runserver
-```
-Em outro terminal, rodar o frontend
-```bash
-cd frontend
-npm run dev
-```
 ## 👥 Equipe
 
 <div align="center">
