@@ -10,7 +10,7 @@ export const fetchUserData = async () => {
   }
 
   try {
-    const response = await axios.get('https://byp-backend-o4ku.onrender.com/api/home/', {
+    const response = await axios.get('http://localhost:8000/api/home/', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
