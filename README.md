@@ -23,7 +23,7 @@
 - [Equipe](#-equipe)
 
 ### Acessar o Projeto
-  Nosso projeto está hospedado no [render](https://render.com) e para acessá-lo, basta acessar este link ou [clicar aqui!](https://buildyourproject-front.onrender.com/)
+  Nosso projeto está hospedado no [render](https://render.com) e para acessá-lo, basta acessar este link: https://buildyourproject-front.onrender.com/ ou [clicar aqui!](https://buildyourproject-front.onrender.com/)
 
 ## 👥 Equipe
 
@@ -37,8 +37,10 @@
 |---|---|---|
 | <img src="https://github.com/maris2606.png" width="100"/> | <img src="https://github.com/Mihcup.png" width="100"/> | <img src="https://github.com/RodrigoBettio.png" width="100"/> |
 
+
+
+![Alt](https://repobeats.axiom.co/api/embed/23fc15bc670b6d14aa06893cd6211b8f190f8311.svg "Repobeats analytics image")
 </div>
 
 
 
-![Alt](https://repobeats.axiom.co/api/embed/23fc15bc670b6d14aa06893cd6211b8f190f8311.svg "Repobeats analytics image")
