@@ -172,15 +172,6 @@ const Register = () => {
             </label>
           </span>
 
-          {error && (
-            <div
-              className="row mb-5 alert alert-danger mt-3"
-              style={{ fontSize: "1.8rem" }}
-            >
-              {error}
-            </div>
-          )}
-
           <div className="row d-flex justify-content-center text-center gap-4">
             <button
               className="col-12 col-lg-5 py-2 py-lg-4 w-100 btn-cadastro justify-content-center"
