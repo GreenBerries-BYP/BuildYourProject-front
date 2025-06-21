@@ -10,7 +10,6 @@ const Login = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
