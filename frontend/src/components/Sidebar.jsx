@@ -29,7 +29,7 @@ const Sidebar = ({ onToggle }) => {
       label: i18n.t('sideBar.sharedWithMe'),
       path: '/home/compartilhados'
     },
-    { icon: <MdOutlineCalendarMonth />, label: i18n.t('sideBar.googleCalendar'), path: '/calendario' },
+    { icon: <MdOutlineCalendarMonth />, label: i18n.t('sideBar.googleCalendar'), path: '/home/calendario' },
   ];
 
   const bottomItems = [
