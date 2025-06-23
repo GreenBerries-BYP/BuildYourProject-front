@@ -1,12 +1,16 @@
+import React, { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Checkbox } from 'primereact/checkbox';
 import { Column } from 'primereact/column';
-import { MdExpandLess, MdExpandMore } from 'react-icons/md';
+import { MdExpandLess, MdExpandMore, MdCheckCircle, MdPendingActions } from 'react-icons/md';
 import { ProgressBar } from 'primereact/progressbar';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from 'primereact/avatar';
 
-const TaskSection = ({ nomeTarefa, tarefas, onToggle }) => {
+import "../styles/TaskSection.css";
+
+
+const TaskSection = ({ nomeTarefa, tarefas, expanded, onToggle }) => {
     const { t } = useTranslation();
 
     const [subtasks, setSubtasks] = useState(tarefas);
@@ -68,7 +72,7 @@ const TaskSection = ({ nomeTarefa, tarefas, onToggle }) => {
                         key={index}
                         label={response?.charAt(0).toUpperCase()}
                         title={response}
-                        size="small"
+                        size="large"
                         shape="circle"
                         className="me-1"
                         style={{ backgroundColor: '#6C63FF', color: '#fff' }}>
@@ -88,23 +92,25 @@ const TaskSection = ({ nomeTarefa, tarefas, onToggle }) => {
 
     return (
         <div className='task-section'>
-            <div className='task-header row' onClick={onToggle}>
-                <span className='task-title col-12 col-lg-6 p-0 d-flex align-items-center'>
+            <div className='task-header flex-row d-flex justify-items-center' onClick={onToggle}>
+                <span className='task-title d-flex flex-row align-items-center gap-5'>
                     <Checkbox
                         checked={progresso === 100}
                         disabled
                         className='me-2'>
                     </Checkbox>
                     {nomeTarefa}
-                    {renderAvatares()}
                 </span>
 
-                <span className="task-data col-12 col-lg-6 px-0 d-flex align-items-center justify-content-end">
-                    <div className="task-progress d-flex align-items-center">
-                        <ProgressBar value={progresso} style={{ height: '1rem', width: '8rem' }}></ProgressBar>
+                <span className="task-data d-flex flex-row align-items-center gap-5">
+                    <div className="task-progress d-flex align-items-center gap-3">
+                        <ProgressBar value={progresso} style={{ height: '2rem', width: '24rem' }}></ProgressBar>
                         <span className="ms-2">{progresso}%</span>
                     </div>
+                </span>
 
+                <span className='d-flex flex-row align-items-center gap-5'>
+                    {renderAvatares()}
                     <span className="expand-icon ms-3">
                         {expanded ? <MdExpandLess size={22} /> : <MdExpandMore size={22} />}
                     </span>
