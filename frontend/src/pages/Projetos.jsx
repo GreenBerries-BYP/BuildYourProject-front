@@ -12,9 +12,9 @@ import { fetchUserData } from '../api/userService';
 
 // precisa filtrar os projetos de sua autoria
 function Projetos() {
-    const [modalAberto, setModalAberto] = useState(false);
-    const [userData, setUserData] = useState(null);
-    const [projetoSelecionado, setProjetoSelecionado] = useState(null);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [projetoSelecionado, setProjetoSelecionado] = useState(null);
 
   useEffect(() => {
     fetchUserData()
@@ -56,10 +56,10 @@ function Projetos() {
 
   useEffect(() => {
     const carregarProjetos = async () => {
-    //const carregarMeusProjetos = async () => {
+      //const carregarMeusProjetos = async () => {
       try {
         const data = await fetchProjects();
-        
+
         setProjetos(data);
       } catch (error) {
         console.error('Erro ao carregar projetos:', error);
@@ -72,41 +72,40 @@ function Projetos() {
 
   return (
     <>
-        {projetoSelecionado ? (
-          <div className='d-flex w-100 justify-content-center align-items-center'>
-            <ViewProject
-              nomeProjeto={projetoSelecionado.name}
-              admProjeto={projetoSelecionado.creator_name}
-              numIntegrantes={projetoSelecionado.collaborator_count}
-              collaborators={projetoSelecionado.collaborators || []}
-              tarefasProjeto={projetoSelecionado.tarefasProjeto || []}
-              onVoltar={handleVoltar}
-            />
-          </div>
-        ) : (
-          <div className="projects-area">
-            <CreateProjectCard onClick={handleCreateProject} />
+      {projetoSelecionado ? (
+        <div className='d-flex w-100 justify-content-center align-items-center'>
+          <ViewProject
+            nomeProjeto={projetoSelecionado.name}
+            admProjeto={projetoSelecionado.creator_name}
+            numIntegrantes={projetoSelecionado.collaborator_count}
+            collaborators={projetoSelecionado.collaborators || []}
+            tarefasProjeto={projetoSelecionado.tarefasProjeto || []}
+            onVoltar={handleVoltar}
+          />
+        </div>) : (
+        <div className="projects-area">
+          <CreateProjectCard onClick={handleCreateProject} />
 
-            {projetos.map((projeto, index) => (
-              <ProjectCard
-                key={index}
-                nomeProjeto={projeto.name}
-                progressoProjeto={projeto.progressoProjeto}
-                progressoIndividual={projeto.progressoIndividual}
-                tarefasProjeto={projeto.tarefasProjeto}
-                estaAtrasado={projeto.estaAtrasado}
-                onClick={() => handleAbrirProjeto(projeto)}
-              />
-            ))}
-          </div>
-        )}
+          {projetos.map((projeto, index) => (
+            <ProjectCard
+              key={index}
+              nomeProjeto={projeto.name}
+              progressoProjeto={projeto.progressoProjeto}
+              progressoIndividual={projeto.progressoIndividual}
+              tarefasProjeto={projeto.tarefasProjeto}
+              estaAtrasado={projeto.estaAtrasado}
+              onClick={() => handleAbrirProjeto(projeto)}
+            />
+          ))}
+        </div>
+      )}
 
       <ModalNewProject
         isOpen={modalAberto}
         onClose={() => setModalAberto(false)}
       />
     </>
-  );
+  )
 }
 
 export default Projetos;
