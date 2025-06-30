@@ -17,11 +17,6 @@ const ProjectCard = ({
 
   const { t } = useTranslation();
 
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleMouseEnter = () => setIsExpanded(true);
-  const handleMouseLeave = () => setIsExpanded(false);
-
   const btnRef = useRef(null);
 
   const chartRef = useRef(null);

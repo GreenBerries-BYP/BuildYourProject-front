@@ -5,7 +5,7 @@ const pt = {
       tools: "ferramentas",
       preview: "preview",
       aboutUs: "sobre nós",
-      login: "Fazer login",
+      login: "Login",
       signUp: "Criar conta",
     },
     hero: {

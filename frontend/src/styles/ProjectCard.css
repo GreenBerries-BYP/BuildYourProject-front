@@ -1,37 +1,57 @@
-.project-card{
+.project-card {
     background: var(--white-color);
-    padding: 3rem;
-    font-size: 2rem;
+    padding: 2rem;
+    font-size: 1.8rem;
     min-width: 25%;
     border-radius: 10px;
     border: 1px solid var(--gray-light-color);
-    color: var(--black-color); 
-    transition: width 500ms ease-in-out;
+    color: var(--black-color);
+    transition: all 300ms ease-in-out;
     justify-content: space-between;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.card-header{
-    display: flex;;
+.project-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--white-color);
-    color: var(--black-color); 
-    font-size: 2.5rem;
-    margin-bottom: 1.6rem;
+    background: transparent;
+    color: var(--black-color);
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
     border: none;
     padding: 0;
 }
 
-.btn-more{
-    width: 4rem;
-}
-.btn-more img{
-    width: 4rem;
+.btn-more {
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: transparent;
+    border: none;
 }
 
-.project-progress{
+.btn-more:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.btn-more img {
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.project-progress {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -39,38 +59,80 @@
     margin-bottom: 1.5rem;
 }
 
-.progress-label{
-    width: 25%;
-    text-align: right;
+.progress-bar {
+    background-color: var(--purple-color);
+    border-radius: 5px;
+}
+
+.progress {
+    height: 1rem;
+    border-radius: 5px;
+    background-color: var(--gray-light-color);
+}
+
+.progress-label {
+    width: auto;
+    padding-left: 1rem;
+    font-size: 1.4rem;
     color: var(--gray-color);
 }
 
-.round-progress{
-    width: 6rem;
-    height: 6rem;
+.round-progress {
+    width: 5rem;
+    height: 5rem;
 }
 
-.tasks{
-    display: flex;
-    gap: 9px;
-    flex-wrap: wrap;
-}
-
-.card-popover{
+.tasks {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
 }
 
-.btn-popover{
-    font-size: 2rem;
-    background: var(--white-color);
-    padding: 1rem;
-    border-radius: 10px;
-    color: var(--black-color); 
-    transition: color 400ms ease-in-out;
+.popover {
+    font-size: 1.6rem;
+    border-radius: 8px !important;
+    border: 1px solid var(--gray-light-color) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
 }
 
-.btn-popover:hover{
+.popover-header {
+    display: none;
+}
+
+.popover-body {
+    padding: 0 !important;
+    background-color: var(--white-color);
+    color: var(--black-color);
+    border-radius: 8px;
+}
+
+.card-popover {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.btn-popover {
+    font-size: 1.6rem;
+    background: transparent;
+    padding: 1rem 1.5rem;
+    color: var(--black-color);
+    text-decoration: none;
+    display: block;
+    transition: background-color 200ms ease-in-out;
+}
+
+.btn-popover:hover {
     background: var(--gray-light-color);
+}
+
+.dark-theme .popover-body,
+.dark-theme .btn-popover {
+    color: var(--black-color);
+}
+
+.dark-theme .btn-popover:hover {
+    background-color: var(--gray-color);
 }
