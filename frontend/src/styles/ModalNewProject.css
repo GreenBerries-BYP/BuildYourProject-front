@@ -498,7 +498,7 @@ body.dark-theme .navigation-buttons .save-btn {
 .review-section p {
     margin-bottom: 1rem;
     line-height: 1.6;
-    color: var(--black-color);
+    color: var(--gray-color);
 }
 
 .review-section p strong {
@@ -512,6 +512,7 @@ body.dark-theme .navigation-buttons .save-btn {
 }
 
 .review-description-content {
+    color: var(--gray-color);
     max-height: 120px; /* Increased from 100px */
     overflow: hidden;
     transition: max-height 0.3s ease-out;
