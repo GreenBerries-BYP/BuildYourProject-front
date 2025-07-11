@@ -494,7 +494,7 @@ const Landing = () => {
 
 window.addEventListener("scroll", function () {
   const header = document.getElementById("landing_header");
-  if (window.scrollY > 100) {
+  if (window.scrollY > 50) {
     header?.classList?.add("sticky");
   } else {
     header?.classList?.remove("sticky");
