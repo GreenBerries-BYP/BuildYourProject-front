@@ -1,8 +1,6 @@
 import '../styles/ViewProject.css';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MdExpandLess, MdExpandMore } from 'react-icons/md';
-
 import TaskSection from './TaskSection';
 import ModalNewTask from './ModalNewTask';
 

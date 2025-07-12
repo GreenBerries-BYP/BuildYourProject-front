@@ -5,9 +5,11 @@ import { useTranslation } from "react-i18next";
 
 import { getToken } from "../auth/auth";
 import { abntTemplates } from "../mocks/abntMock";
+import { useNavigate } from "react-router-dom";
 
 const ModalNewProject = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const modalRef = useRef();
   const descriptionTextareaRef = useRef(null);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -216,7 +218,7 @@ const ModalNewProject = ({ isOpen, onClose }) => {
           setFormErrors({});
           setIsDescriptionExpanded(false);
 
-          location.reload();
+          navigate("/home");
         } else {
           // This block might not be strictly necessary if Axios throws on non-2xx by default
           // For safety, keeping a generic error if it somehow reaches here
