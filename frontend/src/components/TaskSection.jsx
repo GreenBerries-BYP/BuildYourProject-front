@@ -3,7 +3,6 @@ import { DataTable } from 'primereact/datatable';
 import { Checkbox } from 'primereact/checkbox';
 import { Column } from 'primereact/column';
 import { MdExpandLess, MdExpandMore, MdCheck, MdCheckCircle, MdPendingActions } from 'react-icons/md';
-import { IoIosPeople } from "react-icons/io";
 import { ProgressBar } from 'primereact/progressbar';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from 'primereact/avatar';
@@ -45,9 +44,6 @@ const TaskSection = ({ nomeTarefa, tarefas, expanded, onToggle }) => {
     );
 
     const renderColaboradores = () => {
-        if (isCompleted) {
-            return <Avatar icon={<IoIosPeople size={20} />} shape="circle" className="completed-task-avatar" />;
-        }
         return (
             <div className="colaboradores-container">
                 {colaboradores.map((responsavel, index) => (
