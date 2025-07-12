@@ -2,142 +2,106 @@ import React, { useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Checkbox } from 'primereact/checkbox';
 import { Column } from 'primereact/column';
-import { MdExpandLess, MdExpandMore, MdCheckCircle, MdPendingActions } from 'react-icons/md';
+import { MdExpandLess, MdExpandMore, MdCheck, MdCheckCircle, MdPendingActions } from 'react-icons/md';
+import { IoIosPeople } from "react-icons/io";
 import { ProgressBar } from 'primereact/progressbar';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from 'primereact/avatar';
-
 import "../styles/TaskSection.css";
-
 
 const TaskSection = ({ nomeTarefa, tarefas, expanded, onToggle }) => {
     const { t } = useTranslation();
-
     const [subtasks, setSubtasks] = useState(tarefas);
 
     const progresso = Math.round(
         (subtasks.filter((t) => t.status === 'concluído').length / subtasks.length) * 100
     );
+    const isCompleted = progresso === 100;
 
     const handleStatusChange = (rowData) => {
         const updatedTasks = subtasks.map((t) => {
             if (t.nome === rowData.nome) {
-                return {
-                    ...t,
-                    status: t.status === 'concluído' ? 'pendente' : 'concluído',
-                };
+                return { ...t, status: t.status === 'concluído' ? 'pendente' : 'concluído' };
             }
             return t;
         });
         setSubtasks(updatedTasks);
     };
 
-    const colaboradores = Array.from(
-        new Set(tarefas.map((t) => t.responsavel).filter(Boolean))
-    );
+    const colaboradores = Array.from(new Set(tarefas.map((t) => t.responsavel).filter(Boolean)));
 
     const statusTemplate = (rowData) => {
-
         const isFinished = rowData.status === 'concluído';
-
         return (
-            <span
-                className={`status-badge ${isFinished ? 'concluido' : 'pendente'}`}
-                style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    backgroundColor: isFinished ? 'var(--green-dark-color)' : 'var(--error-red-color)',
-                    color: 'var(--white-color)',
-                    padding: '4px 8px',
-                    borderRadius: '12px',
-                    fontWeight: '500'
-                }}
-            >
-                {isFinished ? (
-                    <MdCheckCircle size={16} />
-                ) : (
-                    <MdPendingActions size={16} />
-                )}
+            <span className={`status-badge ${isFinished ? 'concluido' : 'pendente'}`}>
+                {isFinished ? <MdCheckCircle size={"1.6rem"} /> : <MdPendingActions size={"1.6rem"} />}
                 {rowData.status}
             </span>
-        )
-    }
-
-    const renderAvatares = () => (
-        <div className='colaboradores d-flex align-items-center ms-3'>
-            {
-                colaboradores.map((response, index) => (
-                    <Avatar
-                        key={index}
-                        label={response?.charAt(0).toUpperCase()}
-                        title={response}
-                        size="large"
-                        shape="circle"
-                        className="me-1"
-                        style={{ backgroundColor: '#6C63FF', color: '#fff' }}>
-
-                    </Avatar>
-                ))
-            }
-        </div>
-    );
+        );
+    };
 
     const checkboxTemplate = (rowData) => (
-        <Checkbox
-            onChange={() => handleStatusChange(rowData)}
-            checked={rowData.status === 'concluído'}
-        />
+        <Checkbox onChange={() => handleStatusChange(rowData)} checked={rowData.status === 'concluído'} />
     );
+
+    const renderColaboradores = () => {
+        if (isCompleted) {
+            return <Avatar icon={<IoIosPeople size={20} />} shape="circle" className="completed-task-avatar" />;
+        }
+        return (
+            <div className="colaboradores-container">
+                {colaboradores.map((responsavel, index) => (
+                    <Avatar
+                        key={index}
+                        label={responsavel?.charAt(0).toUpperCase()}
+                        title={responsavel}
+                        shape="circle"
+                        className="collaborator-avatar"
+                    />
+                ))}
+            </div>
+        );
+    };
 
     return (
         <div className='task-section'>
-            <div className='task-header flex-row d-flex justify-items-center' onClick={onToggle}>
-                <span className='task-title d-flex flex-row align-items-center gap-5'>
-                    <Checkbox
-                        checked={progresso === 100}
-                        disabled
-                        className='me-2'>
-                    </Checkbox>
-                    {nomeTarefa}
-                </span>
-
-                <span className="task-data d-flex flex-row align-items-center gap-5">
-                    <div className="task-progress d-flex align-items-center gap-3">
-                        <ProgressBar value={progresso} style={{ height: '2rem', width: '24rem' }}></ProgressBar>
-                        <span className="ms-2">{progresso}%</span>
+            <div className='task-header' onClick={onToggle}>
+                <div className="task-header-left">
+                    <div className={`status-circle ${isCompleted ? 'completed' : ''}`}>
+                        {isCompleted && <MdCheck size={"1.8rem"} color="white" />}
                     </div>
-                </span>
+                    <span className='task-title'>{nomeTarefa}</span>
+                </div>
 
-                <span className='d-flex flex-row align-items-center gap-5'>
-                    {renderAvatares()}
-                    <span className="expand-icon ms-3">
-                        {expanded ? <MdExpandLess size={22} /> : <MdExpandMore size={22} />}
+                <div className="task-header-middle">
+                    <ProgressBar value={progresso} />
+                    <span className="progress-label">{progresso}%</span>
+                </div>
+
+                <div className="task-header-right">
+                    {renderColaboradores()}
+                    <span className="expand-icon">
+                        {expanded ? <MdExpandLess size={"2.8rem"} /> : <MdExpandMore size={"2.8rem"} />}
                     </span>
-                </span>
+                </div>
             </div>
 
             {expanded && (
-                <div className="task-table-container mt-3">
+                <div className="task-table-container">
                     <DataTable
                         value={subtasks}
-                        stripedRows
                         responsiveLayout="scroll"
                         emptyMessage={t('viewProject.noTasks')}
+                        className="task-datatable"
                     >
-                        <Column body={checkboxTemplate} style={{ width: '50px' }}></Column>
-                        <Column field="nome" header={t('viewProject.taskHeaderTask')}></Column>
-                        <Column field="responsavel" header={t('viewProject.taskHeaderResponsible')}></Column>
-                        <Column field="prazo" header={t('viewProject.taskHeaderDueDate')}></Column>
-                        <Column
-                            field="status"
-                            header={t('viewProject.taskHeaderStatus')}
-                            body={statusTemplate}
-                        ></Column>
+                        <Column body={checkboxTemplate} style={{ width: '5rem' }} />
+                        <Column field="nome" header={t('viewProject.taskHeaderTask')} />
+                        <Column field="responsavel" header={t('viewProject.taskHeaderResponsible')} />
+                        <Column field="status" header={t('viewProject.taskHeaderStatus')} body={statusTemplate} />
+                        <Column field="prazo" header={t('viewProject.taskHeaderDueDate')} />
                     </DataTable>
                 </div>
             )}
-
         </div>
     );
 };
