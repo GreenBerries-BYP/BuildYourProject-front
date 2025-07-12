@@ -66,27 +66,28 @@
   flex-direction: column;
   justify-content: flex-start;
   overflow: visible;
-  width: 90vw;
   margin-block: 6rem;
+  min-width: 90vw;
   background: var(--white-color);
+
 }
 
 #landing_header {
   position: sticky;
   background: var(--white-color);
-  top: 6rem;
+  top: 0;
   z-index: 5;
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
-  padding: 2% 3%;
-  min-height: 10.3rem;
-  transition: all 100ms ease;
+  padding: 1% 2%;
+  min-height: 10rem;
+  transition: padding 300ms ease-in-out, box-shadow 150ms ease-in-out;
 }
 
 #landing_header.sticky {
-  top: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .nav-group {
@@ -111,32 +112,31 @@
   transform: scale(1.05);
 }
 
-.navbar-toggler{
+.navbar-toggler {
   padding-bottom: 5px;
   height: 5rem;
   width: 5rem;
   border: none;
 }
-.navbar-toggler:focus, 
-.navbar-toggler:active, 
+.navbar-toggler:focus,
+.navbar-toggler:active,
 .navbar-toggler:focus-visible {
   outline: none;
   box-shadow: none;
   border: none;
 }
 
-#navbarNav{
+#navbarNav {
   display: absolute;
-
 }
-#navbarNav li{
+#navbarNav li {
   text-align: start;
 }
 
 .enter-group {
   display: flex;
   align-items: center;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
   justify-content: end;
   gap: 1.7rem;
 }
@@ -164,7 +164,7 @@
 }
 
 .link-borda-roxo:hover {
-  background-color: var(--purple-dark-color) ;
+  background-color: var(--purple-dark-color);
   color: var(--white-color) !important;
   transform: scale(1.05);
 }
@@ -409,7 +409,7 @@
   justify-content: center;
   gap: 5rem;
 }
-.integrantes > div{
+.integrantes > div {
   padding: 0.5rem;
 }
 
@@ -495,7 +495,6 @@ footer h3 {
     align-self: center;
   }
 
-  
   .blocos-inicio {
     width: 90%;
     gap: 3rem;
@@ -537,5 +536,4 @@ footer h3 {
     display: block;
     border-radius: 10px; /* opcional, só se quiser que a imagem também seja arredondada */
   }
-
 }

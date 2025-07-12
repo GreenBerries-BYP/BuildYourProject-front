@@ -85,18 +85,18 @@ body.dark-theme {
   ); /* Um roxo mais claro para dark-theme */
 
   /* Roxo (Tema Escuro) */
-  --purple-color: #7d64ac;
-  --purple-light-color: #AE8CEB;
-  --purple-dark-color: #b59cd9;
-  --purple-saturated-color: #693b99;
+  --purple-color: #9f7aea;
+  --purple-light-color: #d8b4fe;
+  --purple-dark-color: #bb86fc;
+  --purple-saturated-color: #7c3aed;
 
   /* Verde (Tema Escuro) */
-  --green-color: #8ecda7;
-  --green-dark-color: #67BA99;
-  --green-light-color: #0c5e3d;
-  --teal-color: #3f7a7e;
-  --teal-dark-color: #07969b;
-  --teal-bright-color: #07c0c6;
+  --green-color: #34d399;
+  --green-dark-color: #10b981;
+  --green-light-color: #6ee7b7;
+  --teal-color: #2dd4bf;
+  --teal-dark-color: #0891b2;
+  --teal-bright-color: #06b6d4;
 
   /* Rosa (Tema Escuro) */
   --pink-color: #d5b1e0;
@@ -116,7 +116,7 @@ body.dark-theme {
   --header-border: var(--gray-light-color);
   --sidebar-bg: #2d333b;
   --modal-bg: #2d333b;
-  --modal-header-bg: var(--purple-light-color); 
+  --modal-header-bg: #4c1d95; 
   --card-background: rgb(0, 0, 0, 0.15);
   --create-card-border: var(--gray-light-color); 
   --create-card-text: var(--black-color);
