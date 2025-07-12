@@ -46,19 +46,6 @@ const Login = () => {
     }
   };
 
-  const footer = (
-    <>
-      <Divider />
-      <p className="mt-2 fw-bold list">{t("login.suggestions")}</p>
-      <ul className="pl-2 ml-2 mt-0 line-height-3 list">
-        <li>{t("login.lowercase")}</li>
-        <li>{t("login.uppercase")}</li>
-        <li>{t("login.especialCaracter")}</li>
-        <li>{t("login.number")}</li>
-      </ul>
-    </>
-  );
-
   return (
     <div className="container-fluid login d-flex justify-content-center align-items-center p-0">
       <div className="col-10 card-login rounded d-flex justify-content-center align-items-center bg-white shadow-lg">
@@ -80,7 +67,7 @@ const Login = () => {
             />
 
             <form
-              className="row p-4 d-flex justify-content-between flex-column gap-5"
+              className="row p-4 d-flex justify-content-between flex-column gap-4"
               onSubmit={handleSubmit(onSubmit)}
             >
               <div className="row justify-content-center gap-3">
@@ -90,7 +77,10 @@ const Login = () => {
                       name="email"
                       control={control}
                       rules={{
-                        required: t("login.emailRequired", "Email é obrigatório"),
+                        required: t(
+                          "login.emailRequired",
+                          "Email é obrigatório"
+                        ),
                         pattern: {
                           value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                           message: t("login.emailInvalid", "Email inválido"),
@@ -106,7 +96,9 @@ const Login = () => {
                         />
                       )}
                     />
-                    <label htmlFor="email">{t("login.emailLabel", "Email")}</label>
+                    <label htmlFor="email">
+                      {t("login.emailLabel", "Email")}
+                    </label>
                   </FloatLabel>
                   {errors.email && (
                     <small className="p-error">{errors.email.message}</small>
@@ -119,20 +111,29 @@ const Login = () => {
                       name="senha"
                       control={control}
                       rules={{
-                        required: t("login.passwordRequired", "Senha é obrigatória"),
+                        required: t(
+                          "login.passwordRequired",
+                          "Senha é obrigatória"
+                        ),
                       }}
                       render={({ field }) => (
                         <Password
                           inputId="senha"
                           {...field}
                           toggleMask
-                          className={`byp-input-field ${errors.senha ? "p-invalid" : ""}`}
-                          inputClassName={`byp-input-field ${errors.senha ? "p-invalid" : ""}`}
-                          footer={footer}
+                          feedback={false}
+                          className={`byp-input-field ${
+                            errors.senha ? "p-invalid" : ""
+                          }`}
+                          inputClassName={`byp-input-field ${
+                            errors.senha ? "p-invalid" : ""
+                          }`}
                         />
                       )}
                     />
-                    <label htmlFor="senha">{t("login.passwordLabel", "Senha")}</label>
+                    <label htmlFor="senha">
+                      {t("login.passwordLabel", "Senha")}
+                    </label>
                   </FloatLabel>
                   {errors.senha && (
                     <small className="p-error">{errors.senha.message}</small>
@@ -142,7 +143,10 @@ const Login = () => {
 
               <div className="d-flex justify-content-end">
                 <Link className="link-esqueci" to="/forgot_password">
-                  {t("login.forgotPasswordLink", "Esqueci ou quero trocar minha senha")}
+                  {t(
+                    "login.forgotPasswordLink",
+                    "Esqueci ou quero trocar minha senha"
+                  )}
                 </Link>
               </div>
 
@@ -179,15 +183,17 @@ const Login = () => {
                   disabled={loading || !isValid}
                 >
                   {loading ? (
-                    <div
-                      className="spinner-border text-light"
-                      style={{ width: "2rem", height: "2rem" }}
-                      role="status"
-                    >
-                      <span className="visually-hidden">
-                        {t("login.loading", "Carregando...")}
-                      </span>
-                    </div>
+                    <>
+                      <div
+                        className="spinner-border text-light"
+                        style={{
+                          width: "2rem",
+                          height: "2rem",
+                          padding: "10px",
+                        }}
+                        role="status"
+                      ></div>
+                    </>
                   ) : (
                     t("login.signIn")
                   )}
