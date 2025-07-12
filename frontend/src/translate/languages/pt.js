@@ -83,6 +83,11 @@ const pt = {
     register: "Cadastre-se",
     signIn: "Entrar",
     loading: "Carregando...",
+    lowercase: "Pelo menos uma letra minúscula",
+    uppercase: "Pelo menos uma letra maiúscula",
+    especialCaracter: "Pelo menos um caractere especial",
+    number: "Pelo menos um número",
+    suggestions: "Sugestões para uma senha forte:",
   },
   register: {
     fullNameLabel: "Nome completo:",
