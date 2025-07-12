@@ -83,6 +83,11 @@ const en = {
     register: "Register",
     signIn: "Sign In",
     loading: "Loading...",
+    lowercase: "At least one lowercase letter",
+    uppercase: "At least one uppercase letter",
+    especialCaracter: "At least one special character",
+    number: "At least one number",
+    suggestions: "Suggestions for a strong password:",
   },
   register: {
     fullNameLabel: "Full name:",
