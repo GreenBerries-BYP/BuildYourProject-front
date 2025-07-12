@@ -69,7 +69,6 @@
   margin-block: 6rem;
   min-width: 90vw;
   background: var(--white-color);
-
 }
 
 #landing_header {
@@ -154,6 +153,7 @@
   border-radius: 30px;
   transition: all 200ms ease-in-out;
 
+  cursor: pointer;
   text-decoration: none;
 }
 
