@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchProjects } from '../api/api';
+import { fetchProjects, fetchSharedWithMe } from '../api/api';
 
 import ProjectCard from "../components/ProjectCard";
 import ViewProject from "../components/ViewProject";
@@ -40,9 +40,8 @@ function Compartilhados() {
 
   useEffect(() => {
     const carregarProjetos = async () => {
-    //const carregarProjetosCompartilhados = async () => {
       try {
-        const data = await fetchProjects();
+        const data = await fetchSharedWithMe();
         
         setProjetos(data);
       } catch (error) {

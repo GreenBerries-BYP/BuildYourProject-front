@@ -17,6 +17,19 @@ const Register = () => {
 
   const navigate = useNavigate();
 
+  const footer = (
+    <>
+      <Divider />
+      <p className="mt-2 fw-bold list">{t("login.suggestions")}</p>
+      <ul className="pl-2 ml-2 mt-0 line-height-3 list">
+        <li>{t("login.lowercase")}</li>
+        <li>{t("login.uppercase")}</li>
+        <li>{t("login.especialCaracter")}</li>
+        <li>{t("login.number")}</li>
+      </ul>
+    </>
+  );
+
   // Handle register faz a requisição para o backend para registrar um novo usuário.
   // Ele utiliza o axios para fazer a requisição POST para a rota /register/ do backend.
   const handleRegister = async (e) => {
