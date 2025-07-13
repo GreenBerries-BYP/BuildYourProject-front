@@ -20,22 +20,26 @@ const ViewProject = ({
 
     tarefasProjeto = [
         {
+            id: 1,
             nomeTarefa: 'Design',
             progresso: 50,
-            tarefas: [
+            subTarefas: [
                 {
+                    id: 1,
                     nome: 'Protótipo',
                     responsavel: 'Letícia',
                     prazo: '10/05/2025',
                     status: 'concluído',
                 },
                 {
+                    id: 2,
                     nome: 'Figma',
                     responsavel: 'Millena',
                     prazo: '15/05/2025',
                     status: 'concluído',
                 },
                 {
+                    id: 3,
                     nome: 'Implementação Visual',
                     responsavel: 'João',
                     prazo: '30/05/2025',
@@ -44,22 +48,26 @@ const ViewProject = ({
             ],
         },
         {
+            id: 2,
             nomeTarefa: 'POC',
             progresso: 75,
-            tarefas: [
+            subTarefas: [
                 {
+                    id: 1,
                     nome: 'Levantamento Requisitos',
                     responsavel: 'Rodrigo',
                     prazo: '05/05/2025',
                     status: 'concluído',
                 },
                 {
+                    id: 2,
                     nome: 'Testes de API',
                     responsavel: 'Letícia',
                     prazo: '18/05/2025',
                     status: 'concluído',
                 },
                 {
+                    id: 3,
                     nome: 'Protótipo Funcional',
                     responsavel: 'João',
                     prazo: '30/05/2025',
@@ -68,16 +76,19 @@ const ViewProject = ({
             ],
         },
         {
+            id: 3,
             nomeTarefa: 'Conceito',
             progresso: 100,
-            tarefas: [
+            subTarefas: [
                 {
+                    id: 1,
                     nome: 'Definir Escopo',
                     responsavel: 'Millena',
                     prazo: '01/05/2025',
                     status: 'concluído',
                 },
                 {
+                    id: 2,                    
                     nome: 'Reunião de Validação',
                     responsavel: 'Rodrigo',
                     prazo: '03/05/2025',
@@ -86,16 +97,19 @@ const ViewProject = ({
             ],
         },
         {
+            id: 4,
             nomeTarefa: 'Introdução',
             progresso: 100,
-            tarefas: [
+            subTarefas: [
                 {
+                    id: 1,
                     nome: 'Escrever Introdução',
                     responsavel: 'Letícia',
                     prazo: '10/05/2025',
                     status: 'concluído',
                 },
                 {
+                    id: 2,
                     nome: 'Revisão Texto',
                     responsavel: 'João',
                     prazo: '15/05/2025',
@@ -158,7 +172,7 @@ const ViewProject = ({
                         key={index}
                         nomeTarefa={tarefa.nomeTarefa}
                         progresso={tarefa.progresso}
-                        tarefas={tarefa.tarefas}
+                        subTarefas={tarefa.subTarefas}
                         expanded={expandedSections[tarefa.nomeTarefa]}
                         onToggle={() => toggleSection(tarefa.nomeTarefa)}
                     />

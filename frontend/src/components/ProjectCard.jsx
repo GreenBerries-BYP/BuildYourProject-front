@@ -1,10 +1,9 @@
+import { useRef } from "react";
+import { Knob } from "primereact/knob";
+import { Menu } from "primereact/menu";
+import { useTranslation } from "react-i18next";
 
-import { useState, useRef, useEffect } from 'react';
-import ApexCharts from 'apexcharts'
-import '../styles/ProjectCard.css';
-import ProjectCardItem from './ProjectCardItem';
-import { useTranslation } from 'react-i18next';
-
+import "../styles/ProjectCard.css";
 
 const ProjectCard = ({
   nomeProjeto,
@@ -12,109 +11,79 @@ const ProjectCard = ({
   progressoIndividual,
   tarefasProjeto,
   estaAtrasado,
-  onClick
+  onClick,
 }) => {
-
   const { t } = useTranslation();
-
-  const btnRef = useRef(null);
-
-  const chartRef = useRef(null);
-
-  useEffect(() => {
-    if (!btnRef.current) return;
-
-    $(btnRef.current).popover({
-      html: true,
-      trigger:'focus',
-      content: `
-      <div class="card-popover">
-        <a class="btn-popover">${t('buttons.deleteProject')}</a>
-      </div>
-      `,
-    });
-
-    return () => {
-      $(btnRef.current).popover('dispose'); 
-    };
-  }, [t]);
-
-  useEffect(() => {
-     if (!chartRef.current) return;
-
-    const safeProgressoIndividual = typeof progressoIndividual === 'number' ? progressoIndividual : 0;
-
-    const options = {
-      series: [safeProgressoIndividual],
-      chart: {
-        height: 60,
-        type: 'radialBar',
-        sparkline: { enabled: true }, // opcional, ajuda com layout pequeno
-      },
-      plotOptions: {
-        radialBar: {
-          hollow: {
-            size: '40%',
-          },
-          dataLabels: {
-            show: false,
-          }
-        },
-      },
-      labels: [t('projectCard.progressLabel', "Progress")],
-    };
-
-    const chart = new ApexCharts(chartRef.current, options);
-    chart.render();
-
-    return () => chart.destroy();
-  }, [progressoIndividual]);
+  const menuRef = useRef(null);
 
   return (
-    <div className='project-card' onClick={onClick}>
-        <div className="card-header">
-            {nomeProjeto}
-            <button
-              onClick={e=>{
-                e.stopPropagation();
-              }}
-              ref={btnRef}
-              className='d-inline btn-more' 
-              data-toggle="popover" 
-              
-            >
-                <img src="/imgs/more_vert.svg" alt={t("altText.projectOptions", "Project options")} />
-            </button>
-        </div>
-        <div className="project-progress d-flex">
-            <div className="progress w-75">
-                <div className="progress-bar" role="progressbar" style={{width: `${progressoProjeto}%`}} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-            <span className='progress-label'>{progressoProjeto}%</span>
-        </div>
-        <div className="tasks">
-            {tarefasProjeto?.map((tarefa, index)=>(
-                <ProjectCardItem 
-                    key={index}
-                    nomeTarefa={tarefa.nomeTarefa} 
-                    statusTarefa={tarefa.statusTarefa} 
-                />      
-            ))}
-            
-        </div>
-       
-      <div className='individual-progress d-flex align-items-center justify-content-end'>
-        <span className={estaAtrasado ? "" : "d-none"}>
-          <img src="/imgs/alert.svg" alt={t("altText.alertIcon", "Alert")} />
-        </span>
+    <div className="project-card" onClick={onClick}>
+      <div className="card-header">
+        {nomeProjeto}
+        <button
+          className="btn-more"
+          onClick={(e) => {
+            e.stopPropagation();
+            menuRef.current.toggle(e);
+          }}
+        >
+          <img src="/imgs/more_vert.svg" alt={t("altText.projectOptions")} />
+        </button>
+        <Menu
+          model={[{ label: t("buttons.deleteProject") }]}
+          popup
+          ref={menuRef}
+        />
+      </div>
 
-        <span className='text-center mx-3'>{t('project.yourTasks')}</span>
-
-        <div className='round-progress d-inline' id='roundProgress'>
-          <div ref={chartRef}></div>
+      <div className="project-progress">
+        <div className="progress w-75">
+          <div
+            className="progress-bar"
+            role="progressbar"
+            style={{ width: `${progressoProjeto}%` }}
+            aria-valuenow={progressoProjeto}
+            aria-valuemin="0"
+            aria-valuemax="100"
+          ></div>
         </div>
+        <span className="progress-label">{progressoProjeto}%</span>
+      </div>
 
+      {/* Lista de tarefas */}
+      <div className="tasks">
+        {tarefasProjeto?.map((tarefa, idx) => (
+          <div className="flex align-items-center gap-2" key={idx}>
+            <span
+              className={`status-dot ${
+                tarefa.is_completed
+                  ? "bg-purple-500"
+                  : "border-2 border-gray-400"
+              } border-circle`}
+              style={{ width: "12px", height: "12px" }}
+            />
+            <span>{tarefa.title}</span>
+          </div>
+        ))}
+      </div>
 
+      <div className="d-flex justify-content-end align-items-center gap-2">
+        {estaAtrasado && (
+          <img src="/imgs/alert.svg" alt={t("altText.alertIcon")} />
+        )}
+        <span>{t("project.yourTasks")}</span>
+        <div className="round-progress">
+          <Knob
+            value={progressoIndividual || 0}
+            readOnly
+            size={50}
+            valueTemplate="{value}%"
+            valueColor="#7b46ff"
+            rangeColor="#e2d8ff"
+            textColor="#333"
+            strokeWidth={10}
+          />
+        </div>
       </div>
     </div>
   );

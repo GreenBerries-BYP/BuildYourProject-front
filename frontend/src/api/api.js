@@ -81,5 +81,12 @@ export const fetchSharedWithMe = async () => {
   }
 };
 
+export const updateTaskStatus = async (taskId, isCompleted) => {
+  const response = await api.put(
+    `/tasks/${taskId}/`,
+    { is_completed: isCompleted }
+  );
+  return response.data;
+};
 
 export default api;
