@@ -71,6 +71,16 @@ export const fetchProjects = async () => {
   }
 };
 
+export const fetchProjectById = async (projetoId) => {
+  try {
+    const response = await api.get(`/projetos/${projetoId}/`);
+    return response.data;
+  } catch (error) {
+    console.error(`Erro ao buscar projeto ID ${projetoId}:`, error);
+    throw error;
+  }
+};
+
 export const fetchSharedWithMe = async () => {
   try {
     const response = await api.get('/projetos/sharewithme/');
