@@ -51,18 +51,22 @@ const ProjectCard = ({
       </div>
 
       {/* Lista de tarefas */}
-      <div className="tasks">
+      <div className="tasks  d-flex flex-column">
         {tarefasProjeto?.map((tarefa, idx) => (
           <div className="flex align-items-center gap-2" key={idx}>
-            <span
-              className={`status-dot ${
-                tarefa.is_completed
-                  ? "bg-purple-500"
-                  : "border-2 border-gray-400"
-              } border-circle`}
-              style={{ width: "12px", height: "12px" }}
+            <Controller
+              name="isCompleted"
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  inputId={`task-${idx}`}
+                  checked={field.value}
+                  onChange={(e) => field.onChange(e.checked)}
+                  className="me-2"
+                />
+              )}
             />
-            <span>{tarefa.title}</span>
+            <label className="mt-2" htmlFor={`task-${idx}`}>{tarefa.title}</label>
           </div>
         ))}
       </div>
@@ -72,17 +76,27 @@ const ProjectCard = ({
           <img src="/imgs/alert.svg" alt={t("altText.alertIcon")} />
         )}
         <span>{t("project.yourTasks")}</span>
-        <div className="round-progress">
+        <div className="round-progress" style={{ position: 'relative' }}>
           <Knob
             value={progressoIndividual || 0}
             readOnly
             size={50}
-            valueTemplate="{value}%"
-            valueColor="#7b46ff"
-            rangeColor="#e2d8ff"
-            textColor="#333"
+            valueTemplate=""
+            valueColor="var(--purple-color)"
+            rangeColor="var(--gray-light-color)"
             strokeWidth={10}
           />
+          <span style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            fontSize: '1rem',
+            fontWeight: '600',
+            color: 'var(--black-color)'
+          }}>
+            {progressoIndividual}%
+          </span>
         </div>
       </div>
     </div>
