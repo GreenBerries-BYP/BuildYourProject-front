@@ -182,7 +182,7 @@ const Register = () => {
                   },
                 }}
                 render={({ field }) => (
-                 <Password
+                  <Password
                     inputId="password"
                     {...field}
                     toggleMask
@@ -244,45 +244,53 @@ const Register = () => {
             )}
           </div>
 
-          <div className="mb-4 d-flex align-items-center">
-            <Controller
-              name="acceptTerms"
-              control={control}
-              rules={{
-                required: t(
-                  "register.termsRequired",
-                  "Você precisa aceitar os termos de uso e políticas de privacidade"
-                ),
-              }}
-              render={({ field }) => (
-                <Checkbox
-                  inputId="acceptTerms"
-                  checked={field.value}
-                  onChange={(e) => field.onChange(e.checked)}
-                  className={`me-2 ${errors.acceptTerms ? "p-invalid" : ""}`}
-                />
-              )}
-            />
-            <label htmlFor="acceptTerms" className="check-label">
-              {t(
-                "register.terms.intro",
-                "Ao criar uma conta nessa aplicação eu declaro que aceito os"
-              )}
-              <a href="/terms" target="_blank" rel="noopener noreferrer">
-                {" "}
-                {t("register.terms.termsLinkText", "termos de uso")}{" "}
-              </a>
-              {t("register.terms.and", "e as")}
-              <a href="/politics" target="_blank" rel="noopener noreferrer">
-                {" "}
-                {t("register.terms.policyLinkText", "políticas de privacidade")}
-              </a>
-              .
-            </label>
+          <div className="mb-4 ">
+            <div className="d-flex align-items-center">
+              <Controller
+                name="acceptTerms"
+                control={control}
+                rules={{
+                  required: t(
+                    "register.termsRequired",
+                    "Você precisa aceitar os termos de uso e políticas de privacidade"
+                  ),
+                }}
+                render={({ field }) => (
+                  <Checkbox
+                    inputId="acceptTerms"
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.checked)}
+                    className={`me-2 ${errors.acceptTerms ? "p-invalid" : ""}`}
+                  />
+                )}
+              />
+              <label htmlFor="acceptTerms" className="check-label">
+                {t(
+                  "register.terms.intro",
+                  "Ao criar uma conta nessa aplicação eu declaro que aceito os"
+                )}
+                <a href="/terms" target="_blank" rel="noopener noreferrer">
+                  {" "}
+                  {t("register.terms.termsLinkText", "termos de uso")}{" "}
+                </a>
+                {t("register.terms.and", "e as")}
+                <a href="/politics" target="_blank" rel="noopener noreferrer">
+                  {" "}
+                  {t(
+                    "register.terms.policyLinkText",
+                    "políticas de privacidade"
+                  )}
+                </a>
+                .
+              </label>
+            </div>
+
+            {errors.acceptTerms && (
+              <small className="p-error fs-5">
+                {errors.acceptTerms.message}
+              </small>
+            )}
           </div>
-          {errors.acceptTerms && (
-            <small className="p-error">{errors.acceptTerms.message}</small>
-          )}
 
           <div className="row d-flex justify-content-center text-center gap-4">
             <button
