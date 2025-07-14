@@ -2,6 +2,14 @@
   min-height: 100vh;
 }
 
+.register {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
 img {
   cursor: pointer;
 }

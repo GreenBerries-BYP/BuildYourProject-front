@@ -1,21 +1,36 @@
 import React, { useState } from "react";
-import api from "../api/api";
-import "../styles/LoginCadastro.css";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { InputText } from 'primereact/inputtext';
+import { Password } from 'primereact/password';
+import { Checkbox } from 'primereact/checkbox';
+import { Divider } from 'primereact/divider';
+import { FloatLabel } from 'primereact/floatlabel';
+import api from "../api/api";
+import "../styles/LoginCadastro.css";
 
 const Register = () => {
   const { t } = useTranslation();
-  const [fullName, setFullName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      fullName: "",
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      acceptTerms: false,
+    },
+  });
 
   const footer = (
     <>
@@ -30,47 +45,20 @@ const Register = () => {
     </>
   );
 
-  // Handle register faz a requisição para o backend para registrar um novo usuário.
-  // Ele utiliza o axios para fazer a requisição POST para a rota /register/ do backend.
-  const handleRegister = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setLoading(true);
-    setError(""); // Clear previous errors
-
-    if (password !== confirmPassword) {
-      setError(t("register.errorPasswordMismatch", "As senhas não coincidem."));
-      setLoading(false);
-      return;
-    }
-
-    if (!acceptTerms) {
-      setError(
-        t(
-          "register.errorAcceptTerms",
-          "Você precisa aceitar os termos de uso e políticas de privacidade."
-        )
-      );
-      setLoading(false);
-      return;
-    }
 
     try {
       const response = await api.post("/register/", {
-        full_name: fullName,
-        username,
-        email,
-        password,
+        full_name: data.fullName,
+        username: data.username,
+        email: data.email,
+        password: data.password,
       });
-      setLoading(false);
       console.log("Cadastro realizado:", response.data);
-      navigate("/login"); // Redireciona para a página de login após o cadastro
+      navigate("/login");
     } catch (err) {
-      setError(
-        t(
-          "register.errorRegistrationFailed",
-          "Erro ao cadastrar. Verifique os dados e tente novamente."
-        )
-      );
+      console.error("Erro ao cadastrar:", err);
     } finally {
       setLoading(false);
     }
@@ -88,86 +76,170 @@ const Register = () => {
 
         <form
           className="row p-5 m-5 h-100 d-flex flex-column justify-content-between"
-          onSubmit={handleRegister}
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <label className="row mt-3" htmlFor="fullName">
-            {t("register.fullNameLabel", "Nome completo:")}
-          </label>
-          <input
-            className="row input-text"
-            type="text"
-            id="fullName"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder={t(
-              "register.fullNamePlaceholder",
-              "Digite seu nome completo"
+          <div className="mb-4">
+            
+            <FloatLabel>
+              <Controller
+                name="fullName"
+                control={control}
+                rules={{
+                  required: t("register.fullNameRequired", "Nome completo é obrigatório"),
+                }}
+                render={({ field }) => (
+                  <InputText
+                    id="fullName"
+                    {...field}
+                    className={`byp-input-field ${errors.fullName ? "p-invalid" : ""}`}
+                  />
+                )}
+              />
+              <label htmlFor="fullName">
+                {t("register.fullNameLabel", "Nome completo")}
+              </label>
+            </FloatLabel>
+            {errors.fullName && (
+              <small className="p-error">{errors.fullName.message}</small>
             )}
-          />
+          </div>
 
-          <label className="row mt-3" htmlFor="username">
-            {t("register.usernameLabel", "Usuário:")}
-          </label>
-          <input
-            className="row input-text"
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder={t(
-              "register.usernamePlaceholder",
-              "Digite seu nome de usuário"
+          <div className="mb-4">
+            <FloatLabel>
+              <Controller
+                name="username"
+                control={control}
+                rules={{
+                  required: t("register.usernameRequired", "Usuário é obrigatório"),
+                }}
+                render={({ field }) => (
+                  <InputText
+                    id="username"
+                    {...field}
+                    className={`byp-input-field ${errors.username ? "p-invalid" : ""}`}
+                  />
+                )}
+              />
+              <label htmlFor="username">
+                {t("register.usernameLabel", "Usuário")}
+              </label>
+            </FloatLabel>
+            {errors.username && (
+              <small className="p-error">{errors.username.message}</small>
             )}
-          />
+          </div>
 
-          <label className="row mt-3" htmlFor="email">
-            {t("register.emailLabel", "Email:")}
-          </label>
-          <input
-            className="row input-text"
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t("register.emailPlaceholder", "Digite seu email")}
-          />
-
-          <label className="row mt-3" htmlFor="password">
-            {t("register.passwordLabel", "Senha:")}
-          </label>
-          <input
-            className="row input-text"
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder={t("register.passwordPlaceholder", "Digite sua senha")}
-          />
-
-          <label className="row mt-3" htmlFor="confirmPassword">
-            {t("register.confirmPasswordLabel", "Confirmar Senha:")}
-          </label>
-          <input
-            className="row input-text"
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder={t(
-              "register.confirmPasswordPlaceholder",
-              "Confirme sua senha"
+          <div className="mb-4">
+            <FloatLabel>
+              <Controller
+                name="email"
+                control={control}
+                rules={{
+                  required: t("register.emailRequired", "Email é obrigatório"),
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: t("register.emailInvalid", "Email inválido"),
+                  },
+                }}
+                render={({ field }) => (
+                  <InputText
+                    id="email"
+                    {...field}
+                    className={`byp-input-field ${errors.email ? "p-invalid" : ""}`}
+                  />
+                )}
+              />
+              <label htmlFor="email">
+                {t("register.emailLabel", "Email")}
+              </label>
+            </FloatLabel>
+            {errors.email && (
+              <small className="p-error">{errors.email.message}</small>
             )}
-          />
+          </div>
 
-          <span className="row py-5 d-flex align-items-center align-self-center">
-            <input
-              className="col-1 check-form"
-              type="checkbox"
-              id="acceptTerms"
-              checked={acceptTerms}
-              onChange={(e) => setAcceptTerms(e.target.checked)}
+          <div className="mb-4">
+            <FloatLabel>
+              <Controller
+                name="password"
+                control={control}
+                rules={{
+                  required: t("register.passwordRequired", "Senha é obrigatória"),
+                  minLength: {
+                    value: 8,
+                    message: t("register.passwordMinLength", "A senha deve ter pelo menos 8 caracteres"),
+                  },
+                }}
+                render={({ field }) => (
+                  <Password
+                    inputId="password"
+                    {...field}
+                    toggleMask
+                    footer={footer}
+                    className={`byp-input-field ${errors.password ? "p-invalid" : ""}`}
+                    inputClassName={`byp-input-field ${errors.password ? "p-invalid" : ""}`}
+                  />
+                )}
+              />
+              <label htmlFor="password">
+                {t("register.passwordLabel", "Senha")}
+              </label>
+            </FloatLabel>
+            {errors.password && (
+              <small className="p-error">{errors.password.message}</small>
+            )}
+          </div>
+
+          <div className="mb-4">
+            <FloatLabel>
+              <Controller
+                name="confirmPassword"
+                control={control}
+                rules={{
+                  required: t("register.confirmPasswordRequired", "Confirmação de senha é obrigatória"),
+                  validate: (value) =>
+                    value === watch("password") || t("register.errorPasswordMismatch", "As senhas não coincidem"),
+                }}
+                render={({ field }) => (
+                  <Password
+                    inputId="confirmPassword"
+                    {...field}
+                    toggleMask
+                    footer={footer}
+                    className={`byp-input-field ${errors.confirmPassword ? "p-invalid" : ""}`}
+                    inputClassName={`byp-input-field ${errors.confirmPassword ? "p-invalid" : ""}`}
+                  />
+                )}
+              />
+              <label htmlFor="confirmPassword">
+                {t("register.confirmPasswordLabel", "Confirmar Senha")}
+              </label>
+            </FloatLabel>
+            {errors.confirmPassword && (
+              <small className="p-error">{errors.confirmPassword.message}</small>
+            )}
+          </div>
+
+          <div className="mb-4 d-flex align-items-center">
+            <Controller
+              name="acceptTerms"
+              control={control}
+              rules={{
+                required: t(
+                  "register.termsRequired",
+                  "Você precisa aceitar os termos de uso e políticas de privacidade"
+                ),
+              }}
+              render={({ field }) => (
+                <Checkbox
+                  inputId="acceptTerms"
+                  checked={field.value}
+                  onChange={(e) => field.onChange(e.checked)}
+                  className={`me-2 ${errors.acceptTerms ? "p-invalid" : ""}`}
+                />
+              )}
             />
-            <label className="col check-label" htmlFor="acceptTerms">
+            <label htmlFor="acceptTerms" className="check-label">
               {t(
                 "register.terms.intro",
                 "Ao criar uma conta nessa aplicação eu declaro que aceito os"
@@ -183,13 +255,16 @@ const Register = () => {
               </a>
               .
             </label>
-          </span>
+          </div>
+          {errors.acceptTerms && (
+            <small className="p-error">{errors.acceptTerms.message}</small>
+          )}
 
           <div className="row d-flex justify-content-center text-center gap-4">
             <button
               className="col-12 col-lg-5 py-2 py-lg-4 w-100 btn-cadastro justify-content-center"
               type="submit"
-              disabled={loading}
+              disabled={loading || !isValid}
             >
               {loading ? (
                 <div
