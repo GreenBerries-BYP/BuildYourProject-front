@@ -1,5 +1,5 @@
 .main-page-content {
-    margin-top: 8rem;
+    margin-block: 8rem;
     min-height: calc(100vh - 8rem);
     box-sizing: border-box;
 }
@@ -8,7 +8,7 @@
     display: flex;
     gap: 2.4rem;
     flex-wrap: wrap;
-    width:100%;
+    width: 100%;
 }
 
 .blur-background {

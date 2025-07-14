@@ -65,6 +65,26 @@ function HomeDefault() {
     carregarProjetos();
   }, []);
 
+  const handleToggleTask = async (projectId, taskId, isCompleted) => {
+    try {
+      await api.updateTask(projectId, taskId, { is_completed: !isCompleted });
+      // Atualize o estado dos projetos
+      setProjetos(projetos.map(proj => {
+        if (proj.id === projectId) {
+          return {
+            ...proj,
+            tasks: proj.tasks.map(t =>
+              t.id === taskId ? { ...t, is_completed: !isCompleted } : t
+            )
+          };
+        }
+        return proj;
+      }));
+    } catch (error) {
+      console.error("Erro ao atualizar tarefa:", error);
+    }
+  };
+
   return (
     <>
       {projetoSelecionado ? (
