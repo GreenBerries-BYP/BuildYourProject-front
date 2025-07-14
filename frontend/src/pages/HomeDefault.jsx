@@ -69,17 +69,19 @@ function HomeDefault() {
     try {
       await api.updateTask(projectId, taskId, { is_completed: !isCompleted });
       // Atualize o estado dos projetos
-      setProjetos(projetos.map(proj => {
-        if (proj.id === projectId) {
-          return {
-            ...proj,
-            tasks: proj.tasks.map(t =>
-              t.id === taskId ? { ...t, is_completed: !isCompleted } : t
-            )
-          };
-        }
-        return proj;
-      }));
+      setProjetos(
+        projetos.map((proj) => {
+          if (proj.id === projectId) {
+            return {
+              ...proj,
+              tasks: proj.tasks.map((t) =>
+                t.id === taskId ? { ...t, is_completed: !isCompleted } : t
+              ),
+            };
+          }
+          return proj;
+        })
+      );
     } catch (error) {
       console.error("Erro ao atualizar tarefa:", error);
     }
@@ -119,10 +121,11 @@ function HomeDefault() {
             return (
               <ProjectCard
                 key={index}
+                projetoId={projeto.id}
                 nomeProjeto={projeto.name}
                 progressoProjeto={progressoProjeto}
                 progressoIndividual={progressoIndividual}
-                tarefasProjeto={projeto.tasks}
+                tarefasProjeto={projeto.tasks.slice(0, 4)}
                 estaAtrasado={estaAtrasado}
                 onClick={() => handleAbrirProjeto(projeto)}
               />

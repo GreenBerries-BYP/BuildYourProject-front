@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Knob } from "primereact/knob";
 import { Menu } from "primereact/menu";
+import { Checkbox } from "primereact/checkbox";
 import { useTranslation } from "react-i18next";
 
 import "../styles/ProjectCard.css";
@@ -50,23 +51,22 @@ const ProjectCard = ({
         <span className="progress-label">{progressoProjeto}%</span>
       </div>
 
-      {/* Lista de tarefas */}
-      <div className="tasks  d-flex flex-column">
+      <div className="tasks d-flex flex-column">
         {tarefasProjeto?.map((tarefa, idx) => (
-          <div className="flex align-items-center gap-2" key={idx}>
-            <Controller
-              name="isCompleted"
-              control={control}
-              render={({ field }) => (
-                <Checkbox
-                  inputId={`task-${idx}`}
-                  checked={field.value}
-                  onChange={(e) => field.onChange(e.checked)}
-                  className="me-2"
-                />
-              )}
+          <div
+            key={idx}
+            className="d-flex align-items-center"
+            >
+            <Checkbox
+              inputId={`task-${idx}`}
+              checked={!!tarefa.is_completed}
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) => field.onChange(e.checked)}
+              className="me-2"
             />
-            <label className="mt-2" htmlFor={`task-${idx}`}>{tarefa.title}</label>
+            <label className="mt-2" htmlFor={`task-${idx}`}>
+              {tarefa.title}
+            </label>
           </div>
         ))}
       </div>
@@ -76,7 +76,7 @@ const ProjectCard = ({
           <img src="/imgs/alert.svg" alt={t("altText.alertIcon")} />
         )}
         <span>{t("project.yourTasks")}</span>
-        <div className="round-progress" style={{ position: 'relative' }}>
+        <div className="round-progress" style={{ position: "relative" }}>
           <Knob
             value={progressoIndividual || 0}
             readOnly
@@ -86,15 +86,17 @@ const ProjectCard = ({
             rangeColor="var(--gray-light-color)"
             strokeWidth={10}
           />
-          <span style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            fontSize: '1rem',
-            fontWeight: '600',
-            color: 'var(--black-color)'
-          }}>
+          <span
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              fontSize: "1rem",
+              fontWeight: "600",
+              color: "var(--black-color)",
+            }}
+          >
             {progressoIndividual}%
           </span>
         </div>
