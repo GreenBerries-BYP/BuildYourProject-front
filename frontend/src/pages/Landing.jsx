@@ -140,7 +140,7 @@ const Landing = () => {
                 "Gerencie, colabore e cumpra prazos com tecnologia inteligente."
               )}
             </p>
-            <a href="/register" className="botao-comecar link-roxo">
+            <a onClick={() => navigate("/register")} className="botao-comecar link-roxo">
               {t("landing.hero.ctaButton", "Começar agora")}
             </a>
           </div>
