@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { InputText } from 'primereact/inputtext';
-import { Password } from 'primereact/password';
-import { Checkbox } from 'primereact/checkbox';
-import { Divider } from 'primereact/divider';
-import { FloatLabel } from 'primereact/floatlabel';
+import { InputText } from "primereact/inputtext";
+import { Password } from "primereact/password";
+import { Checkbox } from "primereact/checkbox";
+import { Divider } from "primereact/divider";
+import { FloatLabel } from "primereact/floatlabel";
 import api from "../api/api";
 import "../styles/LoginCadastro.css";
 
@@ -66,7 +66,7 @@ const Register = () => {
 
   return (
     <div className="container-fluid register my-5 d-flex justify-content-center align-items-center">
-      <div className="col-lg-6 card-register col-9 rounded py-5 px-3 d-flex flex-column justify-content-between bg-white">
+      <div className="col-lg-6 card-register col-9 rounded py-5 px-3 d-flex flex-column justify-content-center bg-white">
         <img
           className="row logo-h align-self-center cursor-pointer"
           src="/imgs/logo_vert_BYP.svg"
@@ -75,23 +75,27 @@ const Register = () => {
         />
 
         <form
-          className="row p-5 m-5 h-100 d-flex flex-column justify-content-between"
+          className="row p-5 m-5 h-100 d-flex flex-column justify-content-between gap-5"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="mb-4">
-            
+          <div className="p-float-label">
             <FloatLabel>
               <Controller
                 name="fullName"
                 control={control}
                 rules={{
-                  required: t("register.fullNameRequired", "Nome completo é obrigatório"),
+                  required: t(
+                    "register.fullNameRequired",
+                    "Nome completo é obrigatório"
+                  ),
                 }}
                 render={({ field }) => (
                   <InputText
                     id="fullName"
                     {...field}
-                    className={`byp-input-field ${errors.fullName ? "p-invalid" : ""}`}
+                    className={`byp-input-field ${
+                      errors.fullName ? "p-invalid" : ""
+                    }`}
                   />
                 )}
               />
@@ -104,19 +108,24 @@ const Register = () => {
             )}
           </div>
 
-          <div className="mb-4">
+          <div className="p-float-label">
             <FloatLabel>
               <Controller
                 name="username"
                 control={control}
                 rules={{
-                  required: t("register.usernameRequired", "Usuário é obrigatório"),
+                  required: t(
+                    "register.usernameRequired",
+                    "Usuário é obrigatório"
+                  ),
                 }}
                 render={({ field }) => (
                   <InputText
                     id="username"
                     {...field}
-                    className={`byp-input-field ${errors.username ? "p-invalid" : ""}`}
+                    className={`byp-input-field ${
+                      errors.username ? "p-invalid" : ""
+                    }`}
                   />
                 )}
               />
@@ -129,7 +138,7 @@ const Register = () => {
             )}
           </div>
 
-          <div className="mb-4">
+          <div className="p-float-label">
             <FloatLabel>
               <Controller
                 name="email"
@@ -145,39 +154,43 @@ const Register = () => {
                   <InputText
                     id="email"
                     {...field}
-                    className={`byp-input-field ${errors.email ? "p-invalid" : ""}`}
+                    className={`byp-input-field ${
+                      errors.email ? "p-invalid" : ""
+                    }`}
                   />
                 )}
               />
-              <label htmlFor="email">
-                {t("register.emailLabel", "Email")}
-              </label>
+              <label htmlFor="email">{t("register.emailLabel", "Email")}</label>
             </FloatLabel>
             {errors.email && (
               <small className="p-error">{errors.email.message}</small>
             )}
           </div>
 
-          <div className="mb-4">
+          <div className="p-float-label">
             <FloatLabel>
               <Controller
                 name="password"
                 control={control}
                 rules={{
-                  required: t("register.passwordRequired", "Senha é obrigatória"),
+                  required: t(
+                    "register.passwordRequired",
+                    "Senha é obrigatória"
+                  ),
                   minLength: {
                     value: 8,
-                    message: t("register.passwordMinLength", "A senha deve ter pelo menos 8 caracteres"),
                   },
                 }}
                 render={({ field }) => (
-                  <Password
+                 <Password
                     inputId="password"
                     {...field}
                     toggleMask
                     footer={footer}
-                    className={`byp-input-field ${errors.password ? "p-invalid" : ""}`}
-                    inputClassName={`byp-input-field ${errors.password ? "p-invalid" : ""}`}
+                    inputClassName={`byp-password-field ${
+                      errors.password ? "p-invalid" : ""
+                    }`}
+                    className="byp-password-wrapper"
                   />
                 )}
               />
@@ -190,24 +203,33 @@ const Register = () => {
             )}
           </div>
 
-          <div className="mb-4">
+          <div className="p-float-label">
             <FloatLabel>
               <Controller
                 name="confirmPassword"
                 control={control}
                 rules={{
-                  required: t("register.confirmPasswordRequired", "Confirmação de senha é obrigatória"),
+                  required: t(
+                    "register.confirmPasswordRequired",
+                    "Confirmação de senha é obrigatória"
+                  ),
                   validate: (value) =>
-                    value === watch("password") || t("register.errorPasswordMismatch", "As senhas não coincidem"),
+                    value === watch("password") ||
+                    t(
+                      "register.errorPasswordMismatch",
+                      "As senhas não coincidem"
+                    ),
                 }}
                 render={({ field }) => (
                   <Password
-                    inputId="confirmPassword"
+                    inputId="password"
                     {...field}
                     toggleMask
                     footer={footer}
-                    className={`byp-input-field ${errors.confirmPassword ? "p-invalid" : ""}`}
-                    inputClassName={`byp-input-field ${errors.confirmPassword ? "p-invalid" : ""}`}
+                    inputClassName={`byp-password-field ${
+                      errors.password ? "p-invalid" : ""
+                    }`}
+                    className="byp-password-wrapper"
                   />
                 )}
               />
@@ -216,7 +238,9 @@ const Register = () => {
               </label>
             </FloatLabel>
             {errors.confirmPassword && (
-              <small className="p-error">{errors.confirmPassword.message}</small>
+              <small className="p-error">
+                {errors.confirmPassword.message}
+              </small>
             )}
           </div>
 
@@ -272,9 +296,7 @@ const Register = () => {
                   style={{ width: "2rem", height: "2rem" }}
                   role="status"
                 >
-                  <span className="visually-hidden">
-                    {t("login.loading")}
-                  </span>
+                  <span className="visually-hidden">{t("login.loading")}</span>
                 </div>
               ) : (
                 t("register.submitButton")

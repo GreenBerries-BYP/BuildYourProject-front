@@ -106,13 +106,29 @@ label {
   transform: scale(1.05);
 }
 
-.byp-input-field {
-  width: 45.7rem !important;
-}
 
 .btn-acesso-verde:disabled {
   background-color: var(--green-dark-color);
   opacity: 0.5;
   pointer-events: none;
   transform: none;
+}
+
+.byp-input-field,
+.byp-password-field {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+.byp-password-wrapper,
+.p-password {
+  width: 100% !important;
+  display: block;
+}
+
+.p-float-label input:focus ~ label,
+.p-float-label input.p-filled ~ label {
+  top: -1rem;
+  font-size: 1.4rem;
+  color: var(--purple-saturated-color);
 }
