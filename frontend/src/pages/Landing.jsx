@@ -478,7 +478,7 @@ const Landing = () => {
               )}
             </p>
             <div className="links">
-              <a href="/terms">
+              <a href="/use_terms">
                 {t("landing.footer.termsLink", "Termos e condições")}
               </a>
               <a href="/politics ">

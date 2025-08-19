@@ -1,0 +1,145 @@
+.dark-mode-toggle {
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  transition: all 0.3s, color 0.3s;
+}
+
+.dark-mode-toggle.light {
+  background: var(--gray-light-color);
+  color: var(--black-color);
+}
+
+.dark-mode-toggle.dark {
+  background: var(--purple-saturated-color);
+  color: var(--white-color);
+}
+
+
+body, h1, h2, h3, p, ul, li {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background-color: var(--project-bg);
+  color: var(--gray-color);
+  padding: 2rem;
+  line-height: 1.6;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+header h1 {
+  font-size: 3rem;
+  color: var(--purple-color);
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  font-size: 1.4rem;
+  color: var(--gray-color);
+}
+
+section {
+  background-color: var(--white-color);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+section h2 {
+  font-size: 2rem;
+  color: var(--purple-saturated-color);
+  margin-bottom: 1rem;
+}
+
+section p {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+section ul {
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+section ul li {
+  list-style-type: disc;
+  margin-bottom: 0.5rem;
+  font-size: 1.6rem;
+}
+
+footer {
+  text-align: center;
+  margin-top: 3rem;
+  padding: 2rem 0;
+  font-size: 1.4rem;
+  color: var(--gray-color);
+  border-top: 1px solid var(--gray-light-color);
+}
+
+footer a {
+  color: var(--blue-link-color);
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 2.2rem;
+  }
+
+  header p {
+    font-size: 1.2rem;
+  }
+
+  section h2 {
+    font-size: 1.6rem;
+  }
+
+  section p, section ul li {
+    font-size: 1.4rem;
+  }
+}
+
+body.dark-theme {
+  background-color: var(--project-bg);
+  color: var(--gray-color);
+}
+
+body.dark-theme section {
+  background-color: var(--card-background);
+}
+
+body.dark-theme header h1 {
+  color: var(--purple-light-color);
+}
+
+body.dark-theme section h2 {
+  color: var(--purple-saturated-color);
+}
+
+body.dark-theme footer {
+  color: var(--gray-light-color);
+}
+
+body.dark-theme footer a {
+  color: var(--blue-link-color);
+}

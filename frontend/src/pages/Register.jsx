@@ -177,6 +177,13 @@ const Register = () => {
                     "register.passwordRequired",
                     "Senha é obrigatória"
                   ),
+                  maxLength: {
+                    value: 8,
+                    message: t(
+                      "register.confirmPasswordMaxLength",
+                      "A senha deve ter no máximo 8 caracteres"
+                    )
+                  },
                   minLength: {
                     value: 8,
                   },
@@ -213,6 +220,13 @@ const Register = () => {
                     "register.confirmPasswordRequired",
                     "Confirmação de senha é obrigatória"
                   ),
+                  maxLength: {
+                    value: 8,
+                    message: t(
+                      "register.confirmPasswordMaxLength",
+                      "A senha deve ter no máximo 8 caracteres"
+                    )
+                  },
                   validate: (value) =>
                     value === watch("password") ||
                     t(

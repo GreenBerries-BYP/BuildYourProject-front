@@ -89,4 +89,16 @@ export const updateTaskStatus = async (taskId, isCompleted) => {
   return response.data;
 };
 
+
+export const fetchProjectWithTasks = async (projectId) => {
+  try {
+    const response = await api.get(`/projects/${projectId}/tasks/`);
+    return response.data; // Deve retornar o objeto do projeto completo
+  } catch (error) {
+    console.error('Erro ao buscar projeto com tarefas:', error);
+    throw error;
+  }
+};
+
+
 export default api;

@@ -235,6 +235,65 @@ const en = {
     results: "Results",
     conclusion: "Conclusion",
     references: "References"
+  },
+  terms: {
+    title: "Terms of Use",
+    lastUpdate: "Last updated: December 1, 2024",
+    acceptance: {
+      title: "1. Acceptance of Terms",
+      text: "By accessing or using AmigosConnect, you agree to comply with these Terms of Use. If you do not agree, please do not use the platform."
+    },
+    objective: {
+      title: "2. Service Objective",
+      text: "AmigosConnect is a social platform designed to facilitate user connections, organize events, and promote healthy and meaningful interactions. Any use that violates this purpose is strictly prohibited."
+    },
+    userResponsibilities: {
+      title: "3. User Responsibilities",
+      item1: "Keep your profile information up to date and accurate.",
+      item2: "Respect other users, avoiding any offensive, discriminatory behavior or violation of third-party rights.",
+      item3: "Do not share illegal, misleading, or harmful content."
+    },
+    misuse: {
+      title: "4. Misuse",
+      text: "Using AmigosConnect for illicit purposes or in violation of these Terms may result in suspension or deletion of your account, as well as possible legal actions."
+    },
+    changes: {
+      title: "5. Changes to Terms",
+      text: "We reserve the right to modify these Terms at any time. Users will be notified of significant changes in advance."
+    },
+    contact: "For questions, contact: suporte@amigosconnect.com"
+  },
+  altText: {
+    brazilFlag: "Brazilian Flag",
+    usFlag: "US Flag"
+  },
+  privacy: {
+    title: "Privacy Policy",
+    lastUpdate: "Last updated: December 1, 2024",
+    dataCollection: {
+      title: "1. Data Collection",
+      text: "We collect personal information such as name, email, and preferences to provide a personalized experience. Additional data may be collected with your consent while using certain features."
+    },
+    dataUsage: {
+      title: "2. Use of Information",
+      text: "The collected data is used to:",
+      item1: "Personalize your experience on the platform.",
+      item2: "Facilitate the organization of events and social connections.",
+      item3: "Ensure security and prevent illicit activities."
+    },
+    dataSharing: {
+      title: "3. Data Sharing",
+      text: "AmigosConnect does not share personal information with third parties without your consent, except when required by law or to protect the rights of the platform and its users."
+    },
+    security: {
+      title: "4. Security",
+      text: "We implement technical and organizational measures to protect your information against unauthorized access, loss, or misuse."
+    },
+    yourRights: {
+      title: "5. Your Rights",
+      text: "You can access, correct, or delete your personal information at any time. Contact us to exercise these rights."
+    },
+    contact: "For questions or requests, contact: privacidade@amigosconnect.com"
   }
 };
 

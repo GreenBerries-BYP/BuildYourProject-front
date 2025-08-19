@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchProjects } from '../api/api';
+import { fetchProjectWithTasks } from '../api/api';
+
 
 import ProjectCard from "../components/ProjectCard";
 import CreateProjectCard from "../components/CreateProjectCard";
@@ -42,10 +44,6 @@ function Projetos() {
     setModalAberto(true);
   };
 
-  const handleAbrirProjeto = (projeto) => {
-    setProjetoSelecionado(projeto);
-  };
-
   const handleVoltar = () => {
     setProjetoSelecionado(null);
     console.log(projetoSelecionado)
@@ -68,6 +66,16 @@ function Projetos() {
 
     carregarProjetos();
   }, []);
+
+  const handleAbrirProjeto = async (projeto) => {
+    try {
+      const projetoCompleto = await fetchProjectWithTasks(projeto.id);
+      setProjetoSelecionado(projetoCompleto);
+    } catch (error) {
+      console.error("Erro ao carregar projeto completo:", error);
+    }
+  };
+
 
 
   return (

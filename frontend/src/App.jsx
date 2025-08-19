@@ -4,6 +4,8 @@ import { Toast } from 'primereact/toast';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
+import UseTerms from './pages/UseTerms';
+import Politics from './pages/PrivacyPolicy';
 import Landing from './pages/Landing';
 import Home from './pages/Home';
 import ProtectedRoute from './auth/ProtectedRoute';
@@ -33,7 +35,9 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-        
+          <Route path="/use_terms" element={<UseTerms />} />
+          <Route path="/politics" element={<Politics />} />
+
         <Route path="/home" element={<ProtectedRoute> <Home /></ProtectedRoute>}>
           <Route index element={ <HomeDefault/> }/>
           <Route path="projetos" element={ <Projetos />}/>
