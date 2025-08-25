@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchProjects } from "../api/api";
+import { fetchProjectWithTasks } from '../api/api';
 
 import ProjectCard from "../components/ProjectCard";
 import CreateProjectCard from "../components/CreateProjectCard";
