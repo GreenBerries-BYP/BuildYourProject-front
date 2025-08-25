@@ -288,12 +288,12 @@ const Register = () => {
                   "register.terms.intro",
                   "Ao criar uma conta nessa aplicação eu declaro que aceito os"
                 )}
-                <a href="/UseTerms" target="_blank" rel="noopener noreferrer">
+                <a href="/use_terms" target="_blank" rel="noopener noreferrer">
                   {" "}
                   {t("register.terms.termsLinkText", "termos de uso")}{" "}
                 </a>
                 {t("register.terms.and", "e as")}
-                <a href="/PrivacyPolicy" target="_blank" rel="noopener noreferrer">
+                <a href="/politics" target="_blank" rel="noopener noreferrer">
                   {" "}
                   {t(
                     "register.terms.policyLinkText",
