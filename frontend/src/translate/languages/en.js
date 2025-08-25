@@ -10,7 +10,8 @@ const en = {
     },
     hero: {
       title: "Transform Your Projects with the Organization You Need",
-      subtitle: "Manage, collaborate, and meet deadlines with smart technology.",
+      subtitle:
+        "Manage, collaborate, and meet deadlines with smart technology.",
       ctaButton: "Get started now",
       block1Text: "Intuitive tools for students and academic groups",
       block2Text: "handle your projects efficiently",
@@ -21,28 +22,31 @@ const en = {
       title: "Discover our tools",
       modularPlanning: {
         title: "Modular Planning",
-        description: "Divide your thesis or project into clear, manageable stages."
+        description:
+          "Divide your thesis or project into clear, manageable stages.",
       },
       deadlineRecalculation: {
         title: "Deadline Recalculation",
-        description: "Missed a deadline? BYP automatically adjusts your schedule."
+        description:
+          "Missed a deadline? BYP automatically adjusts your schedule.",
       },
       realTimeCollaboration: {
         title: "Real-Time Collaboration",
-        description: "Add colleagues, guide interactions, and track joint progress."
+        description:
+          "Add colleagues, guide interactions, and track joint progress.",
       },
       alertsAndReminders: {
         title: "Alerts and Reminders",
-        description: "Never miss an important deadline or activity."
+        description: "Never miss an important deadline or activity.",
       },
       responsiveWebVersion: {
         title: "Responsive Web Version",
-        description: "Access from anywhere, on any device."
+        description: "Access from anywhere, on any device.",
       },
       integratedAI: {
         title: "Integrated AI",
-        description: "Questions? Ask Berry, our AI assistant!"
-      }
+        description: "Questions? Ask Berry, our AI assistant!",
+      },
     },
     previewInfo: {
       title: "Preview",
@@ -57,8 +61,10 @@ const en = {
       title: "About GreenBerries",
       subtitle: "Meet our collaborators",
       whoWeAreTitle: "Who are we?",
-      whoWeAreParagraph1: "We are a group of students and developers passionate about solving the chaos of academic projects.",
-      whoWeAreParagraph2: "We created BYP based on the common difficulties students face with project organization — and transformed it into an efficient, collaborative, and truly useful solution for any project."
+      whoWeAreParagraph1:
+        "We are a group of students and developers passionate about solving the chaos of academic projects.",
+      whoWeAreParagraph2:
+        "We created BYP based on the common difficulties students face with project organization — and transformed it into an efficient, collaborative, and truly useful solution for any project.",
     },
     footer: {
       developedBy: "This project was developed by:",
@@ -70,7 +76,7 @@ const en = {
       copyright: "@ 2025 GreenBerries All rights reserved",
       termsLink: "Terms and conditions",
       privacyLink: "Privacy policy",
-    }
+    },
   },
   login: {
     emailLabel: "Email",
@@ -95,6 +101,7 @@ const en = {
     usernameLabel: "Username:",
     usernamePlaceholder: "Enter your username",
     emailLabel: "Email:",
+    invalidEmail: "Invalid E-mail",
     emailPlaceholder: "Enter your email",
     passwordLabel: "Password:",
     passwordPlaceholder: "Enter your password",
@@ -102,9 +109,11 @@ const en = {
     confirmPasswordPlaceholder: "Confirm your password",
     errorPasswordMismatch: "Passwords do not match.",
     errorAcceptTerms: "You must accept the terms of use and privacy policies.",
-    errorRegistrationFailed: "Error registering. Check your data and try again.",
+    errorRegistrationFailed:
+      "Error registering. Check your data and try again.",
     terms: {
-      intro: "By creating an account in this application, I declare that I accept the",
+      intro:
+        "By creating an account in this application, I declare that I accept the",
       termsLinkText: "terms of use",
       and: "and the",
       policyLinkText: "privacy policies",
@@ -158,14 +167,16 @@ const en = {
     projectNameRequired: "Project name is required",
     projectDescriptionRequired: "Project description is required",
     errorNewProject: "Error creating new project",
-    errorNewProjectBackendNotReady: "Failed to create project. The service might be unavailable or access unauthorized. Please try again later.",
+    errorNewProjectBackendNotReady:
+      "Failed to create project. The service might be unavailable or access unauthorized. Please try again later.",
     taskNameRequired: "Task name is required",
     taskDescriptionRequired: "Task description is required",
     dueDateRequired: "Due date is required",
     responsibleRequired: "Responsible is required",
     errorNewTask: "Error creating new task",
     emailMessage: "Enter email and press Enter",
-    reviewProjectDetails: "Please review your project details before submitting.",
+    reviewProjectDetails:
+      "Please review your project details before submitting.",
     notSpecified: "N/A",
     noCollaborators: "N/A",
     startDateRequired: "Start date is required",
@@ -174,7 +185,7 @@ const en = {
   },
   buttons: {
     createProject: "Create Project",
-    deleteProject: 'Delete Project',
+    deleteProject: "Delete Project",
     saveTask: "Save ✓",
     viewDetails: "View Details",
     add: "Add",
@@ -208,7 +219,7 @@ const en = {
     selectPhase: "Select a Step",
     startDate: "Start Date",
     endDate: "End Date",
-    academicArticle: "Academic Article"
+    academicArticle: "Academic Article",
   },
   placeholders: {
     projectName: "Enter project name",
@@ -234,67 +245,69 @@ const en = {
     methodology: "Methodology",
     results: "Results",
     conclusion: "Conclusion",
-    references: "References"
+    references: "References",
   },
   terms: {
     title: "Terms of Use",
     lastUpdate: "Last updated: December 1, 2024",
     acceptance: {
       title: "1. Acceptance of Terms",
-      text: "By accessing or using AmigosConnect, you agree to comply with these Terms of Use. If you do not agree, please do not use the platform."
+      text: "By accessing or using AmigosConnect, you agree to comply with these Terms of Use. If you do not agree, please do not use the platform.",
     },
     objective: {
       title: "2. Service Objective",
-      text: "AmigosConnect is a social platform designed to facilitate user connections, organize events, and promote healthy and meaningful interactions. Any use that violates this purpose is strictly prohibited."
+      text: "AmigosConnect is a social platform designed to facilitate user connections, organize events, and promote healthy and meaningful interactions. Any use that violates this purpose is strictly prohibited.",
     },
     userResponsibilities: {
       title: "3. User Responsibilities",
       item1: "Keep your profile information up to date and accurate.",
-      item2: "Respect other users, avoiding any offensive, discriminatory behavior or violation of third-party rights.",
-      item3: "Do not share illegal, misleading, or harmful content."
+      item2:
+        "Respect other users, avoiding any offensive, discriminatory behavior or violation of third-party rights.",
+      item3: "Do not share illegal, misleading, or harmful content.",
     },
     misuse: {
       title: "4. Misuse",
-      text: "Using AmigosConnect for illicit purposes or in violation of these Terms may result in suspension or deletion of your account, as well as possible legal actions."
+      text: "Using AmigosConnect for illicit purposes or in violation of these Terms may result in suspension or deletion of your account, as well as possible legal actions.",
     },
     changes: {
       title: "5. Changes to Terms",
-      text: "We reserve the right to modify these Terms at any time. Users will be notified of significant changes in advance."
+      text: "We reserve the right to modify these Terms at any time. Users will be notified of significant changes in advance.",
     },
-    contact: "For questions, contact: suporte@amigosconnect.com"
+    contact: "For questions, contact: suporte@amigosconnect.com",
   },
   altText: {
     brazilFlag: "Brazilian Flag",
-    usFlag: "US Flag"
+    usFlag: "US Flag",
   },
   privacy: {
     title: "Privacy Policy",
     lastUpdate: "Last updated: December 1, 2024",
     dataCollection: {
       title: "1. Data Collection",
-      text: "We collect personal information such as name, email, and preferences to provide a personalized experience. Additional data may be collected with your consent while using certain features."
+      text: "We collect personal information such as name, email, and preferences to provide a personalized experience. Additional data may be collected with your consent while using certain features.",
     },
     dataUsage: {
       title: "2. Use of Information",
       text: "The collected data is used to:",
       item1: "Personalize your experience on the platform.",
       item2: "Facilitate the organization of events and social connections.",
-      item3: "Ensure security and prevent illicit activities."
+      item3: "Ensure security and prevent illicit activities.",
     },
     dataSharing: {
       title: "3. Data Sharing",
-      text: "AmigosConnect does not share personal information with third parties without your consent, except when required by law or to protect the rights of the platform and its users."
+      text: "AmigosConnect does not share personal information with third parties without your consent, except when required by law or to protect the rights of the platform and its users.",
     },
     security: {
       title: "4. Security",
-      text: "We implement technical and organizational measures to protect your information against unauthorized access, loss, or misuse."
+      text: "We implement technical and organizational measures to protect your information against unauthorized access, loss, or misuse.",
     },
     yourRights: {
       title: "5. Your Rights",
-      text: "You can access, correct, or delete your personal information at any time. Contact us to exercise these rights."
+      text: "You can access, correct, or delete your personal information at any time. Contact us to exercise these rights.",
     },
-    contact: "For questions or requests, contact: privacidade@amigosconnect.com"
-  }
+    contact:
+      "For questions or requests, contact: privacidade@amigosconnect.com",
+  },
 };
 
 export default en;

@@ -21,7 +21,7 @@ const Register = () => {
     watch,
     formState: { errors, isValid },
   } = useForm({
-    mode: "onChange",
+    mode: "onTouched",
     defaultValues: {
       fullName: "",
       username: "",
@@ -100,7 +100,8 @@ const Register = () => {
                 )}
               />
               <label htmlFor="fullName">
-                {t("register.fullNameLabel", "Nome completo")}
+                {t("register.fullNameLabel")}
+                <span className="required-asterisk">*</span>
               </label>
             </FloatLabel>
             {errors.fullName && (
@@ -130,7 +131,8 @@ const Register = () => {
                 )}
               />
               <label htmlFor="username">
-                {t("register.usernameLabel", "Usuário")}
+                {t("register.usernameLabel")}
+                <span className="required-asterisk">*</span>
               </label>
             </FloatLabel>
             {errors.username && (
@@ -144,10 +146,11 @@ const Register = () => {
                 name="email"
                 control={control}
                 rules={{
-                  required: t("register.emailRequired", "Email é obrigatório"),
+                  required: "Email is required",
                   pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: t("register.emailInvalid", "Email inválido"),
+                    value:
+                      /^[a-zA-Z0-9]+[a-zA-Z0-9._%+-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: t("register.invalidEmail"),
                   },
                 }}
                 render={({ field }) => (
@@ -160,7 +163,10 @@ const Register = () => {
                   />
                 )}
               />
-              <label htmlFor="email">{t("register.emailLabel", "Email")}</label>
+              <label htmlFor="email">
+                {t("register.emailLabel", )}
+                <span className="required-asterisk">*</span>
+              </label>
             </FloatLabel>
             {errors.email && (
               <small className="p-error">{errors.email.message}</small>
@@ -177,15 +183,12 @@ const Register = () => {
                     "register.passwordRequired",
                     "Senha é obrigatória"
                   ),
-                  maxLength: {
+                  minLength: {
                     value: 8,
                     message: t(
                       "register.confirmPasswordMaxLength",
-                      "A senha deve ter no máximo 8 caracteres"
-                    )
-                  },
-                  minLength: {
-                    value: 8,
+                      "A senha deve ter no mínimo 8 caracteres"
+                    ),
                   },
                 }}
                 render={({ field }) => (
@@ -202,7 +205,8 @@ const Register = () => {
                 )}
               />
               <label htmlFor="password">
-                {t("register.passwordLabel", "Senha")}
+                {t("register.passwordLabel")}
+                <span className="required-asterisk">*</span>
               </label>
             </FloatLabel>
             {errors.password && (
@@ -225,7 +229,7 @@ const Register = () => {
                     message: t(
                       "register.confirmPasswordMaxLength",
                       "A senha deve ter no máximo 8 caracteres"
-                    )
+                    ),
                   },
                   validate: (value) =>
                     value === watch("password") ||
@@ -248,7 +252,8 @@ const Register = () => {
                 )}
               />
               <label htmlFor="confirmPassword">
-                {t("register.confirmPasswordLabel", "Confirmar Senha")}
+                {t("register.confirmPasswordLabel")}
+                <span className="required-asterisk">*</span>
               </label>
             </FloatLabel>
             {errors.confirmPassword && (

@@ -10,7 +10,8 @@ const pt = {
     },
     hero: {
       title: "Transforme seus Projetos com a Organização que Você Precisa",
-      subtitle: "Gerencie, colabore e cumpra prazos com tecnologia inteligente.",
+      subtitle:
+        "Gerencie, colabore e cumpra prazos com tecnologia inteligente.",
       ctaButton: "Começar agora",
       block1Text: "Ferramentas intuitivas para estudantes e grupos acadêmicos",
       block2Text: "lide com seus projetos de forma eficiente",
@@ -21,28 +22,31 @@ const pt = {
       title: "Conheça nossas ferramentas",
       modularPlanning: {
         title: "Planejamento Modular",
-        description: "Divida seu TCC ou projeto em etapas claras e gerenciáveis."
+        description:
+          "Divida seu TCC ou projeto em etapas claras e gerenciáveis.",
       },
       deadlineRecalculation: {
         title: "Recalculagem de Prazos",
-        description: "Atrasou uma entrega? O BYP ajusta automaticamente seu cronograma."
+        description:
+          "Atrasou uma entrega? O BYP ajusta automaticamente seu cronograma.",
       },
       realTimeCollaboration: {
         title: "Colaboração em Tempo Real",
-        description: "Adicione colegas, oriente interações, e acompanhe o progresso conjunto."
+        description:
+          "Adicione colegas, oriente interações, e acompanhe o progresso conjunto.",
       },
       alertsAndReminders: {
         title: "Alertas e Lembretes",
-        description: "Nunca perca um prazo ou atividade importante."
+        description: "Nunca perca um prazo ou atividade importante.",
       },
       responsiveWebVersion: {
         title: "Versão Web Responsiva",
-        description: "Acesse de qualquer lugar, em qualquer dispositivo."
+        description: "Acesse de qualquer lugar, em qualquer dispositivo.",
       },
       integratedAI: {
         title: "IA integrada",
-        description: "Dúvidas? Pergunte à Berry, nossa IA ajudante!"
-      }
+        description: "Dúvidas? Pergunte à Berry, nossa IA ajudante!",
+      },
     },
     previewInfo: {
       title: "Preview",
@@ -57,8 +61,10 @@ const pt = {
       title: "Sobre a GreenBerries",
       subtitle: "Conheça nosso colaboradores",
       whoWeAreTitle: "Quem somos?",
-      whoWeAreParagraph1: "Somos um grupo de estudantes e desenvolvedores apaixonados por resolver o caos dos projetos acadêmicos.",
-      whoWeAreParagraph2: "Criamos o BYP com base nas dificuldades comuns dos estudantes com a organização de projetos — e transformamos isso em uma solução eficiente, colaborativa e realmente útil para qualquer projeto."
+      whoWeAreParagraph1:
+        "Somos um grupo de estudantes e desenvolvedores apaixonados por resolver o caos dos projetos acadêmicos.",
+      whoWeAreParagraph2:
+        "Criamos o BYP com base nas dificuldades comuns dos estudantes com a organização de projetos — e transformamos isso em uma solução eficiente, colaborativa e realmente útil para qualquer projeto.",
     },
     footer: {
       developedBy: "Este projeto foi desenvolvido por:",
@@ -70,7 +76,7 @@ const pt = {
       copyright: "@ 2025 GreenBerries All rights reserved",
       termsLink: "Termos e condições",
       privacyLink: "Política de privacidade",
-    }
+    },
   },
   login: {
     emailLabel: "Email",
@@ -95,14 +101,17 @@ const pt = {
     usernameLabel: "Usuário:",
     usernamePlaceholder: "Digite seu nome de usuário",
     emailLabel: "Email:",
+    invalidEmail: "E-mail Inválido",
     emailPlaceholder: "Digite seu email",
     passwordLabel: "Senha:",
     passwordPlaceholder: "Digite sua senha",
     confirmPasswordLabel: "Confirmar Senha:",
     confirmPasswordPlaceholder: "Confirme sua senha",
     errorPasswordMismatch: "As senhas não coincidem.",
-    errorAcceptTerms: "Você precisa aceitar os termos de uso e políticas de privacidade.",
-    errorRegistrationFailed: "Erro ao cadastrar. Verifique os dados e tente novamente.",
+    errorAcceptTerms:
+      "Você precisa aceitar os termos de uso e políticas de privacidade.",
+    errorRegistrationFailed:
+      "Erro ao cadastrar. Verifique os dados e tente novamente.",
     terms: {
       intro: "Ao criar uma conta nessa aplicação eu declaro que aceito os",
       termsLinkText: "termos de uso",
@@ -141,7 +150,7 @@ const pt = {
     projectDetails: "Detalhes do Projeto",
     collaborators: "Colaboradores",
     datesAndCollaborators: "Datas e Colaboradores",
-    newTask: "Nova Tarefa"
+    newTask: "Nova Tarefa",
   },
   messages: {
     welcome: "Bem-vindo ao Build Your Project",
@@ -158,19 +167,22 @@ const pt = {
     projectNameRequired: "Nome do projeto é obrigatório",
     projectDescriptionRequired: "Descrição do projeto é obrigatória",
     errorNewProject: "Erro ao criar novo projeto",
-    errorNewProjectBackendNotReady: "Falha ao criar projeto. O serviço pode estar indisponível ou acesso não autorizado. Tente novamente mais tarde.",
+    errorNewProjectBackendNotReady:
+      "Falha ao criar projeto. O serviço pode estar indisponível ou acesso não autorizado. Tente novamente mais tarde.",
     taskNameRequired: "Nome da tarefa é obrigatório",
     taskDescriptionRequired: "Descrição da tarefa é obrigatória",
     dueDateRequired: "Data de entrega é obrigatória",
     responsibleRequired: "Responsável é obrigatório",
     errorNewTask: "Erro ao criar nova tarefa",
     emailMessage: "Insira o email e pressione Enter",
-    reviewProjectDetails: "Por favor, revise os detalhes do seu projeto antes de enviar.",
+    reviewProjectDetails:
+      "Por favor, revise os detalhes do seu projeto antes de enviar.",
     notSpecified: "N/D",
     noCollaborators: "N/D",
     startDateRequired: "Data de início é obrigatória.",
     endDateRequired: "Data de término é obrigatória.",
-    endDateAfterStartDate: "Data de término não pode ser anterior à data de início.",
+    endDateAfterStartDate:
+      "Data de término não pode ser anterior à data de início.",
   },
   buttons: {
     createProject: "Criar Projeto",
@@ -210,7 +222,7 @@ const pt = {
     selectPhase: "Selecione uma Etapa",
     startDate: "Data de Início",
     endDate: "Data de Término",
-    academicArticle: "Artigo Acadêmico"
+    academicArticle: "Artigo Acadêmico",
   },
   placeholders: {
     projectName: "Insira o nome do projeto",
@@ -236,64 +248,65 @@ const pt = {
     methodology: "Metodologia",
     results: "Resultados",
     conclusion: "Conclusão",
-    references: "Referências"
+    references: "Referências",
   },
   terms: {
     title: "Termos de Uso",
     lastUpdate: "Última atualização: 1 de dezembro de 2024",
     acceptance: {
       title: "1. Aceitação dos Termos",
-      text: "Ao acessar ou usar o AmigosConnect, você concorda em cumprir estes Termos de Uso. Caso não concorde, solicitamos que não utilize a plataforma."
+      text: "Ao acessar ou usar o AmigosConnect, você concorda em cumprir estes Termos de Uso. Caso não concorde, solicitamos que não utilize a plataforma.",
     },
     objective: {
       title: "2. Objetivo do Serviço",
-      text: "O AmigosConnect é uma plataforma social projetada para facilitar a conexão entre usuários, organizar eventos e promover interações saudáveis e significativas. Qualquer uso que viole esse propósito está estritamente proibido."
+      text: "O AmigosConnect é uma plataforma social projetada para facilitar a conexão entre usuários, organizar eventos e promover interações saudáveis e significativas. Qualquer uso que viole esse propósito está estritamente proibido.",
     },
     userResponsibilities: {
       title: "3. Responsabilidades do Usuário",
       item1: "Manter as informações do seu perfil atualizadas e precisas.",
-      item2: "Respeitar os demais usuários, evitando qualquer comportamento ofensivo, discriminatório ou que viole os direitos de terceiros.",
-      item3: "Não compartilhar conteúdo ilegal, enganoso ou prejudicial."
+      item2:
+        "Respeitar os demais usuários, evitando qualquer comportamento ofensivo, discriminatório ou que viole os direitos de terceiros.",
+      item3: "Não compartilhar conteúdo ilegal, enganoso ou prejudicial.",
     },
     misuse: {
       title: "4. Uso Indevido",
-      text: "O uso do AmigosConnect para fins ilícitos ou em desacordo com estes Termos poderá resultar na suspensão ou exclusão de sua conta, além de possíveis ações legais."
+      text: "O uso do AmigosConnect para fins ilícitos ou em desacordo com estes Termos poderá resultar na suspensão ou exclusão de sua conta, além de possíveis ações legais.",
     },
     changes: {
       title: "5. Alterações nos Termos",
-      text: "Reservamo-nos o direito de modificar estes Termos a qualquer momento. Notificaremos os usuários sobre alterações significativas com antecedência."
+      text: "Reservamo-nos o direito de modificar estes Termos a qualquer momento. Notificaremos os usuários sobre alterações significativas com antecedência.",
     },
-    contact: "Para dúvidas, entre em contato: suporte@amigosconnect.com"
+    contact: "Para dúvidas, entre em contato: suporte@amigosconnect.com",
   },
   privacy: {
     title: "Política de Privacidade",
     lastUpdate: "Última atualização: 1 de dezembro de 2024",
     dataCollection: {
       title: "1. Coleta de Dados",
-      text: "Coletamos informações pessoais como nome, e-mail e preferências para oferecer uma experiência personalizada. Dados adicionais podem ser coletados com seu consentimento durante o uso de certos recursos."
+      text: "Coletamos informações pessoais como nome, e-mail e preferências para oferecer uma experiência personalizada. Dados adicionais podem ser coletados com seu consentimento durante o uso de certos recursos.",
     },
     dataUsage: {
       title: "2. Uso das Informações",
       text: "Os dados coletados são utilizados para:",
       item1: "Personalizar sua experiência na plataforma.",
       item2: "Facilitar a organização de eventos e conexões sociais.",
-      item3: "Garantir segurança e prevenir atividades ilícitas."
+      item3: "Garantir segurança e prevenir atividades ilícitas.",
     },
     dataSharing: {
       title: "3. Compartilhamento de Dados",
-      text: "O AmigosConnect não compartilha informações pessoais com terceiros sem o seu consentimento, exceto quando exigido por lei ou para proteger os direitos da plataforma e de seus usuários."
+      text: "O AmigosConnect não compartilha informações pessoais com terceiros sem o seu consentimento, exceto quando exigido por lei ou para proteger os direitos da plataforma e de seus usuários.",
     },
     security: {
       title: "4. Segurança",
-      text: "Implementamos medidas técnicas e organizacionais para proteger suas informações contra acessos não autorizados, perda ou uso indevido."
+      text: "Implementamos medidas técnicas e organizacionais para proteger suas informações contra acessos não autorizados, perda ou uso indevido.",
     },
     yourRights: {
       title: "5. Seus Direitos",
-      text: "Você pode acessar, corrigir ou excluir suas informações pessoais a qualquer momento. Entre em contato conosco para exercer esses direitos."
+      text: "Você pode acessar, corrigir ou excluir suas informações pessoais a qualquer momento. Entre em contato conosco para exercer esses direitos.",
     },
-    contact: "Para dúvidas ou solicitações, entre em contato: privacidade@amigosconnect.com"
-  }
-  
+    contact:
+      "Para dúvidas ou solicitações, entre em contato: privacidade@amigosconnect.com",
+  },
 };
 
 export default pt;
