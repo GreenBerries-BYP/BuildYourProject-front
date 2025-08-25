@@ -37,7 +37,7 @@ const ViewProject = ({
                         <div className="project-collaborators">
                             <h4>{t("viewProject.collaboratorsTitle", "Collaborators")}:</h4>
                             <ul>
-                                {collaborators.map(collab => (
+                                {collaborators.map((collab, idx) => (
                                     <li key={idx}>{collab}</li>
                                 ))}
                             </ul>
