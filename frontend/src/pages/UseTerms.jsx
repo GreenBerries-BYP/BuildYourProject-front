@@ -12,6 +12,8 @@ const TermosDeUso = () => {
     localStorage.getItem(I18N_STORAGE_KEY)
   );
 
+const [darkMode, setDarkMode] = useState(false);
+
   const toggleLanguage = () => {
     const newLang = language === "pt-BR" ? "en-US" : "pt-BR";
     setLanguage(newLang);
