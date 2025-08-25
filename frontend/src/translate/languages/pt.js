@@ -94,6 +94,7 @@ const pt = {
     especialCaracter: "Pelo menos um caractere especial",
     number: "Pelo menos um número",
     suggestions: "Sugestões para uma senha forte:",
+    or: "OU",
   },
   register: {
     fullNameLabel: "Nome completo:",
