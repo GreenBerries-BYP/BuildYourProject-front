@@ -7,6 +7,7 @@ import { Checkbox } from "primereact/checkbox";
 import { Divider } from "primereact/divider";
 import { FloatLabel } from "primereact/floatlabel";
 import { useTranslation } from "react-i18next";
+import { GoogleLogin } from "@react-oauth/google";
 
 import api from "../api/api";
 import { saveToken } from "../auth/auth";
@@ -22,7 +23,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
-    mode: "onChange",
+    mode: "onTouched",
     defaultValues: {
       email: "",
       senha: "",
@@ -43,6 +44,19 @@ const Login = () => {
       console.error("Erro ao logar:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onGoogleSuccess = async (response) => {
+    const token = response.credential;
+    try {
+      const res = await api.post("/auth/google/", {
+        access_token: token,
+      });
+      saveToken(res.data.access);
+      navigate("/home");
+    } catch (err) {
+      console.error("Erro ao autenticar com Google:", err);
     }
   };
 
@@ -83,7 +97,7 @@ const Login = () => {
                         ),
                         pattern: {
                           value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                          message: t("login.emailInvalid", "Email inválido"),
+                          message: t("login.emailInvalid"),
                         },
                       }}
                       render={({ field }) => (
@@ -98,6 +112,7 @@ const Login = () => {
                     />
                     <label htmlFor="email">
                       {t("login.emailLabel", "Email")}
+                      <span className="required-asterisk">*</span>
                     </label>
                   </FloatLabel>
                   {errors.email && (
@@ -132,7 +147,8 @@ const Login = () => {
                       )}
                     />
                     <label htmlFor="senha">
-                      {t("login.passwordLabel", "Senha")}
+                      {t("login.passwordLabel")}
+                      <span className="required-asterisk">*</span>
                     </label>
                   </FloatLabel>
                   {errors.senha && (
@@ -200,6 +216,16 @@ const Login = () => {
                 </button>
               </div>
             </form>
+
+            <Divider align="center" type="dashed">
+              <b>{t("login.or")}</b>
+            </Divider>
+
+            <div className="d-flex justify-content-center">
+              <GoogleLogin
+                onSuccess={onGoogleSuccess}
+              />
+            </div>
           </div>
         </div>
       </div>

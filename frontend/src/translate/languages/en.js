@@ -94,6 +94,7 @@ const en = {
     especialCaracter: "At least one special character",
     number: "At least one number",
     suggestions: "Suggestions for a strong password:",
+    or: "OR",
   },
   register: {
     fullNameLabel: "Full name:",
