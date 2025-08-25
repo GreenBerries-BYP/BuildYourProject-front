@@ -41,9 +41,14 @@ function HomeDefault() {
     setModalAberto(true);
   };
 
-  const handleAbrirProjeto = (projeto) => {
-    setProjetoSelecionado(projeto);
-  };
+  const handleAbrirProjeto = async (projeto) => {
+  try {
+    const projetoCompleto = await fetchProjectWithTasks(projeto.id);
+    setProjetoSelecionado(projetoCompleto);
+  } catch (error) {
+    console.error("Erro ao carregar projeto completo:", error);
+  }
+};
 
   const handleVoltar = () => {
     setProjetoSelecionado(null);
