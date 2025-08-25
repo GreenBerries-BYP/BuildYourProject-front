@@ -12,6 +12,20 @@ import '../styles/Home.css';
 import { fetchUserData } from '../api/userService';
 
 
+const formatProjectForCard = (projeto) => {
+  const totalTasks = projeto.tasks?.length || 0;
+  const completedTasks = projeto.tasks?.filter((t) => t.is_completed).length || 0;
+  const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+  return {
+    ...projeto,
+    progressoProjeto,
+    progressoIndividual: progressoProjeto,
+    tarefasProjeto: projeto.tasks?.slice(0, 4) || [],
+  };
+};
+
+
 // precisa filtrar os projetos de sua autoria
 function Projetos() {
   const [modalAberto, setModalAberto] = useState(false);
@@ -93,18 +107,24 @@ function Projetos() {
         </div>) : (
         <div className="projects-area">
           <CreateProjectCard onClick={handleCreateProject} />
+          
+          {projetos.map((projeto, index) => {
+            const totalTasks = projeto.tasks?.length || 0;
+            const completedTasks = projeto.tasks?.filter((t) => t.is_completed).length || 0;
+            const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-          {projetos.map((projeto, index) => (
-            <ProjectCard
-              key={index}
-              nomeProjeto={projeto.name}
-              progressoProjeto={projeto.progressoProjeto}
-              progressoIndividual={projeto.progressoIndividual}
-              tarefasProjeto={projeto.tarefasProjeto}
-              estaAtrasado={projeto.estaAtrasado}
-              onClick={() => handleAbrirProjeto(projeto)}
-            />
-          ))}
+            return (
+              <ProjectCard
+                key={index}
+                nomeProjeto={projeto.name}
+                progressoProjeto={progressoProjeto}
+                progressoIndividual={progressoProjeto} // por enquanto igual
+                tarefasProjeto={projeto.tasks?.slice(0, 4) || []}
+                estaAtrasado={false} // se quiser calcular depois, pode colocar lógica
+                onClick={() => handleAbrirProjeto(projeto)}
+              />
+            );
+          })}
         </div>
       )}
 

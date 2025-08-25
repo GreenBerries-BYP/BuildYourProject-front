@@ -73,17 +73,26 @@ const handleAbrirProjeto = async (projeto) => {
         ) : (
           <div className="projects-area">
 
-            {projetos.map((projeto, index) => (
-              <ProjectCard
-                key={index}
-                nomeProjeto={projeto.name}
-                progressoProjeto={projeto.progressoProjeto}
-                progressoIndividual={projeto.progressoIndividual}
-                tarefasProjeto={projeto.tarefasProjeto}
-                estaAtrasado={projeto.estaAtrasado}
-                onClick={() => handleAbrirProjeto(projeto)}
-              />
-            ))}
+        {projetos.map((projeto, index) => {
+          // garante que exista tasks, mesmo que não venha do backend
+          const tarefas = projeto.tasks || projeto.tarefasProjeto || [];
+
+          const totalTasks = tarefas.length;
+          const completedTasks = tarefas.filter((t) => t.is_completed).length;
+          const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+          return (
+            <ProjectCard
+              key={index}
+              nomeProjeto={projeto.name}
+              progressoProjeto={progressoProjeto}
+              progressoIndividual={progressoProjeto} // igualzinho à Home
+              tarefasProjeto={tarefas.slice(0, 4)} // pega só as 4 primeiras
+              estaAtrasado={false} // se quiser depois adiciona lógica real
+              onClick={() => handleAbrirProjeto(projeto)}
+            />
+          );
+        })}
           </div>
         )}
 
