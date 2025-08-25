@@ -82,13 +82,24 @@ export const fetchSharedWithMe = async () => {
 };
 
 export const updateTaskStatus = async (taskId, isCompleted) => {
-  const response = await api.put(
-    `/tasks/${taskId}/`,
-    { is_completed: isCompleted }
-  );
-  return response.data;
+  try {
+    const token = localStorage.getItem("token"); // token JWT obtido no login
+    const response = await api.patch(
+      `/tasks/${taskId}/`,
+      { is_completed: isCompleted },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao atualizar status da tarefa:", error);
+    throw error;
+  }
 };
-
 
 export const fetchProjectWithTasks = async (projectId) => {
   try {

@@ -1,8 +1,5 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect, useMemo } from "react";
 import { updateTaskStatus } from "../api/api";
-import { useEffect } from "react";
-
 import { DataTable } from "primereact/datatable";
 import { Checkbox } from "primereact/checkbox";
 import { Column } from "primereact/column";
@@ -26,41 +23,45 @@ const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle }) => {
     setSubtasks(subTarefas);
   }, [subTarefas]);
 
-  const progresso = Math.round(
-    (subtasks.filter((t) => t.status === "concluído").length /
-      subtasks.length) *
-      100
-  );
+  // como ainda não foi implementada a atribuição de tarefas, força responsavel como "-"
+  const subtasksWithResponsible = subtasks.map((sub) => ({
+    ...sub,
+    responsavel: "-",
+    nome: nomeTarefa,
+  }));
+
+  // recalcula o progresso sempre que subtasks mudar
+  const progresso = useMemo(() => {
+    if (!subtasks || subtasks.length === 0) return 0;
+    return Math.round(
+      (subtasks.filter((t) => t.status === "concluído").length / subtasks.length) * 100
+    );
+  }, [subtasks]);
+
   const isCompleted = progresso === 100;
 
-  const handleStatusChange = (rowData) => {
+  const handleStatusChange = async (rowData, isChecked) => {
+    const originalStatus = rowData.status;
+
+    // Atualiza imediatamente no frontend
     setSubtasks((prev) =>
       prev.map((sub) =>
-        sub.id === rowData.id
-          ? {
-              ...sub,
-              status: sub.status === "concluído" ? "pendente" : "concluído",
-            }
-          : sub
+        sub.id === rowData.id ? { ...sub, status: isChecked ? "concluído" : "pendente" } : sub
       )
     );
-  };
 
-  //     const handleStatusChange = async (rowData) => {
-  //     try {
-  //       const updated = await updateTaskStatus(
-  //         rowData.id,
-  //         rowData.status !== "concluído"
-  //       );
-  //       setSubtasks((prev) =>
-  //         prev.map((t) =>
-  //           t.id === updated.id ? { ...t, status: updated.status } : t
-  //         )
-  //       );
-  //     } catch (error) {
-  //       console.error("Erro ao atualizar status:", error);
-  //     }
-  //   };
+    try {
+      await updateTaskStatus(rowData.id, isChecked);
+    } catch (error) {
+      console.error("Erro ao atualizar status:", error);
+      // Reverte se houver erro
+      setSubtasks((prev) =>
+        prev.map((sub) =>
+          sub.id === rowData.id ? { ...sub, status: originalStatus } : sub
+        )
+      );
+    }
+  };
 
   const colaboradores = Array.from(
     new Set(subTarefas.map((t) => t.responsavel).filter(Boolean))
@@ -70,11 +71,7 @@ const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle }) => {
     const isFinished = rowData.status === "concluído";
     return (
       <span className={`status-badge ${isFinished ? "concluido" : "pendente"}`}>
-        {isFinished ? (
-          <MdCheckCircle size={"1.6rem"} />
-        ) : (
-          <MdPendingActions size={"1.6rem"} />
-        )}
+        {isFinished ? <MdCheckCircle size={"1.6rem"} /> : <MdPendingActions size={"1.6rem"} />}
         {rowData.status}
       </span>
     );
@@ -83,8 +80,8 @@ const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle }) => {
   const checkboxTemplate = (rowData) => (
     <Checkbox
       key={rowData.id}
-      onChange={() => handleStatusChange(rowData)}
       checked={rowData.status === "concluído"}
+      onChange={(e) => handleStatusChange(rowData, e.checked)}
     />
   );
 
@@ -122,11 +119,7 @@ const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle }) => {
         <div className="task-header-right">
           {renderColaboradores()}
           <span className="expand-icon">
-            {expanded ? (
-              <MdExpandLess size={"2.8rem"} />
-            ) : (
-              <MdExpandMore size={"2.8rem"} />
-            )}
+            {expanded ? <MdExpandLess size={"2.8rem"} /> : <MdExpandMore size={"2.8rem"} />}
           </span>
         </div>
       </div>
@@ -134,22 +127,15 @@ const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle }) => {
       {expanded && (
         <div className="task-table-container">
           <DataTable
-            value={subtasks}
+            value={subtasksWithResponsible}
             dataKey="id"
             emptyMessage={t("viewProject.noTasks")}
             className="task-datatable"
           >
             <Column body={checkboxTemplate} style={{ width: "5rem" }} />
             <Column field="nome" header={t("viewProject.taskHeaderTask")} />
-            <Column
-              field="responsavel"
-              header={t("viewProject.taskHeaderResponsible")}
-            />
-            <Column
-              field="status"
-              header={t("viewProject.taskHeaderStatus")}
-              body={statusTemplate}
-            />
+            <Column field="responsavel" header={t("viewProject.taskHeaderResponsible")} />
+            <Column field="status" header={t("viewProject.taskHeaderStatus")} body={statusTemplate} />
             <Column field="prazo" header={t("viewProject.taskHeaderDueDate")} />
           </DataTable>
         </div>
