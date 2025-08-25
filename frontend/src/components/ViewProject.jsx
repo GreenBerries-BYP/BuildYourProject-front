@@ -38,9 +38,7 @@ const ViewProject = ({
                             <h4>{t("viewProject.collaboratorsTitle", "Collaborators")}:</h4>
                             <ul>
                                 {collaborators.map(collab => (
-                                    <li key={collab.id || collab.email}>
-                                        {collab.full_name || collab.email}
-                                    </li>
+                                    <li key={idx}>{collab}</li>
                                 ))}
                             </ul>
                         </div>
