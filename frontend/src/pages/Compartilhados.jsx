@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchProjects, fetchSharedWithMe } from '../api/api';
+import { fetchProjects, fetchSharedWithMe, fetchProjectWithTasks } from '../api/api';
 
 import ProjectCard from "../components/ProjectCard";
 import ViewProject from "../components/ViewProject";
@@ -25,10 +25,14 @@ function Compartilhados() {
       });
   }, []);
 
-
-  const handleAbrirProjeto = (projeto) => {
-    setProjetoSelecionado(projeto);
-  };
+const handleAbrirProjeto = async (projeto) => {
+  try {
+    const projetoCompleto = await fetchProjectWithTasks(projeto.id);
+    setProjetoSelecionado(projetoCompleto);
+  } catch (error) {
+    console.error("Erro ao carregar projeto completo:", error);
+  }
+};
 
   const handleVoltar = () => {
     setProjetoSelecionado(null);
