@@ -1,5 +1,5 @@
 import "../styles/PrivacyTerms.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 const I18N_STORAGE_KEY = "i18nextLng";
@@ -12,7 +12,7 @@ const TermosDeUso = () => {
     localStorage.getItem(I18N_STORAGE_KEY)
   );
 
-const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
 
   const toggleLanguage = () => {
     const newLang = language === "pt-BR" ? "en-US" : "pt-BR";
@@ -28,17 +28,27 @@ const [darkMode, setDarkMode] = useState(false);
       ? t("altText.brazilFlag", "Brazilian Flag")
       : t("altText.usFlag", "US Flag");
 
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark-theme");
+    } else {
+      document.body.classList.remove("dark-theme");
+    }
+  }, [darkMode]);
+
   return (
     <div className="termos-page">
       <header className="termos-header">
         <div className="header-top">
           <h1>{t("terms.title", "Termos de Uso")}</h1>
           <p>{t("terms.lastUpdate", "Última atualização: 1 de dezembro de 2024")}</p>
+        </div>
+        <div className="header-bottom">
           <button
             onClick={toggleLanguage}
             className="header-icon"
             aria-label={t("header.changeLanguage")}
-          >
+            >
             <img src={flagSrc} alt={flagAlt} className="bandeira" />
           </button>
 

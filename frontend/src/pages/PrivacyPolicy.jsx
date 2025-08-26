@@ -1,5 +1,9 @@
 import "../styles/PrivacyTerms.css";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+const I18N_STORAGE_KEY = "i18nextLng";
+
 
 const PrivacyPolicy = () => {
   const { t, i18n } = useTranslation();
@@ -8,6 +12,7 @@ const PrivacyPolicy = () => {
   const [language, setLanguage] = useState(
     localStorage.getItem(I18N_STORAGE_KEY)
   );
+
   const [darkMode, setDarkMode] = useState(false);
   
   const toggleLanguage = () => {
@@ -24,25 +29,37 @@ const PrivacyPolicy = () => {
       ? t("altText.brazilFlag", "Brazilian Flag")
       : t("altText.usFlag", "US Flag");
 
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark-theme");
+    } else {
+      document.body.classList.remove("dark-theme");
+    }
+  }, [darkMode]);
+
   return (
     <div className="termos-politicas-page">
       <header>
-        <h1>{t("privacy.title", "Política de Privacidade")}</h1>
-        <p>{t("privacy.lastUpdate", "Última atualização: 1 de dezembro de 2024")}</p>
-        <button
-            onClick={toggleLanguage}
-            className="header-icon"
-            aria-label={t("header.changeLanguage")}
-          >
-            <img src={flagSrc} alt={flagAlt} className="bandeira" />
-          </button>
-
+        <div className="header-top">
+          <h1>{t("privacy.title", "Política de Privacidade")}</h1>
+          <p>{t("privacy.lastUpdate", "Última atualização: 1 de dezembro de 2024")}</p>
+        </div>
+        <div className="header-bottom">
           <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`dark-mode-toggle ${darkMode ? "dark" : "light"}`}
+              onClick={toggleLanguage}
+              className="header-icon"
+              aria-label={t("header.changeLanguage")}
             >
-            {darkMode ? "Modo Claro" : "Modo Escuro"}
-          </button>
+              <img src={flagSrc} alt={flagAlt} className="bandeira" />
+            </button>
+
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className={`dark-mode-toggle ${darkMode ? "dark" : "light"}`}
+              >
+              {darkMode ? "Modo Claro" : "Modo Escuro"}
+            </button>
+        </div>
       </header>
 
       <section>

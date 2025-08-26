@@ -293,7 +293,7 @@ const Register = () => {
                   {t("register.terms.termsLinkText", "termos de uso")}{" "}
                 </a>
                 {t("register.terms.and", "e as")}
-                <a href="/politics" target="_blank" rel="noopener noreferrer">
+                <a href="/privacy_policy" target="_blank" rel="noopener noreferrer">
                   {" "}
                   {t(
                     "register.terms.policyLinkText",
