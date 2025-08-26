@@ -481,7 +481,7 @@ const Landing = () => {
               <a href="/use_terms">
                 {t("landing.footer.termsLink", "Termos e condições")}
               </a>
-              <a href="/politics ">
+              <a href="/privacy_policy ">
                 {t("landing.footer.privacyLink", "Política de privacidade")}
               </a>
             </div>

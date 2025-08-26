@@ -8,6 +8,7 @@ import { Divider } from "primereact/divider";
 import { FloatLabel } from "primereact/floatlabel";
 import { useTranslation } from "react-i18next";
 import { GoogleLogin } from "@react-oauth/google";
+import ModalForgotPassword from "../components/ModalForgotPassword";
 
 import api from "../api/api";
 import { saveToken } from "../auth/auth";
@@ -17,6 +18,7 @@ const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showForgotModal, setShowForgotModal] = useState(false);
 
   const {
     control,
@@ -158,12 +160,16 @@ const Login = () => {
               </div>
 
               <div className="d-flex justify-content-end">
-                <Link className="link-esqueci" to="/forgot_password">
+                <button
+                  type="button"
+                  className="link-esqueci btn btn-link p-0"
+                  onClick={() => setShowForgotModal(true)}
+                >
                   {t(
                     "login.forgotPasswordLink",
                     "Esqueci ou quero trocar minha senha"
                   )}
-                </Link>
+                </button>
               </div>
 
               <div className="d-flex align-items-center">
@@ -229,6 +235,12 @@ const Login = () => {
           </div>
         </div>
       </div>
+
+      <ModalForgotPassword
+        isOpen={showForgotModal}
+        onClose={() => setShowForgotModal(false)}
+      />
+
     </div>
   );
 };
