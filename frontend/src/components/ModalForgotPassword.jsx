@@ -8,6 +8,10 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [step, setStep] = useState("email"); // 'email' ou 'code'
+  const [code, setCode] = useState(new Array(6).fill("")); // array com 6 posições
+  const inputsRef = useRef([]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,21 +29,48 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
     }
 
     try {
-      // Aqui você faria a chamada de API para enviar o código
-      // await api.post("/auth/send-reset-code", { email });
-
-      setSuccess(
-        t(
-          "messages.verificationCodeSent",
-          "Um código de verificação foi enviado para seu e-mail."
-        )
-      );
+        // await api.post("/auth/send-reset-code", { email });
+        setSuccess(
+            t(
+            "messages.verificationCodeSent",
+            "Um código de verificação foi enviado para seu e-mail."
+            )
+        );
+        
+        setStep("code"); // muda para a tela de código
     } catch (err) {
-      setError(
-        t("messages.errorSendingCode", "Erro ao enviar o código. Tente novamente.")
-      );
+        setError(
+            t("messages.errorSendingCode", "Erro ao enviar o código. Tente novamente.")
+        );
     }
+
   };
+
+    const handleCodeChange = (e, index) => {
+        const value = e.target.value;
+        if (!/^\d*$/.test(value)) return; // aceita apenas números
+
+        const newCode = [...code];
+        newCode[index] = value;
+        setCode(newCode);
+
+        // foca no próximo input se digitou algo
+        if (value && index < 5) {
+            inputsRef.current[index + 1].focus();
+        }
+    };
+
+    const handleConfirmCode = () => {
+        const verificationCode = code.join("");
+        if (verificationCode.length < 6) {
+            setError(t("messages.enterFullCode", "Digite os 6 dígitos do código"));
+            return;
+        }
+
+        // Aqui você chamaria a API para verificar o código
+        console.log("Código enviado:", verificationCode);
+    };
+
 
   useEffect(() => {
     const handleEsc = (e) => {
@@ -89,7 +120,30 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
             </div>
           </form>
         </div>
+        
+        {step === "code" && (
+            <div className="code-inputs">
+            <p>{t("messages.enterVerificationCode", "Digite o código de 6 dígitos")}</p>
+            <div className="inputs-container">
+                {code.map((digit, idx) => (
+                <input
+                    key={idx}
+                    type="text"
+                    maxLength="1"
+                    value={digit}
+                    onChange={(e) => handleCodeChange(e, idx)}
+                    ref={(el) => (inputsRef.current[idx] = el)}
+                />
+                ))}
+            </div>
+            {error && <p className="input-error">{error}</p>}
+            <button onClick={handleConfirmCode} className="save-btn">
+                {t("buttons.confirmCode", "Confirmar")}
+            </button>
+            </div>
+        )}
       </div>
+
     </div>
   );
 };
