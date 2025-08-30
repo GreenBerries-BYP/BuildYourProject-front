@@ -107,6 +107,7 @@ function HomeDefault() {
       {projetoSelecionado ? (
         <div className="d-flex w-100 justify-content-center align-items-center">
           <ViewProject
+            projetoId={projetoSelecionado.id}
             nomeProjeto={projetoSelecionado.name}
             admProjeto={projetoSelecionado.creator_name}
             numIntegrantes={projetoSelecionado.collaborator_count}
@@ -159,7 +160,9 @@ function HomeDefault() {
         isOpen={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         projetoId={selectedProjectId}
-        
+        onDeleteSuccess={(id) => {
+          setProjetos(projetos.filter(p => p.id !== id));
+        }}
       />
     </>
   );

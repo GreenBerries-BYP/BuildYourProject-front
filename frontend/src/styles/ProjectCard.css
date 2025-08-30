@@ -111,3 +111,22 @@
     transition: all 500ms ease-in-out;
 }
 
+.p-checkbox-box{
+    width: 2rem;
+    height: 2rem;
+}
+
+
+@media (max-width: 768px) {
+    .round-progress {
+        display: flex;
+        flex-wrap: nowrap;
+        width: 4rem;
+        height: 4rem;
+    }
+    .round-progress svg{
+        width: 4rem;
+        height: 4rem;
+    }
+    
+}

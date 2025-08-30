@@ -6,6 +6,7 @@ import ModalNewTask from './ModalNewTask';
 
 
 const ViewProject = ({
+    projetoId,
     nomeProjeto,
     admProjeto,
     numIntegrantes,
@@ -17,6 +18,15 @@ const ViewProject = ({
     const [expandedSections, setExpandedSections] = useState({});
     const [modalAberto, setModalAberto] = useState(false);
 
+    const handleCreateTask = async (novaTarefa) => {
+        try {
+            const createdTask = await createTask(projectId, novaTarefa);
+            setTarefasProjeto((prev) => [...prev, createdTask]);
+            setModalAberto(false); // Fecha o modal
+        } catch (error) {
+            console.error("Não foi possível criar a tarefa:", error);
+        }
+    };
 
     const toggleSection = (section) => {
         setExpandedSections((prev) => ({
@@ -74,7 +84,12 @@ const ViewProject = ({
                     />
                 ))}
             </div>
-            <ModalNewTask isOpen={modalAberto} onClose={() => setModalAberto(false)} />
+            <ModalNewTask 
+                isOpen={modalAberto} 
+                onClose={() => setModalAberto(false)} 
+                projetoId={projetoId} // <-- passar o ID do projeto atual
+                onTaskCreated={handleCreateTask}
+            />
         </div>
     );
 };

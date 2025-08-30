@@ -350,7 +350,11 @@ const en = {
     registerEmailExists: "This email is already registered. Please try another.",
     serverErrorTitle: "Server error",
     serverErrorDetail: "Unable to process your request. Please try again later.",
-
+    deleteProjectSuccessTitle: "Project deleted",
+    deleteProjectSuccessDetail: "The project was successfully removed.",
+    deleteProjectErrorTitle: "Error deleting project",
+    deleteProjectErrorDetail: "Unable to delete the project. Please try again."
+  
   },
 };
 

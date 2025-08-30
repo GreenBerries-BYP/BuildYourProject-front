@@ -349,7 +349,11 @@ const pt = {
     registerEmailExists: "O email informado já está cadastrado. Tente outro.",
     serverErrorTitle: "Erro no servidor",
     serverErrorDetail: "Não foi possível processar sua requisição. Tente novamente mais tarde.",
-
+    deleteProjectSuccessTitle: "Projeto excluído",
+    deleteProjectSuccessDetail: "O projeto foi removido com sucesso.",
+    deleteProjectErrorTitle: "Erro ao excluir projeto",
+    deleteProjectErrorDetail: "Não foi possível excluir o projeto. Tente novamente."
+  
   },
 
 };

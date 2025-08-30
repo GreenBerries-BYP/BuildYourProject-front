@@ -85,16 +85,13 @@
 }
 
 .task-header-middle {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
 .task-header-middle .p-progressbar {
-    width: 24rem;
+    width: 50rem;
     height: 1.2rem !important;
     border-radius: 1.2rem;
     background-color: var(--purple-light-color);
@@ -197,4 +194,39 @@
 .dark-theme .status-badge.pendente {
     color: #550505;
     font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .task-header{
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap: 1rem;
+    }
+
+    .task-header-left,
+    .task-header-right {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .task-header-right{
+        display: flex;
+        justify-content: end;
+    }
+
+    .task-header-middle .p-progressbar {
+        width: 15rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .task-header-middle .p-progressbar {
+        width: 30rem;
+    }
+}
+@media (max-width: 1224px) {
+    .task-header-middle .p-progressbar {
+        width: 20rem;
+    }
 }

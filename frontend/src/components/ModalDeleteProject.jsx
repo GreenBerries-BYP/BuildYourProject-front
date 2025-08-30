@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import "../styles/ModalForgotPasswordDeleteProject.css"; // reaproveita o CSS
 import { useTranslation } from "react-i18next";
+import toastService from "../api/toastService";
 
 const ModalDeleteProject = ({ isOpen, onClose, projetoId }) => {
   const { t } = useTranslation();
@@ -17,21 +18,31 @@ const ModalDeleteProject = ({ isOpen, onClose, projetoId }) => {
 
     try {
       const token = localStorage.getItem("access_token"); // JWT
-      const res = await fetch(`/api/projects/${projetoId}/`, {
-        method: "DELETE",
+      const res = await fetch(`/projects/${projetoId}/`, {
+        method:'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (res.ok) {
+      if (res.status === 204) {
+        toastService.success(
+            t("toast.deleteProjectSuccessTitle"),
+            t("toast.deleteProjectSuccessDetail")
+        );
         onClose();
         setInput("");
         setError("");
         // opcional: atualizar lista de projetos no HomeDefault
-      } else {
-        setError(t("modalDeleteProject.errorDeleting", "Erro ao apagar o projeto"));
-      }
+        } else {
+        toastService.error(
+            t("toast.deleteProjectErrorTitle"),
+            t("toast.deleteProjectErrorDetail")
+        );
+        }
     } catch (err) {
-      setError(t("modalDeleteProject.errorDeleting", "Erro ao apagar o projeto"));
+        toastService.error(
+        t("toast.deleteProjectErrorTitle"),
+        err.response?.data?.detail || err.message || t("toast.deleteProjectErrorDetail")
+        );
     }
   };
 

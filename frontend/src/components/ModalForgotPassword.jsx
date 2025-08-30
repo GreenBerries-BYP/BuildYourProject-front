@@ -29,7 +29,7 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
     }
 
     try {
-        // await api.post("/auth/send-reset-code", { email });
+        await api.post("/auth/send-reset-code/", { email });
         setSuccess(
             t(
             "messages.verificationCodeSent",

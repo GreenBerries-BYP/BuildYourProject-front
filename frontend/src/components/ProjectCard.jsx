@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useRef, useState, useEffect } from "react";
 import "../styles/ProjectCard.css";
 
+
 const ProjectCard = ({
   projetoId,
   nomeProjeto,
@@ -18,15 +19,6 @@ const ProjectCard = ({
   const { t } = useTranslation();
   const menuRef = useRef(null);
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (menuRef.current && !menuRef.current.container.contains(e.target)) {
-        menuRef.current.hide();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   return (
     <div className="project-card" onClick={onClick}>
