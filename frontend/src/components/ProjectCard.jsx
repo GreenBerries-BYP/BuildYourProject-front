@@ -1,21 +1,32 @@
-import { useRef } from "react";
 import { Knob } from "primereact/knob";
 import { Menu } from "primereact/menu";
 import { Checkbox } from "primereact/checkbox";
 import { useTranslation } from "react-i18next";
-
+import { useRef, useState, useEffect } from "react";
 import "../styles/ProjectCard.css";
 
 const ProjectCard = ({
+  projetoId,
   nomeProjeto,
   progressoProjeto,
   progressoIndividual,
   tarefasProjeto,
   estaAtrasado,
   onClick,
+  onDeleteClick,
 }) => {
   const { t } = useTranslation();
   const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.container.contains(e.target)) {
+        menuRef.current.hide();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="project-card" onClick={onClick}>
@@ -31,7 +42,11 @@ const ProjectCard = ({
           <img src="/imgs/more_vert.svg" alt={t("altText.projectOptions")} />
         </button>
         <Menu
-          model={[{ label: t("buttons.deleteProject") }]}
+          className="btn-menu-project"
+          model={[{ 
+            label: t("buttons.deleteProject"),
+            command: () => onDeleteClick(projetoId),
+          }]}
           popup
           ref={menuRef}
         />
@@ -101,6 +116,7 @@ const ProjectCard = ({
           </span>
         </div>
       </div>
+      
     </div>
   );
 };

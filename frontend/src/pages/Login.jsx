@@ -9,6 +9,8 @@ import { FloatLabel } from "primereact/floatlabel";
 import { useTranslation } from "react-i18next";
 import { GoogleLogin } from "@react-oauth/google";
 import ModalForgotPassword from "../components/ModalForgotPassword";
+import toastService from "../api/toastService";
+
 
 import api from "../api/api";
 import { saveToken } from "../auth/auth";
@@ -41,8 +43,25 @@ const Login = () => {
         password: data.senha,
       });
       saveToken(res.data.access);
+
+      toastService.success(
+        t("toast.loginSuccessTitle", "Bem-vindo!"),
+        t("toast.loginSuccessDetail", "Login realizado com sucesso.")
+      );
+
       setTimeout(() => navigate("/home"), 300);
     } catch (err) {
+      if (err.response?.status === 401) {
+        toastService.error(
+          t("toast.loginFailedTitle", "Falha no login"),
+          t("toast.loginFailedDetail", "E-mail ou senha incorretos.")
+        );
+      } else {
+        toastService.error(
+          t("toast.serverErrorTitle", "Erro no servidor"),
+          t("toast.serverErrorDetail", "Tente novamente mais tarde.")
+        );
+      }
       console.error("Erro ao logar:", err);
     } finally {
       setLoading(false);
@@ -56,8 +75,18 @@ const Login = () => {
         access_token: token,
       });
       saveToken(res.data.access);
+
+      toastService.success(
+        t("toast.loginSuccessTitle", "Bem-vindo!"),
+        t("toast.loginSuccessDetail", "Login realizado com sucesso.")
+      );
+
       navigate("/home");
     } catch (err) {
+      toastService.error(
+        t("toast.googleLoginErrorTitle", "Erro no Google Login"),
+        t("toast.googleLoginErrorDetail", "Não foi possível autenticar.")
+      );
       console.error("Erro ao autenticar com Google:", err);
     }
   };

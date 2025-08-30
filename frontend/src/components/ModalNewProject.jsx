@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "../styles/ModalNewProject.css";
 import api from "../api/api";
 import { useTranslation } from "react-i18next";
+import toastService from "../api/toastService";
 
 import { getToken } from "../auth/auth";
 import { abntTemplates } from "../mocks/abntMock";
@@ -213,6 +214,10 @@ const ModalNewProject = ({ isOpen, onClose }) => {
           response.status >= 200 &&
           response.status < 300
         ) {
+          toastService.success(
+            t("toast.createProjectSuccessTitle"),
+            t("toast.createProjectSuccessDetail")
+          );
           // Successful creation
           onClose();
           setFormData({
@@ -234,6 +239,7 @@ const ModalNewProject = ({ isOpen, onClose }) => {
           // This block might not be strictly necessary if Axios throws on non-2xx by default
           // For safety, keeping a generic error if it somehow reaches here
           const errorData = response.data;
+          
           throw new Error(errorData.detail || t("messages.errorNewProject"));
         }
       } catch (err) {
@@ -243,6 +249,11 @@ const ModalNewProject = ({ isOpen, onClose }) => {
           });
         } else if (err.response) {
           // Other HTTP errors (400, 500, etc.)
+          toastService.error(
+            t("toast.createProjectErrorTitle"),
+            err.response?.data?.detail || err.message || t("toast.createProjectErrorDetail")
+          );
+          
           const errorData = err.response.data;
           let detailedMessage = "";
           if (typeof errorData === "object" && errorData !== null) {

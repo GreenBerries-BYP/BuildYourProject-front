@@ -56,9 +56,28 @@ const Register = () => {
         password: data.password,
       });
       console.log("Cadastro realizado:", response.data);
+
+      toastService.success(
+        t("toast.registerSuccessTitle"),
+        t("toast.registerSuccessDetail")
+      );
+
       navigate("/login");
     } catch (err) {
       console.error("Erro ao cadastrar:", err);
+      if (err.response?.status === 400) {
+        // Ex.: email já cadastrado
+        toastService.error(
+          t("toast.registerFailedTitle"),
+          t("toast.registerEmailExists")
+        );
+      } else {
+        // Erro genérico
+        toastService.error(
+          t("toast.serverErrorTitle"),
+          t("toast.serverErrorDetail")
+        );
+      }
     } finally {
       setLoading(false);
     }

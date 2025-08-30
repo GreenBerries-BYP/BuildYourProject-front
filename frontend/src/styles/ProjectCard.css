@@ -88,49 +88,26 @@
     flex-grow: 1;
 }
 
-.popover {
-    font-size: 1.6rem;
-    border-radius: 8px !important;
-    border: 1px solid var(--gray-light-color) !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
-}
-
-.popover-header {
-    display: none;
-}
-
-.popover-body {
-    padding: 0 !important;
+.btn-menu-project {
+    padding: 1rem;
     background-color: var(--white-color);
-    color: var(--black-color);
+    font-size: 1.5rem;
     border-radius: 8px;
+    border: 1px var(--gray-color) solid;
 }
 
-.card-popover {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+.p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text{
+    color: var(--black-color); 
+    transition: all 500ms ease-in-out;
 }
 
-.btn-popover {
-    font-size: 1.6rem;
-    background: transparent;
-    padding: 1rem 1.5rem;
-    color: var(--black-color);
-    text-decoration: none;
-    display: block;
-    transition: background-color 200ms ease-in-out;
+.p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text:hover{
+    color: var(--gray-color); 
+    transform: scale(0.98);
 }
 
-.btn-popover:hover {
-    background: var(--gray-light-color);
+.btn-menu-project a{
+    background-color: var(--white-color);
+    transition: all 500ms ease-in-out;
 }
 
-.dark-theme .popover-body,
-.dark-theme .btn-popover {
-    color: var(--black-color);
-}
-
-.dark-theme .btn-popover:hover {
-    background-color: var(--gray-color);
-}

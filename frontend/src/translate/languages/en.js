@@ -152,6 +152,8 @@ const en = {
     collaborators: "Collaborators",
     datesAndCollaborators: "Dates and Collaborators",
     newTask: "New Task",
+    confirmDelete: "Confirm Deletion",
+    forgotPassword: "Forgot Password"
   },
   messages: {
     welcome: "Welcome to Build Your Project",
@@ -183,6 +185,18 @@ const en = {
     startDateRequired: "Start date is required",
     endDateRequired: "End date is required",
     endDateAfterStartDate: "End date cannot be earlier than start date.",
+    verificationCodeSent: "A verification code has been sent to your email.",
+    errorSendingCode: "Error sending the code. Please try again.",
+    enterFullCode: "Enter all 6 digits of the code",
+    enterVerificationCode: "Enter the 6-digit code"
+  },
+  modalDeleteProject: {
+    typeYesToDelete: "Type",
+    sim: "YES",
+    toDelete: "to delete the project",
+    inputPlaceholder: "Type here",
+    errorTypeYes: "You need to type YES to confirm",
+    errorDeleting: "Error deleting the project"
   },
   buttons: {
     createProject: "Create Project",
@@ -199,6 +213,9 @@ const en = {
     readLess: "Read less",
     readMore: "Read more",
     newTask: "New Task",
+    confirm: "Confirm",
+    sendCode: "Send code",
+    confirmCode: "Confirm"
   },
   sideBar: {
     home: "Home",
@@ -226,6 +243,7 @@ const en = {
   },
   placeholders: {
     projectName: "Enter project name",
+    email: "Your email"
   },
   steps: {
     basicInfo: "Basic Info",
@@ -310,6 +328,29 @@ const en = {
     },
     contact:
       "For questions or requests, contact: privacidade@greenberries.com",
+  },
+  toast: {
+    loginSuccessTitle: "Welcome!",
+    loginSuccessDetail: "Login successful.",
+    loginFailedTitle: "Login failed",
+    loginFailedDetail: "Incorrect email or password.",
+    serverErrorTitle: "Server error",
+    serverErrorDetail: "Please try again later.",
+    googleLoginErrorTitle: "Google Login Error",
+    googleLoginErrorDetail: "Unable to authenticate with Google.",
+    createProjectSuccessTitle: "Project created successfully",
+    createProjectSuccessDetail: "Your project has been saved and is available in the list.",
+    createProjectErrorTitle: "Error creating project",
+    createProjectErrorDetail: "Unable to create project. Please check your data and try again.",
+    sessionExpiredTitle: "Session expired",
+    sessionExpiredDetail: "Please log in again to continue.",
+    registerSuccessTitle: "Registration successful",
+    registerSuccessDetail: "Your account has been created successfully! You can now log in.",
+    registerFailedTitle: "Registration failed",
+    registerEmailExists: "This email is already registered. Please try another.",
+    serverErrorTitle: "Server error",
+    serverErrorDetail: "Unable to process your request. Please try again later.",
+
   },
 };
 

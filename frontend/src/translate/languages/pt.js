@@ -152,6 +152,8 @@ const pt = {
     collaborators: "Colaboradores",
     datesAndCollaborators: "Datas e Colaboradores",
     newTask: "Nova Tarefa",
+    confirmDelete: "Confirmar exclusão",
+    forgotPassword: "Recuperar Senha",
   },
   messages: {
     welcome: "Bem-vindo ao Build Your Project",
@@ -184,6 +186,18 @@ const pt = {
     endDateRequired: "Data de término é obrigatória.",
     endDateAfterStartDate:
       "Data de término não pode ser anterior à data de início.",
+    verificationCodeSent: "Um código de verificação foi enviado para seu e-mail.",
+    errorSendingCode: "Erro ao enviar o código. Tente novamente.",
+    enterFullCode: "Digite os 6 dígitos do código",
+    enterVerificationCode: "Digite o código de 6 dígitos"
+  },
+  modalDeleteProject: {
+    typeYesToDelete: "Digite",
+    sim: "SIM",
+    toDelete: "para apagar o projeto",
+    inputPlaceholder: "Digite aqui",
+    errorTypeYes: "Você precisa digitar SIM para confirmar",
+    errorDeleting: "Erro ao apagar o projeto"
   },
   buttons: {
     createProject: "Criar Projeto",
@@ -200,6 +214,9 @@ const pt = {
     readLess: "Ler menos",
     readMore: "Ler mais",
     newTask: "Nova Tarefa",
+    confirm: "Confirmar",
+    sendCode: "Enviar código",
+    confirmCode: "Confirmar",
   },
   sideBar: {
     home: "Início",
@@ -229,6 +246,7 @@ const pt = {
   },
   placeholders: {
     projectName: "Insira o nome do projeto",
+    email: "Seu e-mail"
   },
   steps: {
     basicInfo: "Info Básicas",
@@ -310,6 +328,30 @@ const pt = {
     contact:
       "Para dúvidas ou solicitações, entre em contato: privacidade@greenberries.com",
   },
+  toast: {
+    loginSuccessTitle: "Bem-vindo!",
+    loginSuccessDetail: "Login realizado com sucesso.",
+    loginFailedTitle: "Falha no login",
+    loginFailedDetail: "E-mail ou senha incorretos.",
+    serverErrorTitle: "Erro no servidor",
+    serverErrorDetail: "Tente novamente mais tarde.",
+    googleLoginErrorTitle: "Erro no Google Login",
+    googleLoginErrorDetail: "Não foi possível autenticar com o Google.",
+    createProjectSuccessTitle: "Projeto criado com sucesso",
+    createProjectSuccessDetail: "Seu projeto foi salvo e está disponível na lista.",
+    createProjectErrorTitle: "Erro ao criar projeto",
+    createProjectErrorDetail: "Não foi possível criar o projeto. Verifique os dados e tente novamente.",
+    sessionExpiredTitle: "Sessão expirada",
+    sessionExpiredDetail: "Faça login novamente para continuar.",
+    registerSuccessTitle: "Cadastro realizado",
+    registerSuccessDetail: "Sua conta foi criada com sucesso! Você já pode fazer login.",
+    registerFailedTitle: "Falha no cadastro",
+    registerEmailExists: "O email informado já está cadastrado. Tente outro.",
+    serverErrorTitle: "Erro no servidor",
+    serverErrorDetail: "Não foi possível processar sua requisição. Tente novamente mais tarde.",
+
+  },
+
 };
 
 export default pt;

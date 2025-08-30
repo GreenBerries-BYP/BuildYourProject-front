@@ -6,6 +6,7 @@ import ProjectCard from "../components/ProjectCard";
 import CreateProjectCard from "../components/CreateProjectCard";
 import ViewProject from "../components/ViewProject";
 import ModalNewProject from "../components/ModalNewProject";
+import ModalDeleteProject from "../components/ModalDeleteProject";
 
 import "../styles/Home.css";
 import { fetchUserData } from "../api/userService";
@@ -15,6 +16,9 @@ function HomeDefault() {
   const [modalAberto, setModalAberto] = useState(false);
   const [userData, setUserData] = useState(null);
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
+
 
   useEffect(() => {
     fetchUserData()
@@ -93,6 +97,11 @@ function HomeDefault() {
     }
   };
 
+  const handleDeleteProjectClick = (projectId) => {
+    setSelectedProjectId(projectId);
+    setDeleteModalOpen(true);
+  };
+
   return (
     <>
       {projetoSelecionado ? (
@@ -134,6 +143,7 @@ function HomeDefault() {
                 tarefasProjeto={projeto.tasks.slice(0, 4)}
                 estaAtrasado={estaAtrasado}
                 onClick={() => handleAbrirProjeto(projeto)}
+                onDeleteClick={handleDeleteProjectClick} 
               />
             );
           })}
@@ -143,6 +153,13 @@ function HomeDefault() {
       <ModalNewProject
         isOpen={modalAberto}
         onClose={() => setModalAberto(false)}
+      />
+
+      <ModalDeleteProject
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        projetoId={selectedProjectId}
+        
       />
     </>
   );

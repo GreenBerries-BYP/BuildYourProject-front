@@ -27,25 +27,10 @@ api.interceptors.request.use(
 // se precisar que alguma rota não pegue o toast, colocar um if com uma lista das rotas que não deve pegar
 api.interceptors.response.use(
   (response) => {
-    const rotas = ['/api/projetos', '/api/home']
-    if (!rotas.includes(response.config.url)) {
-      const message = response.data?.message || 'Sua requisição foi realizada com sucesso!';
-      if (message) {
-        toastService.success('Sucesso', message);
-      }
-      return response;
-    }
+    return response; // Retorna apenas a resposta sem disparar toast
   },
   (error) => {
-    if (error.message) {
-      const message = error.response?.data?.message || 'Ocorreu um erro inesperado.';
-      toastService.error('Erro', message);
-    } else if (error.request) {
-      toastService.error('Erro de conexão com o backend', 'Não foi possivel conectar ao servidor');
-    } else {
-      toastService.error('Erro desconhecido', error.message);
-    }
-    return Promise.reject(error);
+    return Promise.reject(error); // Apenas rejeita, sem toast
   }
 );
 

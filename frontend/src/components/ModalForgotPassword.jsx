@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import "../styles/ModalForgotPassword.css"; // você pode reaproveitar o css do outro modal
+import "../styles/ModalForgotPasswordDeleteProject.css"; // você pode reaproveitar o css do outro modal
 import { useTranslation } from "react-i18next";
 
 const ModalForgotPassword = ({ isOpen, onClose }) => {
