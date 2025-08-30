@@ -9,6 +9,7 @@ import { Divider } from "primereact/divider";
 import { FloatLabel } from "primereact/floatlabel";
 import api from "../api/api";
 import "../styles/LoginCadastro.css";
+import toastService from "../api/toastService";
 
 const Register = () => {
   const { t } = useTranslation();
