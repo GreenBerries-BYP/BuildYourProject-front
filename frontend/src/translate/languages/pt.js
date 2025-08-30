@@ -217,6 +217,8 @@ const pt = {
     email: "E-mail",
     projectType: "Tipo de Projeto",
     phases: "Etapas",
+    addPhase: "Adicionar etapa",
+    addCustomPhase:"Adicione sua própria etapa",
     taskName: "Nome da Tarefa",
     taskDescription: "Descrição da Tarefa",
     selectResponsible: "Selecione um responsável:",
@@ -256,11 +258,11 @@ const pt = {
     lastUpdate: "Última atualização: 1 de dezembro de 2024",
     acceptance: {
       title: "1. Aceitação dos Termos",
-      text: "Ao acessar ou usar o AmigosConnect, você concorda em cumprir estes Termos de Uso. Caso não concorde, solicitamos que não utilize a plataforma.",
+      text: "Ao acessar ou usar o BYP, você concorda em cumprir estes Termos de Uso. Caso não concorde, solicitamos que não utilize a plataforma.",
     },
     objective: {
       title: "2. Objetivo do Serviço",
-      text: "O AmigosConnect é uma plataforma social projetada para facilitar a conexão entre usuários, organizar eventos e promover interações saudáveis e significativas. Qualquer uso que viole esse propósito está estritamente proibido.",
+      text: "O BYP é uma plataforma social projetada para facilitar a conexão entre usuários, organizar eventos e promover interações saudáveis e significativas. Qualquer uso que viole esse propósito está estritamente proibido.",
     },
     userResponsibilities: {
       title: "3. Responsabilidades do Usuário",
@@ -271,13 +273,13 @@ const pt = {
     },
     misuse: {
       title: "4. Uso Indevido",
-      text: "O uso do AmigosConnect para fins ilícitos ou em desacordo com estes Termos poderá resultar na suspensão ou exclusão de sua conta, além de possíveis ações legais.",
+      text: "O uso do BYP para fins ilícitos ou em desacordo com estes Termos poderá resultar na suspensão ou exclusão de sua conta, além de possíveis ações legais.",
     },
     changes: {
       title: "5. Alterações nos Termos",
       text: "Reservamo-nos o direito de modificar estes Termos a qualquer momento. Notificaremos os usuários sobre alterações significativas com antecedência.",
     },
-    contact: "Para dúvidas, entre em contato: suporte@amigosconnect.com",
+    contact: "Para dúvidas, entre em contato: suporte@greenberries.com",
   },
   privacy: {
     title: "Política de Privacidade",
@@ -295,7 +297,7 @@ const pt = {
     },
     dataSharing: {
       title: "3. Compartilhamento de Dados",
-      text: "O AmigosConnect não compartilha informações pessoais com terceiros sem o seu consentimento, exceto quando exigido por lei ou para proteger os direitos da plataforma e de seus usuários.",
+      text: "O BYP não compartilha informações pessoais com terceiros sem o seu consentimento, exceto quando exigido por lei ou para proteger os direitos da plataforma e de seus usuários.",
     },
     security: {
       title: "4. Segurança",
@@ -306,7 +308,7 @@ const pt = {
       text: "Você pode acessar, corrigir ou excluir suas informações pessoais a qualquer momento. Entre em contato conosco para exercer esses direitos.",
     },
     contact:
-      "Para dúvidas ou solicitações, entre em contato: privacidade@amigosconnect.com",
+      "Para dúvidas ou solicitações, entre em contato: privacidade@greenberries.com",
   },
 };
 

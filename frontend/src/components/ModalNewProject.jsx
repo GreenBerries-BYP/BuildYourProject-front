@@ -28,6 +28,17 @@ const ModalNewProject = ({ isOpen, onClose }) => {
   const [emailError, setEmailError] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [newPhase, setNewPhase] = useState("");
+  const [customPhases, setCustomPhases] = useState([]);
+
+  // definição de data para, pelo menos por agora, limitar
+  // a data de início do projeto
+  const today = new Date();
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(today.getMonth() - 1);
+
+  const formatDate = (date) => date.toISOString().split("T")[0];
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -421,16 +432,31 @@ const ModalNewProject = ({ isOpen, onClose }) => {
                           {t("inputs.phases")}
                         </label>
                         <div className="options">
-                          {abntTemplates.map((tmpl) => (
+                          <div className="addOwnPhase">
+                            <input
+                              type="text"
+                              value={newPhase}
+                              onChange={(e) => setNewPhase(e.target.value)}
+                              placeholder={t("inputs.addCustomPhase")}
+                            />
+                            <button id="addPhaseButton"
+                              onClick={() => {
+                                if (newPhase.trim() !== "" && !formData.phases.includes(newPhase)) {
+                                  handlephasesChange(newPhase); // já seleciona
+                                  setCustomPhases((prev) => [...prev, newPhase]);
+                                  setNewPhase(""); // limpa o input
+                                }
+                              }}
+                            >
+                              {t("inputs.addPhase")}
+                            </button>
+                          </div>
+                          {[...abntTemplates, ...customPhases.map((p) => ({ value: p, label: p }))].map((tmpl) => (
                             <button
                               key={tmpl.value}
                               type="button"
                               onClick={() => handlephasesChange(tmpl?.value)}
-                              className={
-                                formData.phases.includes(tmpl?.value)
-                                  ? "selected"
-                                  : ""
-                              }
+                              className={formData.phases.includes(tmpl?.value) ? "selected" : ""}
                             >
                               {t(tmpl?.label)}
                             </button>
@@ -455,6 +481,8 @@ const ModalNewProject = ({ isOpen, onClose }) => {
                         name="startDate"
                         value={formData.startDate}
                         onChange={handleChange}
+                        min={formatDate(oneMonthAgo)}
+                        max={formatDate(today)}
                       />
                       {formErrors.startDate && (
                         <p className="input-error">{formErrors.startDate}</p>

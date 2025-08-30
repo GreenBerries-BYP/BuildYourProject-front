@@ -216,6 +216,8 @@ const en = {
     email: "Email",
     projectType: "Project Type",
     phases: "Steps",
+    addPhase: "Add step",
+    addCustomPhase:"Add your own phase",
     selectResponsible: "Select responsible:",
     selectPhase: "Select a Step",
     startDate: "Start Date",
@@ -253,11 +255,11 @@ const en = {
     lastUpdate: "Last updated: December 1, 2024",
     acceptance: {
       title: "1. Acceptance of Terms",
-      text: "By accessing or using AmigosConnect, you agree to comply with these Terms of Use. If you do not agree, please do not use the platform.",
+      text: "By accessing or using BYP, you agree to comply with these Terms of Use. If you do not agree, please do not use the platform.",
     },
     objective: {
       title: "2. Service Objective",
-      text: "AmigosConnect is a social platform designed to facilitate user connections, organize events, and promote healthy and meaningful interactions. Any use that violates this purpose is strictly prohibited.",
+      text: "BYP is a social platform designed to facilitate user connections, organize events, and promote healthy and meaningful interactions. Any use that violates this purpose is strictly prohibited.",
     },
     userResponsibilities: {
       title: "3. User Responsibilities",
@@ -268,13 +270,13 @@ const en = {
     },
     misuse: {
       title: "4. Misuse",
-      text: "Using AmigosConnect for illicit purposes or in violation of these Terms may result in suspension or deletion of your account, as well as possible legal actions.",
+      text: "Using BYP for illicit purposes or in violation of these Terms may result in suspension or deletion of your account, as well as possible legal actions.",
     },
     changes: {
       title: "5. Changes to Terms",
       text: "We reserve the right to modify these Terms at any time. Users will be notified of significant changes in advance.",
     },
-    contact: "For questions, contact: suporte@amigosconnect.com",
+    contact: "For questions, contact: suporte@greenberries.com",
   },
   altText: {
     brazilFlag: "Brazilian Flag",
@@ -296,7 +298,7 @@ const en = {
     },
     dataSharing: {
       title: "3. Data Sharing",
-      text: "AmigosConnect does not share personal information with third parties without your consent, except when required by law or to protect the rights of the platform and its users.",
+      text: "BYP does not share personal information with third parties without your consent, except when required by law or to protect the rights of the platform and its users.",
     },
     security: {
       title: "4. Security",
@@ -307,7 +309,7 @@ const en = {
       text: "You can access, correct, or delete your personal information at any time. Contact us to exercise these rights.",
     },
     contact:
-      "For questions or requests, contact: privacidade@amigosconnect.com",
+      "For questions or requests, contact: privacidade@greenberries.com",
   },
 };
 

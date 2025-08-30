@@ -116,7 +116,7 @@ const TermosDeUso = () => {
         <p>
           {t(
             "terms.contact",
-            "Para dúvidas, entre em contato: suporte@amigosconnect.com"
+            "Para dúvidas, entre em contato: suporte@greenberries.com"
           )}
         </p>
       </footer>

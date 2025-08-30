@@ -205,46 +205,7 @@ textarea {
     padding-bottom: 1rem;
 }
 
-/* Estava tentando mexer no calendário, chatgpt fez isso aqui */
-/* Seleciona o texto e Cntl + K + U pra descomentar tudo*/
-/* input[type="date"] {
-    color: var(--black-color); 
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    position: relative;
-    padding-right: 3.5rem; 
-}
 
-input[type="date"]::-webkit-calendar-picker-indicator {
-    display: none;
-    -webkit-appearance: none;
-}
-
-input[type="date"]::-moz-calendar-picker-indicator {
-    display: none;
-    -moz-appearance: none;
-}
-
-input[type="date"]::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: 1.2rem;
-    transform: translateY(-50%);
-    width: 2.4rem;
-    height: 2.4rem;
-    pointer-events: none; 
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%235b4584" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>');
-}
-
-body.dark-theme input[type="date"]::after {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23693b99" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>');
-} */
 
 textarea#projectDescription {
     overflow-y: hidden;
@@ -308,6 +269,35 @@ body.dark-theme .floating-label-group.has-value label[for="projectDescription"] 
 
     margin-top: 5px;
     margin-top: 0.5rem;
+}
+
+.addOwnPhase{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    width: 100%;
+    gap: 1rem;
+    padding-bottom: 1rem;
+}
+
+.addOwnPhase input{
+    font-size: 1.7rem;
+}
+
+.addOwnPhase button{
+    width: 45%;
+}
+
+#addPhaseButton{
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--green-dark-color);
+    background-color: var(--green-dark-color);
+    color: var(--white-color);
+    cursor: pointer;
+    font-size: 1.6rem;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .options button {

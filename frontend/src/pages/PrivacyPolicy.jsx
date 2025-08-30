@@ -110,7 +110,7 @@ const PrivacyPolicy = () => {
       <footer>
         <p>{t(
           "privacy.contact",
-          "Para dúvidas ou solicitações, entre em contato: privacidade@amigosconnect.com"
+          "Para dúvidas ou solicitações, entre em contato: privacidade@greenberries.com"
         )}</p>
       </footer>
     </div>
