@@ -3,11 +3,12 @@ import "../styles/ModalForgotPasswordDeleteProject.css"; // reaproveita o CSS
 import { useTranslation } from "react-i18next";
 import toastService from "../api/toastService";
 
-const ModalDeleteProject = ({ isOpen, onClose, projetoId }) => {
+const ModalDeleteProject = ({ isOpen, onClose, projetoId, onDeleteSuccess }) => {
   const { t } = useTranslation();
   const modalRef = useRef();
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
+  const API_URL = "https://buildyourproject-back.onrender.com";
 
   // Função para deletar o projeto
   const handleDelete = async () => {
@@ -18,9 +19,14 @@ const ModalDeleteProject = ({ isOpen, onClose, projetoId }) => {
 
     try {
       const token = localStorage.getItem("access_token"); // JWT
-      const res = await fetch(`/projects/${projetoId}/`, {
-        method:'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await fetch(`${API_URL}/projetos/${projetoId}/`, {
+        method: 'DELETE',
+        headers: { 
+          'Authorization': `Bearer ${token}` ,
+          'Content-Type': 'application/json'
+
+        },
+        
       });
 
       if (res.status === 204) {
@@ -31,8 +37,11 @@ const ModalDeleteProject = ({ isOpen, onClose, projetoId }) => {
         onClose();
         setInput("");
         setError("");
-        // opcional: atualizar lista de projetos no HomeDefault
-        } else {
+
+        if (onDeleteSuccess) {
+          onDeleteSuccess(projetoId);
+        }
+      } else {
         toastService.error(
             t("toast.deleteProjectErrorTitle"),
             t("toast.deleteProjectErrorDetail")

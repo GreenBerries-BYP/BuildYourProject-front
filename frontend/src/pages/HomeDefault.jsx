@@ -162,6 +162,7 @@ function HomeDefault() {
         projetoId={selectedProjectId}
         onDeleteSuccess={(id) => {
           setProjetos(projetos.filter(p => p.id !== id));
+          selectedProjectId(null);
         }}
       />
     </>
