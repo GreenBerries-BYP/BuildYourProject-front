@@ -16,6 +16,7 @@ const ProjectCard = ({
   onClick,
   onDeleteClick,
 }) => {
+  
   const { t } = useTranslation();
   const menuRef = useRef(null);
 
@@ -37,7 +38,10 @@ const ProjectCard = ({
           className="btn-menu-project"
           model={[{ 
             label: t("buttons.deleteProject"),
-            command: () => onDeleteClick(projetoId),
+            command: (e) => {
+                e.originalEvent.preventDefault(); // <- previne comportamento padrão
+                onDeleteClick(projetoId);
+              }, 
           }]}
           popup
           ref={menuRef}

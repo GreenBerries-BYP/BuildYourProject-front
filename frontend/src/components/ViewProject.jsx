@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import TaskSection from './TaskSection';
 import ModalNewTask from './ModalNewTask';
+import ModalDeleteTask from "../components/ModalDeleteTask";
+import ModalAssignTask from "../components/ModalAssignTask";
 
 
 const ViewProject = ({
@@ -17,6 +19,20 @@ const ViewProject = ({
     const { t } = useTranslation();
     const [expandedSections, setExpandedSections] = useState({});
     const [modalAberto, setModalAberto] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [assignModalOpen, setAssignModalOpen] = useState(false);
+    const [selectedTasktId, setSelectedTasktId] = useState(null);
+    const [selectedTaskIdForAssign, setSelectedTaskIdForAssign] = useState(null);
+
+    const handleDeleteTaskClick = (taskId) => {
+        setSelectedTasktId(taskId);
+        setDeleteModalOpen(true);
+    };
+
+    const handleAssignTaskClick = (taskId) => {
+        setSelectedTaskIdForAssign(taskId);
+        setAssignModalOpen(true);
+    };
 
     const handleCreateTask = async (novaTarefa) => {
         try {
@@ -81,6 +97,8 @@ const ViewProject = ({
                         subTarefas={tarefa.subTarefas}
                         expanded={expandedSections[tarefa.nomeTarefa]}
                         onToggle={() => toggleSection(tarefa.nomeTarefa)}
+                        onDeleteClick={() => handleDeleteTaskClick(tarefa.id)}
+                        onAssignClick={() => handleAssignTaskClick(tarefa.id)}
                     />
                 ))}
             </div>
@@ -89,6 +107,31 @@ const ViewProject = ({
                 onClose={() => setModalAberto(false)} 
                 projetoId={projetoId} // <-- passar o ID do projeto atual
                 onTaskCreated={handleCreateTask}
+            />
+            <ModalDeleteTask
+                isOpen={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                taskId={selectedTasktId}
+                onDeleteSuccess={(id) => {
+                setTasks(tarefasProjeto.filter(t => t.id !== id));
+                setselectedTasktId(null);
+                }}
+            />
+            <ModalAssignTask
+                isOpen={assignModalOpen}
+                onClose={() => setAssignModalOpen(false)}
+                taskId={selectedTaskIdForAssign}
+                onAssignSuccess={(email) => {
+                    // Atualiza o colaborador localmente, se quiser
+                    setTarefasProjeto((prev) =>
+                    prev.map((t) =>
+                        t.id === selectedTaskIdForAssign
+                        ? { ...t, subTarefas: t.subTarefas.map(sub => ({ ...sub, responsavel: email })) }
+                        : t
+                    )
+                    );
+                    setSelectedTaskIdForAssign(null);
+                }}
             />
         </div>
     );

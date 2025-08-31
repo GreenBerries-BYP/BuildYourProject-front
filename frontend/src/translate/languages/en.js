@@ -153,7 +153,8 @@ const en = {
     datesAndCollaborators: "Dates and Collaborators",
     newTask: "New Task",
     confirmDelete: "Confirm Deletion",
-    forgotPassword: "Forgot Password"
+    forgotPassword: "Forgot Password",
+    assignTask: "Assign Task",
   },
   messages: {
     welcome: "Welcome to Build Your Project",
@@ -201,6 +202,8 @@ const en = {
   buttons: {
     createProject: "Create Project",
     deleteProject: "Delete Project",
+    deleteTask: "Delete Task",
+    assignTask: "Assign Task",
     saveTask: "Save ✓",
     viewDetails: "View Details",
     add: "Add",
@@ -217,7 +220,7 @@ const en = {
     sendCode: "Send code",
     confirmCode: "Confirm",
     cancel: "Cancel",
-
+    assign: "Assign Task",
   },
   sideBar: {
     home: "Home",
@@ -242,10 +245,12 @@ const en = {
     startDate: "Start Date",
     endDate: "End Date",
     academicArticle: "Academic Article",
+    collaboratorEmail: "Collaborator Email",
   },
   placeholders: {
     projectName: "Enter project name",
-    email: "Your email"
+    email: "Your email",
+    enterEmail: "Enter email"
   },
   steps: {
     basicInfo: "Basic Info",
@@ -355,8 +360,15 @@ const en = {
     deleteProjectSuccessTitle: "Project deleted",
     deleteProjectSuccessDetail: "The project was successfully removed.",
     deleteProjectErrorTitle: "Error deleting project",
-    deleteProjectErrorDetail: "Unable to delete the project. Please try again."
-  
+    deleteProjectErrorDetail: "Unable to delete the project. Please try again.",
+    deleteTaskSuccessTitle: "Task deleted",
+    deleteTaskSuccessDetail: "The task was successfully removed.",
+    deleteTaskErrorTitle: "Error deleting task",
+    deleteTaskErrorDetail: "Unable to delete the task. Please try again.",
+    assignTaskSuccessTitle: "Task assigned",
+    assignTaskSuccessDetail: "The task was successfully assigned.",
+    assignTaskErrorTitle: "Error assigning task",
+    assignTaskErrorDetail: "Unable to assign the task. Please try again.",
   },
   dadosUsuario: {
     title: "My Data",
@@ -366,7 +378,19 @@ const en = {
     editButton: "Edit",
     loading: "Loading user data...",
   },
-
+  modalDeleteTask: {
+    typeYesToDelete: "Type",
+    sim: "YES",
+    toDelete: "to delete the task",
+    inputPlaceholder: "Type here",
+    errorTypeYes: "You need to type YES to confirm",
+    errorDeleting: "Error deleting the task"
+  },
+  modalAssignTask: {
+    inputPlaceholder: "Enter email",
+    errorEmpty: "Email cannot be empty",
+    errorInvalid: "Invalid email format"
+  },
 };
 
 export default en;

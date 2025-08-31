@@ -196,6 +196,37 @@
     font-weight: 600;
 }
 
+.btn-menu-task {
+    background-color: var(--white-color);
+    font-size: 1.5rem;
+    border-radius: 8px;
+    border: 1px var(--gray-color) solid;
+}
+
+.p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text{
+    color: var(--black-color); 
+    transition: all 500ms ease-in-out;
+}
+
+.p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text:hover{
+    color: var(--gray-color); 
+    transform: scale(0.98);
+}
+
+.btn-menu-task a{
+    background-color: var(--white-color);
+    transition: all 500ms ease-in-out;
+    border: 1px solid var(--gray-light-color);
+    border-radius: 10px;
+    padding: 1rem;
+    margin: .5rem;
+}
+
+.p-checkbox-box{
+    width: 2rem;
+    height: 2rem;
+}
+
 @media (max-width: 480px) {
     .task-header{
         display: flex;

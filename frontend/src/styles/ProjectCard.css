@@ -118,6 +118,9 @@
 
 
 @media (max-width: 768px) {
+    .project-card {
+        min-width: 45%;
+    }
     .round-progress {
         display: flex;
         flex-wrap: nowrap;
@@ -129,4 +132,10 @@
         height: 4rem;
     }
     
+}
+
+@media (max-width: 480px) {
+    .project-card {
+        min-width: 100%;
+    }
 }

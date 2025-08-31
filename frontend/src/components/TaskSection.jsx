@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { updateTaskStatus } from "../api/api";
 import { DataTable } from "primereact/datatable";
 import { Checkbox } from "primereact/checkbox";
 import { Column } from "primereact/column";
+import { Menu } from "primereact/menu";
 import {
   MdExpandLess,
   MdExpandMore,
@@ -15,9 +16,10 @@ import { useTranslation } from "react-i18next";
 import { Avatar } from "primereact/avatar";
 import "../styles/TaskSection.css";
 
-const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle }) => {
+const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle, onDeleteClick, onAssignClick }) => {
   const { t } = useTranslation();
   const [subtasks, setSubtasks] = useState(subTarefas);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     setSubtasks(subTarefas);
@@ -117,9 +119,43 @@ const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle }) => {
         </div>
 
         <div className="task-header-right">
-          {renderColaboradores()}
-          <span className="expand-icon">
-            {expanded ? <MdExpandLess size={"2.8rem"} /> : <MdExpandMore size={"2.8rem"} />}
+          <span>
+            <button
+                className="btn-more"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  menuRef.current.toggle(e);
+                }}
+              >
+                <img src="/imgs/more_vert.svg" alt={t("altText.projectOptions")} />
+              </button>
+              <Menu
+                className="btn-menu-task"
+                model={[
+                  { 
+                    label: t("buttons.assignTask"),
+                    command: (e) => {
+                        e.originalEvent.preventDefault(); // <- previne comportamento padrão
+                        if (onAssignClick) onAssignClick();
+                      },                  
+                    },
+                  { 
+                    label: t("buttons.deleteTask"),
+                    command: (e) => {
+                        e.originalEvent.preventDefault(); // <- previne comportamento padrão
+                        if (onDeleteClick) onDeleteClick(); 
+                      }, 
+                  },
+                ]}
+                popup
+                ref={menuRef}
+              />
+          </span>
+          <span>
+            {renderColaboradores()}
+            <span className="expand-icon">
+              {expanded ? <MdExpandLess size={"2.8rem"} /> : <MdExpandMore size={"2.8rem"} />}
+            </span>
           </span>
         </div>
       </div>

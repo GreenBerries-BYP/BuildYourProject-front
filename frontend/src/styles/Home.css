@@ -22,13 +22,6 @@ body.no-scroll {
 }
 
 
-
-@media screen and (min-width: 768px) {
-    .main-page-content {
-        margin-top: 0;
-    }
-}
-
 .dados-usuario-page {
   display: flex;
   width: 100%;
@@ -110,4 +103,12 @@ body.no-scroll {
   font-size: 1.5rem;
   background: var(--btn-purple);
   color: var(--white-color);
+}
+
+
+
+@media screen and (min-width: 768px) {
+    .main-page-content {
+        margin-top: 0;
+    }
 }

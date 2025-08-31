@@ -154,6 +154,7 @@ const pt = {
     newTask: "Nova Tarefa",
     confirmDelete: "Confirmar exclusão",
     forgotPassword: "Recuperar Senha",
+    assignTask: "Atribuir Tarefa",
   },
   messages: {
     welcome: "Bem-vindo ao Build Your Project",
@@ -202,6 +203,8 @@ const pt = {
   buttons: {
     createProject: "Criar Projeto",
     deleteProject: "Apagar Projeto",
+    deleteTask: "Apagar Tarefa",
+    assignTask: "Atribuir Tarefa",
     saveTask: "Salvar ✓",
     viewDetails: "Ver Detalhes",
     add: "Adicionar",
@@ -218,6 +221,7 @@ const pt = {
     sendCode: "Enviar código",
     confirmCode: "Confirmar",
     cancel: "Cancelar",
+    assign: "Atribuir Tarefa",
   },
   sideBar: {
     home: "Início",
@@ -244,10 +248,12 @@ const pt = {
     startDate: "Data de Início",
     endDate: "Data de Término",
     academicArticle: "Artigo Acadêmico",
+    collaboratorEmail: "Email do Colaborador",
   },
   placeholders: {
     projectName: "Insira o nome do projeto",
-    email: "Seu e-mail"
+    email: "Seu e-mail",
+    enterEmail: "Digite o email"
   },
   steps: {
     basicInfo: "Info Básicas",
@@ -353,8 +359,17 @@ const pt = {
     deleteProjectSuccessTitle: "Projeto excluído",
     deleteProjectSuccessDetail: "O projeto foi removido com sucesso.",
     deleteProjectErrorTitle: "Erro ao excluir projeto",
-    deleteProjectErrorDetail: "Não foi possível excluir o projeto. Tente novamente."
-  
+    deleteProjectErrorDetail: "Não foi possível excluir o projeto. Tente novamente.",
+    deleteTaskSuccessTitle: "Tarefa deletada",
+    deleteTaskSuccessDetail: "A tarefa foi removida com sucesso.",
+    deleteTaskErrorTitle: "Erro ao deletar tarefa",
+    deleteTaskErrorDetail: "Não foi possível deletar a tarefa. Tente novamente.",
+    assignTaskSuccessTitle: "Tarefa atribuída",
+    assignTaskSuccessDetail: "A tarefa foi atribuída com sucesso.",
+    assignTaskErrorTitle: "Erro ao atribuir tarefa",
+    assignTaskErrorDetail: "Não foi possível atribuir a tarefa. Tente novamente."
+
+
   },
   dadosUsuario: {
     title: "Meus Dados",
@@ -364,7 +379,19 @@ const pt = {
     editButton: "Editar",
     loading: "Carregando dados do usuário...",
   },
-
+  modalDeleteTask: {
+    typeYesToDelete: "Digite",
+    sim: "SIM",
+    toDelete: "para apagar a tarefa",
+    inputPlaceholder: "Digite aqui",
+    errorTypeYes: "Você precisa digitar SIM para confirmar",
+    errorDeleting: "Erro ao apagar a tarefa"
+  },
+  modalAssignTask: {
+    inputPlaceholder: "Digite o email",
+    errorEmpty: "O email não pode ficar vazio",
+    errorInvalid: "Formato de email inválido"
+  },
 };
 
 export default pt;
