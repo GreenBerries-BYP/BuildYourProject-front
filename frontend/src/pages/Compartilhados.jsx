@@ -27,7 +27,7 @@ function Compartilhados() {
 
 const handleAbrirProjeto = async (projeto) => {
   try {
-    const projetoCompleto = await fetchProjectWithTasks(projeto.id);
+    const projetoCompleto = await fetchSharedWithMe(projeto.id);
     setProjetoSelecionado(projetoCompleto);
   } catch (error) {
     console.error("Erro ao carregar projeto completo:", error);
