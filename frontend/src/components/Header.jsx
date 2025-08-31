@@ -5,6 +5,7 @@ import { MdOutlineWbSunny, MdDarkMode } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
 import "../styles/Header.css";
 import { useTranslation } from "react-i18next";
+import { Link } from 'react-router-dom';
 
 const I18N_STORAGE_KEY = "i18nextLng";
 
@@ -91,7 +92,11 @@ const Header = () => {
         <button onClick={toggleLanguage} className="header-icon" aria-label={t("header.changeLanguage")}>
           <img src={flagSrc} alt={flagAlt} className="bandeira" />
         </button>
-        <FaRegUserCircle className="header-icon" aria-label={t("header.userProfile", "User Profile")} />
+
+        <Link to="/home/dados_usuario">
+          <FaRegUserCircle className="header-icon" aria-label={t("header.userProfile", "User Profile")} />
+        
+        </Link>
       </div>
     </header>
   );

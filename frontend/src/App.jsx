@@ -14,6 +14,7 @@ import Logout from './components/Logout'
 import HomeDefault from './pages/HomeDefault';
 import Projetos from './pages/Projetos';
 import Compartilhados from './pages/Compartilhados';
+import DadosUsuario from './pages/DadosUsuario';
 
 //App.jsx faz o roteamento da aplicação, definindo as rotas para as páginas de login e registro.
 // Ele utiliza o BrowserRouter do react-router-dom para gerenciar as rotas da aplicação.
@@ -42,6 +43,7 @@ function App() {
           <Route index element={ <HomeDefault/> }/>
           <Route path="projetos" element={ <Projetos />}/>
           <Route path="compartilhados" element={ <Compartilhados />}/>
+          <Route path="dados_usuario" element={ <DadosUsuario />}/>
         </Route>
         
         <Route path="/logout" element={<ProtectedRoute> <Logout /></ProtectedRoute>} />

@@ -215,7 +215,9 @@ const en = {
     newTask: "New Task",
     confirm: "Confirm",
     sendCode: "Send code",
-    confirmCode: "Confirm"
+    confirmCode: "Confirm",
+    cancel: "Cancel",
+
   },
   sideBar: {
     home: "Home",
@@ -356,6 +358,15 @@ const en = {
     deleteProjectErrorDetail: "Unable to delete the project. Please try again."
   
   },
+  dadosUsuario: {
+    title: "My Data",
+    name: "Full Name",
+    username: "Username",
+    email: "Email",
+    editButton: "Edit",
+    loading: "Loading user data...",
+  },
+
 };
 
 export default en;

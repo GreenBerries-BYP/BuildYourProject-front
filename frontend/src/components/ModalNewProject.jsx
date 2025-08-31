@@ -451,7 +451,9 @@ const ModalNewProject = ({ isOpen, onClose }) => {
                               placeholder={t("inputs.addCustomPhase")}
                             />
                             <button id="addPhaseButton"
-                              onClick={() => {
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
                                 if (newPhase.trim() !== "" && !formData.phases.includes(newPhase)) {
                                   handlephasesChange(newPhase); // já seleciona
                                   setCustomPhases((prev) => [...prev, newPhase]);
@@ -602,18 +604,14 @@ const ModalNewProject = ({ isOpen, onClose }) => {
                       <strong>{t("inputs.phases")}:</strong>{" "}
                       {formData.phases.length > 0
                         ? formData.phases
-                            .map((value) =>
-                              t(
-                                (
-                                  abntTemplates.find(
-                                    (tmpl) => tmpl?.value === value
-                                  ) || {}
-                                ).label
-                              )
-                            )
+                            .map((value) => {
+                              const template = abntTemplates.find((tmpl) => tmpl?.value === value);
+                              return template ? t(template.label) : value; // se não tiver no padrão, usa o próprio valor
+                            })
                             .join(", ")
                         : t("messages.notSpecified")}
                     </p>
+
                   </div>
                   <div className="review-section">
                     <h4>{t("titles.datesAndCollaborators")}</h4>

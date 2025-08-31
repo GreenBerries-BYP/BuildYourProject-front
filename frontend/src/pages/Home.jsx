@@ -7,6 +7,7 @@ import '../styles/Home.css';
 import { fetchUserData } from '../api/userService';
 
 function Home() {
+  const [userData, setUserData] = useState(null);
   const [modalAberto, setModalAberto] = useState(false);
   const [sidebarAberta, setSidebarAberta] = useState(false);
 

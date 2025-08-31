@@ -4,6 +4,7 @@ import { fetchProjects, fetchSharedWithMe, fetchProjectWithTasks } from '../api/
 import ProjectCard from "../components/ProjectCard";
 import ViewProject from "../components/ViewProject";
 import ModalNewProject from "../components/ModalNewProject";
+import ModalDeleteProject from "../components/ModalDeleteProject";
 
 import '../styles/Home.css';
 import { fetchUserData } from '../api/userService';
@@ -13,6 +14,8 @@ function Compartilhados() {
   const [modalAberto, setModalAberto] = useState(false);
   const [userData, setUserData] = useState(null);
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   useEffect(() => {
     fetchUserData()
@@ -56,6 +59,10 @@ const handleAbrirProjeto = async (projeto) => {
     carregarProjetos();
   }, []);
 
+  const handleDeleteProjectClick = (projectId) => {
+    setSelectedProjectId(projectId);
+    setDeleteModalOpen(true);
+  };
 
   return (
     <>
@@ -90,6 +97,7 @@ const handleAbrirProjeto = async (projeto) => {
               tarefasProjeto={tarefas.slice(0, 4)} // pega só as 4 primeiras
               estaAtrasado={false} // se quiser depois adiciona lógica real
               onClick={() => handleAbrirProjeto(projeto)}
+              onDeleteClick={handleDeleteProjectClick} 
             />
           );
         })}
@@ -99,6 +107,16 @@ const handleAbrirProjeto = async (projeto) => {
       <ModalNewProject
         isOpen={modalAberto}
         onClose={() => setModalAberto(false)}
+      />
+
+      <ModalDeleteProject
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        projetoId={selectedProjectId}
+        onDeleteSuccess={(id) => {
+          setProjetos(projetos.filter(p => p.id !== id));
+          selectedProjectId(null);
+        }}
       />
     </>
   );

@@ -217,6 +217,7 @@ const pt = {
     confirm: "Confirmar",
     sendCode: "Enviar código",
     confirmCode: "Confirmar",
+    cancel: "Cancelar",
   },
   sideBar: {
     home: "Início",
@@ -354,6 +355,14 @@ const pt = {
     deleteProjectErrorTitle: "Erro ao excluir projeto",
     deleteProjectErrorDetail: "Não foi possível excluir o projeto. Tente novamente."
   
+  },
+  dadosUsuario: {
+    title: "Meus Dados",
+    name: "Nome",
+    username: "Username",
+    email: "Email",
+    editButton: "Editar",
+    loading: "Carregando dados do usuário...",
   },
 
 };
