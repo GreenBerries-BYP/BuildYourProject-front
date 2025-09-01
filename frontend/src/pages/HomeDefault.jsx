@@ -50,6 +50,7 @@ function HomeDefault() {
   try {
     const projetoCompleto = await fetchProjectWithTasks(projeto.id);
     setProjetoSelecionado(projetoCompleto);
+    setSelectedProjectId(projeto.id);
   } catch (error) {
     console.error("Erro ao carregar projeto completo:", error);
   }
@@ -58,6 +59,8 @@ function HomeDefault() {
   const handleVoltar = () => {
     setProjetoSelecionado(null);
     console.log(projetoSelecionado);
+    console.log(selectedProjectId);
+   
   };
 
   const [projetos, setProjetos] = useState([]);
@@ -107,7 +110,7 @@ function HomeDefault() {
       {projetoSelecionado ? (
         <div className="d-flex w-100 justify-content-center align-items-center">
           <ViewProject
-            projetoId={projetoSelecionado.id}
+            projetoId={selectedProjectId}
             nomeProjeto={projetoSelecionado.name}
             admProjeto={projetoSelecionado.creator_name}
             numIntegrantes={projetoSelecionado.collaborator_count}

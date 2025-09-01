@@ -189,7 +189,9 @@ const en = {
     verificationCodeSent: "A verification code has been sent to your email.",
     errorSendingCode: "Error sending the code. Please try again.",
     enterFullCode: "Enter all 6 digits of the code",
-    enterVerificationCode: "Enter the 6-digit code"
+    enterVerificationCode: "Enter the 6-digit code",
+    optional: "Optional",   // para indicar que a seleção do responsável é opcional
+    none: "N/A", 
   },
   modalDeleteProject: {
     typeYesToDelete: "Type",
@@ -246,6 +248,7 @@ const en = {
     endDate: "End Date",
     academicArticle: "Academic Article",
     collaboratorEmail: "Collaborator Email",
+    selectResponsible: "Select a responsible",
   },
   placeholders: {
     projectName: "Enter project name",

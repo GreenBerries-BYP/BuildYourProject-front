@@ -190,7 +190,10 @@ const pt = {
     verificationCodeSent: "Um código de verificação foi enviado para seu e-mail.",
     errorSendingCode: "Erro ao enviar o código. Tente novamente.",
     enterFullCode: "Digite os 6 dígitos do código",
-    enterVerificationCode: "Digite o código de 6 dígitos"
+    enterVerificationCode: "Digite o código de 6 dígitos",
+    optional: "Opcional",   // para indicar que a seleção do responsável é opcional
+    none: "N/A", 
+  
   },
   modalDeleteProject: {
     typeYesToDelete: "Digite",
@@ -249,6 +252,7 @@ const pt = {
     endDate: "Data de Término",
     academicArticle: "Artigo Acadêmico",
     collaboratorEmail: "Email do Colaborador",
+    selectResponsible: "Selecione um responsável"
   },
   placeholders: {
     projectName: "Insira o nome do projeto",

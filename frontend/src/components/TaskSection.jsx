@@ -18,12 +18,13 @@ import "../styles/TaskSection.css";
 
 const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle, onDeleteClick, onAssignClick }) => {
   const { t } = useTranslation();
-  const [subtasks, setSubtasks] = useState(subTarefas);
+  const [subtasks, setSubtasks] = useState(subTarefas || []);
   const menuRef = useRef(null);
 
   useEffect(() => {
-    setSubtasks(subTarefas);
+    setSubtasks(subTarefas || []);
   }, [subTarefas]);
+
 
   // como ainda não foi implementada a atribuição de tarefas, força responsavel como "-"
   const subtasksWithResponsible = subtasks.map((sub) => ({
@@ -65,9 +66,14 @@ const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle, onDeleteClick
     }
   };
 
-  const colaboradores = Array.from(
-    new Set(subTarefas.map((t) => t.responsavel).filter(Boolean))
-  );
+  const colaboradores = useMemo(() => {
+    if (!Array.isArray(subTarefas)) return [];
+
+    return Array.from(
+      new Set(subTarefas.map((t) => t.responsavel).filter(Boolean))
+    );
+  }, [subTarefas]);
+
 
   const statusTemplate = (rowData) => {
     const isFinished = rowData.status === "concluído";
@@ -144,6 +150,13 @@ const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle, onDeleteClick
                     command: (e) => {
                         e.originalEvent.preventDefault(); // <- previne comportamento padrão
                         if (onDeleteClick) onDeleteClick(); 
+                      }, 
+                  },
+                  { 
+                    label: "adicionar subtask",
+                    command: (e) => {
+                        e.originalEvent.preventDefault(); // <- previne comportamento padrão
+                        if (onAddSubTask) onAddSubTask(); 
                       }, 
                   },
                 ]}

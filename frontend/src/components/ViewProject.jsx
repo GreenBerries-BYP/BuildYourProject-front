@@ -23,6 +23,7 @@ const ViewProject = ({
     const [assignModalOpen, setAssignModalOpen] = useState(false);
     const [selectedTasktId, setSelectedTasktId] = useState(null);
     const [selectedTaskIdForAssign, setSelectedTaskIdForAssign] = useState(null);
+    const [tarefasProjetoState, setTarefasProjetoState] = useState(tarefasProjeto || []);
 
     const handleDeleteTaskClick = (taskId) => {
         setSelectedTasktId(taskId);
@@ -34,15 +35,12 @@ const ViewProject = ({
         setAssignModalOpen(true);
     };
 
-    const handleCreateTask = async (novaTarefa) => {
-        try {
-            const createdTask = await createTask(projectId, novaTarefa);
-            setTarefasProjeto((prev) => [...prev, createdTask]);
-            setModalAberto(false); // Fecha o modal
-        } catch (error) {
-            console.error("Não foi possível criar a tarefa:", error);
-        }
+    const handleCreateTask = (novaTarefa) => {
+        setTarefasProjetoState((prev) => [...prev, novaTarefa]);
+        setModalAberto(false);
     };
+
+
 
     const toggleSection = (section) => {
         setExpandedSections((prev) => ({
@@ -89,7 +87,7 @@ const ViewProject = ({
             </div>
 
             <div className="project-tasks">
-                {tarefasProjeto?.map((tarefa, index) => (
+                {tarefasProjetoState?.map((tarefa, index) => (
                     <TaskSection
                         key={index}
                         nomeTarefa={tarefa.nomeTarefa}
@@ -107,14 +105,15 @@ const ViewProject = ({
                 onClose={() => setModalAberto(false)} 
                 projetoId={projetoId} // <-- passar o ID do projeto atual
                 onTaskCreated={handleCreateTask}
+                collaborators={collaborators}
             />
             <ModalDeleteTask
                 isOpen={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
                 taskId={selectedTasktId}
                 onDeleteSuccess={(id) => {
-                setTasks(tarefasProjeto.filter(t => t.id !== id));
-                setselectedTasktId(null);
+                    setTarefasProjetoState(tarefasProjetoState.filter(t => t.id !== id));
+                    setSelectedTasktId(null);
                 }}
             />
             <ModalAssignTask
@@ -122,13 +121,12 @@ const ViewProject = ({
                 onClose={() => setAssignModalOpen(false)}
                 taskId={selectedTaskIdForAssign}
                 onAssignSuccess={(email) => {
-                    // Atualiza o colaborador localmente, se quiser
-                    setTarefasProjeto((prev) =>
-                    prev.map((t) =>
-                        t.id === selectedTaskIdForAssign
-                        ? { ...t, subTarefas: t.subTarefas.map(sub => ({ ...sub, responsavel: email })) }
-                        : t
-                    )
+                    setTarefasProjetoState((prev) =>
+                        prev.map((t) =>
+                            t.id === selectedTaskIdForAssign
+                            ? { ...t, subTarefas: t.subTarefas.map(sub => ({ ...sub, responsavel: email })) }
+                            : t
+                        )
                     );
                     setSelectedTaskIdForAssign(null);
                 }}
