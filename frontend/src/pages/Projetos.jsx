@@ -88,6 +88,7 @@ function Projetos() {
     try {
       const projetoCompleto = await fetchProjectWithTasks(projeto.id);
       setProjetoSelecionado(projetoCompleto);
+      setSelectedProjectId(projeto.id);
     } catch (error) {
       console.error("Erro ao carregar projeto completo:", error);
     }
@@ -103,6 +104,7 @@ function Projetos() {
       {projetoSelecionado ? (
         <div className='d-flex w-100 justify-content-center align-items-center'>
           <ViewProject
+            projetoId={selectedProjectId}
             nomeProjeto={projetoSelecionado.name}
             admProjeto={projetoSelecionado.creator_name}
             numIntegrantes={projetoSelecionado.collaborator_count}

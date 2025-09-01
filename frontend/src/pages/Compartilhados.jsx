@@ -32,6 +32,7 @@ const handleAbrirProjeto = async (projeto) => {
   try {
     const projetoCompleto = await fetchSharedWithMe(projeto.id);
     setProjetoSelecionado(projetoCompleto);
+    setSelectedProjectId(projeto.id);
   } catch (error) {
     console.error("Erro ao carregar projeto completo:", error);
   }
@@ -69,6 +70,7 @@ const handleAbrirProjeto = async (projeto) => {
         {projetoSelecionado ? (
           <div className='d-flex w-100 justify-content-center align-items-center'>
             <ViewProject
+              projetoId={selectedProjectId}
               nomeProjeto={projetoSelecionado.name}
               admProjeto={projetoSelecionado.creator_name}
               numIntegrantes={projetoSelecionado.collaborator_count}
