@@ -13,14 +13,17 @@ const api = axios.create({
 api.interceptors.request.use(
   async (config) => {
     const token = getToken();
-    if (token) {
+
+    // Lista de rotas que não precisam de Authorization
+    const publicRoutes = ["/register/", "/login/"];
+
+    if (token && !publicRoutes.some((route) => config.url.includes(route))) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // Response interceptor para tratar requisições globais
