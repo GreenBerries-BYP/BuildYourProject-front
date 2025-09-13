@@ -16,7 +16,15 @@ import { useTranslation } from "react-i18next";
 import { Avatar } from "primereact/avatar";
 import "../styles/TaskSection.css";
 
-const TaskSection = ({ nomeTarefa, subTarefas, expanded, onToggle, onDeleteClick, onAssignClick }) => {
+const TaskSection = ({ 
+  projetoId,
+  nomeTarefa, 
+  subTarefas, 
+  expanded, 
+  onToggle, 
+  onDeleteClick, 
+  onAssignClick
+}) => {
   const { t } = useTranslation();
   const [subtasks, setSubtasks] = useState(subTarefas || []);
   const menuRef = useRef(null);

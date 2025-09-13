@@ -90,6 +90,7 @@ const ViewProject = ({
                 {tarefasProjetoState?.map((tarefa, index) => (
                     <TaskSection
                         key={index}
+                        projetoId={projetoId}
                         nomeTarefa={tarefa.nomeTarefa}
                         progresso={tarefa.progresso}
                         subTarefas={tarefa.subTarefas}
