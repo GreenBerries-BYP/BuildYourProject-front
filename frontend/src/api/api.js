@@ -15,7 +15,7 @@ api.interceptors.request.use(
     const token = getToken();
 
     // Lista de rotas que não precisam de Authorization
-    const publicRoutes = ["/register/", "/login/"];
+    const publicRoutes = ["/register/", "/login/", "/auth/google/"];
 
     if (token && !publicRoutes.some((route) => config.url.includes(route))) {
       config.headers.Authorization = `Bearer ${token}`;

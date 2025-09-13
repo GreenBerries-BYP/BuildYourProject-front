@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { GoogleLogin } from "@react-oauth/google";
 import ModalForgotPassword from "../components/ModalForgotPassword";
 import toastService from "../api/toastService";
+import jwt_decode from "jwt-decode";
 
 
 import api from "../api/api";
@@ -20,6 +21,7 @@ const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [showForgotModal, setShowForgotModal] = useState(false);
 
   const {
@@ -42,7 +44,7 @@ const Login = () => {
         email: data.email,
         password: data.senha,
       });
-      saveToken(res.data.access);
+      saveToken(res.data.access, data.manterLogado);
 
       toastService.success(
         t("toast.loginSuccessTitle", "Bem-vindo!"),
@@ -69,17 +71,28 @@ const Login = () => {
   };
 
   const onGoogleSuccess = async (response) => {
+    setLoadingGoogle(true);
     const token = response.credential;
+
     try {
       const res = await api.post("/auth/google/", {
         access_token: token,
       });
-      saveToken(res.data.access);
+      saveToken(res.data.access, true,res.data.refresh);
+      localStorage.setItem("refresh_token", res.data.refresh);
+      localStorage.setItem("user_info", JSON.stringify(res.data.user));
+
 
       toastService.success(
         t("toast.loginSuccessTitle", "Bem-vindo!"),
         t("toast.loginSuccessDetail", "Login realizado com sucesso.")
       );
+
+      const userInfo = jwt_decode(res.data.access);
+      console.log("Backend user info:", userInfo); 
+
+      const googleUserInfo = jwt_decode(token);
+      console.log("google user info:", googleUserInfo); 
 
       navigate("/home");
     } catch (err) {
@@ -88,6 +101,8 @@ const Login = () => {
         t("toast.googleLoginErrorDetail", "Não foi possível autenticar.")
       );
       console.error("Erro ao autenticar com Google:", err);
+    } finally {
+      setLoadingGoogle(false); 
     }
   };
 
@@ -259,6 +274,12 @@ const Login = () => {
             <div className="d-flex justify-content-center">
               <GoogleLogin
                 onSuccess={onGoogleSuccess}
+                onError={() => {
+                  toastService.error(
+                    t("toast.googleLoginErrorTitle", "Erro no Google Login"),
+                    t("toast.googleLoginErrorDetail", "Não foi possível autenticar.")
+                  );
+                }}
               />
             </div>
           </div>

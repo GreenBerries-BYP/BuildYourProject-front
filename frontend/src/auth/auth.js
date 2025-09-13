@@ -1,11 +1,15 @@
-export const saveToken = (token) => {
-  localStorage.setItem('access_token', token); // Salva o token no localStorage
-  //É bom salvar em localStorage para persistir o token entre recarregamentos de página
+export const saveToken = (token, keepLogged = false, refreshToken = null) => {
+  if (keepLogged) {
+    localStorage.setItem("access_token", token);
+    if (refreshToken) localStorage.setItem("refresh_token", refreshToken);
+  } else {
+    sessionStorage.setItem("access_token", token);
+    if (refreshToken) sessionStorage.setItem("refresh_token", refreshToken);
+  }
 };
 
 export const getToken = () => {
-  return localStorage.getItem('access_token'); // Recupera o token do localStorage
-    //Se o token não estiver no localStorage, retorna null
+  return localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
 };
 
 export const removeToken = () => {
