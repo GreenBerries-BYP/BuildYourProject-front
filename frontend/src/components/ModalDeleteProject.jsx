@@ -19,15 +19,14 @@ const ModalDeleteProject = ({ isOpen, onClose, projetoId, onDeleteSuccess }) => 
 
     try {
       const token = localStorage.getItem("access_token"); // JWT
-      const res = await fetch(`${API_URL}/projetos/${projetoId}/`, {
+      const res = await fetch(`${API_URL}/projetos/delete/${projetoId}/`, {
         method: 'DELETE',
         headers: { 
-          'Authorization': `Bearer ${token}` ,
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-
         },
-        
       });
+        
 
       if (res.status === 204) {
         toastService.success(
