@@ -223,6 +223,9 @@ const en = {
     confirmCode: "Confirm",
     cancel: "Cancel",
     assign: "Assign Task",
+    viewSchedule: "View Schedule",
+    back: "Back",
+    addSubtask: "Add SubTask"
   },
   sideBar: {
     home: "Home",

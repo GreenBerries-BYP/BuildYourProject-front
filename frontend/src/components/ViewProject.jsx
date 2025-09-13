@@ -5,6 +5,7 @@ import TaskSection from './TaskSection';
 import ModalNewTask from './ModalNewTask';
 import ModalDeleteTask from "../components/ModalDeleteTask";
 import ModalAssignTask from "../components/ModalAssignTask";
+import Schedule from '../components/Schedule';
 
 
 const ViewProject = ({
@@ -24,6 +25,8 @@ const ViewProject = ({
     const [selectedTasktId, setSelectedTasktId] = useState(null);
     const [selectedTaskIdForAssign, setSelectedTaskIdForAssign] = useState(null);
     const [tarefasProjetoState, setTarefasProjetoState] = useState(tarefasProjeto || []);
+    const [showSchedule, setShowSchedule] = useState(false);
+
 
     const handleDeleteTaskClick = (taskId) => {
         setSelectedTasktId(taskId);
@@ -74,7 +77,9 @@ const ViewProject = ({
                         <div className="btns col-6 col-lg-12 order-2 order-lg-1 justify-content-end">
                             <button className='compartilhar-btn'><img src="/imgs/icons-project/Link.svg" alt={t("altText.shareLink")} /></button>
                             <button className='editar-btn'><img src="/imgs/icons-project/Edit.svg" alt={t("altText.editProject")} /></button>
-                            <button className='calendario-btn'><img src="/imgs/icons-project/Calendar.svg" alt={t("altText.viewCalendar")} /></button>
+                            <button className='calendario-btn' onClick={() => setShowSchedule(true)}>
+                                <img src="/imgs/icons-project/Calendar.svg" alt={t("altText.viewCalendar")} />
+                            </button>
                             <button className='fechar-btn' onClick={onVoltar}><img src="/imgs/icons-project/Close.svg" alt={t("altText.closeView")} /></button>
                         </div>
 
@@ -82,24 +87,37 @@ const ViewProject = ({
                             <span>{t('buttons.newTask')}</span>
                             <img src="/imgs/icons-project/add.svg" />
                         </button>
+
+
                     </div>
                 </div>
             </div>
 
             <div className="project-tasks">
-                {tarefasProjetoState?.map((tarefa, index) => (
-                    <TaskSection
-                        key={index}
+                {showSchedule ? (
+                    <Schedule
                         projetoId={projetoId}
-                        nomeTarefa={tarefa.nomeTarefa}
-                        progresso={tarefa.progresso}
-                        subTarefas={tarefa.subTarefas}
-                        expanded={expandedSections[tarefa.nomeTarefa]}
-                        onToggle={() => toggleSection(tarefa.nomeTarefa)}
-                        onDeleteClick={() => handleDeleteTaskClick(tarefa.id)}
-                        onAssignClick={() => handleAssignTaskClick(tarefa.id)}
+                        nomeProjeto={nomeProjeto}
+                        onVoltar={() => setShowSchedule(false)}
                     />
-                ))}
+                ) : (
+                    <div className="project-tasks">
+                        {tarefasProjetoState?.map((tarefa, index) => (
+                            <TaskSection
+                                key={index}
+                                projetoId={projetoId}
+                                nomeTarefa={tarefa.nomeTarefa}
+                                progresso={tarefa.progresso}
+                                subTarefas={tarefa.subTarefas}
+                                expanded={expandedSections[tarefa.nomeTarefa]}
+                                onToggle={() => toggleSection(tarefa.nomeTarefa)}
+                                onDeleteClick={() => handleDeleteTaskClick(tarefa.id)}
+                                onAssignClick={() => handleAssignTaskClick(tarefa.id)}
+                            />
+                        ))}
+                    </div>
+                )}
+
             </div>
             <ModalNewTask 
                 isOpen={modalAberto} 

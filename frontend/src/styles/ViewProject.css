@@ -63,6 +63,21 @@
     height: 3rem;
 }
 
+.criar-cronograma-btn {
+    color: white;
+    background: var(--purple-color); /* pode trocar a cor para diferenciar do verde */
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    border: 2px white solid;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
+    gap: 1rem;
+    justify-content: center;
+}
+
+.criar-cronograma-btn img{
+    height: 3rem;
+}
+
 .project-tasks{
     display: flex;
     flex-direction: column;
