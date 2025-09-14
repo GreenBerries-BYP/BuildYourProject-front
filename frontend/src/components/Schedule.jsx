@@ -159,11 +159,11 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
         <div className="btns-right">
           {editing ? (
             <button className="salvar-btn" onClick={handleSalvar}>
-              Salvar
+              {t("buttons.edit", "Editar")}
             </button>
           ) : (
             <button className="editar-btn" onClick={() => setEditing(true)}>
-              Editar
+              {t("buttons.save", "Salvar")}
             </button>
           )}
           <button className="fechar-schedule-btn" onClick={onVoltar}>
@@ -183,61 +183,64 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
         )}
       </div>
 
-      {editing && (
-        <div className="phase-list">
-          {phases.map((fase, fIdx) => (
-            <div key={fIdx} className="phase-item">
-              <h4>{fase.nomeTarefa}</h4>
-              <label>
-                Início:{" "}
-                <input
-                  type="date"
-                  value={fase.data_inicio.toISOString().split("T")[0]}
-                  onChange={(e) =>
-                    handleDateChange(fIdx, null, "data_inicio", e.target.value)
-                  }
-                />
-              </label>
-              <label>
-                Fim:{" "}
-                <input
-                  type="date"
-                  value={fase.data_fim.toISOString().split("T")[0]}
-                  onChange={(e) =>
-                    handleDateChange(fIdx, null, "data_fim", e.target.value)
-                  }
-                />
-              </label>
+      <div className="phase-list">
+        {phases.map((fase, fIdx) => (
+          <div key={fIdx} className="phase-item">
+            <h4>{fase.nomeTarefa}</h4>
+            <label>
+              {t("inputs.startDate", "Início")}{": "}
+              <input
+                type="date"
+                value={fase.data_inicio.toISOString().split("T")[0]}
+                onChange={(e) =>
+                  handleDateChange(fIdx, null, "data_inicio", e.target.value)
+                }
+                disabled={!editing}
+              />
+            </label>
+            <label>
+              {t("inputs.endDate", "Fim")}{": "}
+              <input
+                type="date"
+                value={fase.data_fim.toISOString().split("T")[0]}
+                onChange={(e) =>
+                  handleDateChange(fIdx, null, "data_fim", e.target.value)
+                }
+                disabled={!editing}
+              />
+            </label>
 
-              {(fase.subTarefas || []).map((sub, sIdx) => (
-                <div key={sIdx} className="subtask-item">
-                  <span>{sub.title}</span>
-                  <label>
-                    Início:{" "}
-                    <input
-                      type="date"
-                      value={sub.data_inicio.toISOString().split("T")[0]}
-                      onChange={(e) =>
-                        handleDateChange(fIdx, sIdx, "data_inicio", e.target.value)
-                      }
-                    />
-                  </label>
-                  <label>
-                    Fim:{" "}
-                    <input
-                      type="date"
-                      value={sub.data_fim.toISOString().split("T")[0]}
-                      onChange={(e) =>
-                        handleDateChange(fIdx, sIdx, "data_fim", e.target.value)
-                      }
-                    />
-                  </label>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
+            {(fase.subTarefas || []).map((sub, sIdx) => (
+              <div key={sIdx} className="subtask-item">
+                <span>{sub.title}</span>
+                <label>
+                  {t("inputs.startDate", "Início")}{": "}
+                  <input
+                    type="date"
+                    value={sub.data_inicio.toISOString().split("T")[0]}
+                    onChange={(e) =>
+                      handleDateChange(fIdx, sIdx, "data_inicio", e.target.value)
+                    }
+                    disabled={!editing}
+                  />
+                </label>
+                <label>
+                  {t("inputs.endDate", "Fim")}{": "}
+                  <input
+                    type="date"
+                    value={sub.data_fim.toISOString().split("T")[0]}
+                    onChange={(e) =>
+                      handleDateChange(fIdx, sIdx, "data_fim", e.target.value)
+                    }
+                    disabled={!editing}
+                  />
+                </label>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+      
     </div>
   );
 };
