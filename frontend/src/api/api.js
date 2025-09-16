@@ -100,4 +100,26 @@ export const fetchProjectWithTasks = async (projectId) => {
 };
 
 
+export const updateTask = async (projectId, taskId, data) => {
+  try {
+    const response = await api.put(`/projects/${projectId}/tasks/${taskId}/`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao atualizar tarefa:', error);
+    throw error;
+  }
+};
+
+
+export const updateSubtask = async (projectId, subtaskId, data) => {
+  try {
+    const response = await api.put(`/projects/${projectId}/subtasks/${subtaskId}/`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao atualizar subtarefa:', error);
+    throw error;
+  }
+};
+
+
 export default api;

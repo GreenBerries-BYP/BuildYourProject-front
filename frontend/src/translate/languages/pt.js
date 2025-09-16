@@ -225,6 +225,9 @@ const pt = {
     confirmCode: "Confirmar",
     cancel: "Cancelar",
     assign: "Atribuir Tarefa",
+    viewSchedule: "Ver Cronograma",
+    back: "Voltar",
+    addSubtask: "Nova SubTarefa"
   },
   sideBar: {
     home: "Início",

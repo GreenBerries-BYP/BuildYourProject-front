@@ -33,7 +33,6 @@ const TaskSection = ({
     setSubtasks(subTarefas || []);
   }, [subTarefas]);
 
-
   // como ainda não foi implementada a atribuição de tarefas, força responsavel como "-"
   const subtasksWithResponsible = subtasks.map((sub) => ({
     ...sub,
@@ -161,7 +160,7 @@ const TaskSection = ({
                       }, 
                   },
                   { 
-                    label: "adicionar subtask",
+                    label: t("buttons.addSubtask"),
                     command: (e) => {
                         e.originalEvent.preventDefault(); // <- previne comportamento padrão
                         if (onAddSubTask) onAddSubTask(); 

@@ -10,7 +10,8 @@ import { useTranslation } from "react-i18next";
 import { GoogleLogin } from "@react-oauth/google";
 import ModalForgotPassword from "../components/ModalForgotPassword";
 import toastService from "../api/toastService";
-import jwt_decode from "jwt-decode";
+import { jwtDecode  } from "jwt-decode";
+
 
 
 import api from "../api/api";
@@ -38,6 +39,7 @@ const Login = () => {
   });
 
   const onSubmit = async (data) => {
+    
     setLoading(true);
     try {
       const res = await api.post("/login/", {
@@ -88,10 +90,10 @@ const Login = () => {
         t("toast.loginSuccessDetail", "Login realizado com sucesso.")
       );
 
-      const userInfo = jwt_decode(res.data.access);
+      const userInfo = jwtDecode(res.data.access);
       console.log("Backend user info:", userInfo); 
 
-      const googleUserInfo = jwt_decode(token);
+      const googleUserInfo = jwtDecode(token);
       console.log("google user info:", googleUserInfo); 
 
       navigate("/home");

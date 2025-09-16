@@ -1,0 +1,77 @@
+.schedule-container {
+  padding: 2rem;
+  background: var(--white-color);
+  border-radius: 10px;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.1);
+}
+
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.btns-right {
+  display: flex;
+  color: var(--black-color);
+  gap: 1rem;
+}
+
+.criar-tarefa-btn {
+  color: var(--white-color);
+  background: var(--green-dark-color);
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  border: 2px var(--white-color) solid;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
+  gap: 1rem;
+  justify-content: center;
+}
+
+.phase-list {
+  margin-top: 2rem;
+}
+
+.phase-item {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.phase-item h4{
+    font-size: 1.8rem;
+    padding-block: 1rem;
+}
+
+.subtask-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.8rem;
+  padding: 2rem;
+  margin-top: 0.5rem;
+  border-radius: 1rem;
+  border: var(--gray-light-color) 1px solid;
+  margin-bottom: 1rem;
+}
+
+.subtask-item span{
+  padding-right: 2rem;
+}
+
+
+.fechar-schedule-btn{
+    font-size: 1.8rem;
+    padding: 1rem 1.5rem;
+    border: var(--black-color) 1px solid;
+    border-radius: 1rem;
+    color: var(--black-color);
+}
+
+.chart{
+  background-color: white;
+}
+
+.editar-btn{
+  color: var(--black-color);
+}

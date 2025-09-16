@@ -11,7 +11,6 @@ class ToastService {
       return;
     }
 
-    // 🚫 Bloquear mensagens genéricas que não ajudam
     const blockedSummaries = [
       "Requisição completada com sucesso",
       "Ocorreu um erro inesperado",
