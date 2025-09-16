@@ -49,17 +49,20 @@ const Calendario = () => {
       {!googleLogged ? (
         <div className="google-login-container">
           <h2>Login com Google para acessar seu calendário</h2>
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={() =>
-              toastService.error(
-                "Erro Google",
-                "Não foi possível autenticar com Google."
-              )
-            }
-            useOneTap={false}
-            scope="openid email profile https://www.googleapis.com/auth/calendar"
-          />
+          <div className="google-login-button">
+
+            <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() =>
+                toastService.error(
+                    "Erro Google",
+                    "Não foi possível autenticar com Google."
+                )
+                }
+                useOneTap={false}
+                scope="openid email profile https://www.googleapis.com/auth/calendar"
+            />
+          </div>
         </div>
       ) : (
         <div>

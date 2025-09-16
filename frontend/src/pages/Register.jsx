@@ -349,6 +349,14 @@ const Register = () => {
                 t("register.submitButton")
               )}
             </button>
+
+            <span className="tem-conta">
+              <p>Já possui uma conta?</p>
+              <a className="link-borda-roxo" onClick={() => navigate("/login")}>
+                {t("landing.nav.login", "Fazer login")}
+              </a>
+            </span>
+            
           </div>
         </form>
       </div>
