@@ -25,6 +25,8 @@ const Login = () => {
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [showForgotModal, setShowForgotModal] = useState(false);
 
+  const googleToken = localStorage.getItem("google_access_token");
+
   const {
     control,
     handleSubmit,
@@ -81,6 +83,8 @@ const Login = () => {
         access_token: token,
       });
       saveToken(res.data.access, true,res.data.refresh);
+      
+      localStorage.setItem("google_access_token", token);
       localStorage.setItem("refresh_token", res.data.refresh);
       localStorage.setItem("user_info", JSON.stringify(res.data.user));
 
@@ -282,6 +286,8 @@ const Login = () => {
                     t("toast.googleLoginErrorDetail", "Não foi possível autenticar.")
                   );
                 }}
+                useOneTap={false}
+                scope="openid email profile https://www.googleapis.com/auth/calendar"
               />
             </div>
           </div>

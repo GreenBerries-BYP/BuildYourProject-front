@@ -159,11 +159,11 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
         <div className="btns-right">
           {editing ? (
             <button className="salvar-btn" onClick={handleSalvar}>
-              {t("buttons.edit", "Editar")}
+              {t("buttons.save", "Salvar")}
             </button>
           ) : (
             <button className="editar-btn" onClick={() => setEditing(true)}>
-              {t("buttons.save", "Salvar")}
+              {t("buttons.edit", "Editar")}
             </button>
           )}
           <button className="fechar-schedule-btn" onClick={onVoltar}>

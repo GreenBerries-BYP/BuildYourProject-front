@@ -16,3 +16,8 @@ export const removeToken = () => {
   localStorage.removeItem('access_token'); // Remove o token do localStorage
     //Isso é útil para fazer logout do usuário
 };
+
+export const getGoogleLoginStatus = () => {
+  return !!localStorage.getItem("google_access_token");
+};
+
