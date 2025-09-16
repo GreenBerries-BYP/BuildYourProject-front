@@ -122,4 +122,25 @@ export const updateSubtask = async (projectId, subtaskId, data) => {
 };
 
 
+// Adiciona esta função no seu api.js
+export const fetchGoogleCalendarEvents = async () => {
+  try {
+    const token = localStorage.getItem("token"); // ou use getToken()
+    const response = await api.get("/google/calendar/sync/", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // eventos do Google Calendar
+  } catch (error) {
+    console.error("Erro ao buscar eventos do Google Calendar:", error);
+    toastService.error(
+      "Erro ao sincronizar calendário",
+      "Não foi possível acessar seus eventos do Google Calendar"
+    );
+    throw error;
+  }
+};
+
+
 export default api;

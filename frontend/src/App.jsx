@@ -14,6 +14,7 @@ import Logout from './components/Logout'
 import HomeDefault from './pages/HomeDefault';
 import Projetos from './pages/Projetos';
 import Compartilhados from './pages/Compartilhados';
+import Calendario from './pages/Calendario';
 import DadosUsuario from './pages/DadosUsuario';
 
 //App.jsx faz o roteamento da aplicação, definindo as rotas para as páginas de login e registro.
@@ -43,6 +44,7 @@ function App() {
           <Route index element={ <HomeDefault/> }/>
           <Route path="projetos" element={ <Projetos />}/>
           <Route path="compartilhados" element={ <Compartilhados />}/>
+          <Route path="calendario" element={ <Calendario />}/>
           <Route path="dados_usuario" element={ <DadosUsuario />}/>
         </Route>
         

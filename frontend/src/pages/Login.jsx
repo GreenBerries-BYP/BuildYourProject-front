@@ -25,6 +25,8 @@ const Login = () => {
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [showForgotModal, setShowForgotModal] = useState(false);
 
+  const googleToken = localStorage.getItem("google_access_token");
+
   const {
     control,
     handleSubmit,
@@ -81,6 +83,8 @@ const Login = () => {
         access_token: token,
       });
       saveToken(res.data.access, true,res.data.refresh);
+      
+      localStorage.setItem("google_access_token", token);
       localStorage.setItem("refresh_token", res.data.refresh);
       localStorage.setItem("user_info", JSON.stringify(res.data.user));
 
@@ -237,13 +241,6 @@ const Login = () => {
               </div>
 
               <div className="row p-0 pt-5 d-flex justify-content-center w-100 align-items-center gap-5">
-                <button
-                  type="button"
-                  className="col-12 col-lg-5 mx-3 py-2 btn-change-page flex-fill text-center"
-                  onClick={() => navigate("/register")}
-                >
-                  {t("login.register")}
-                </button>
 
                 <button
                   className="col-12 col-lg-5 mx-3 py-2 btn-acesso-verde flex-fill d-flex justify-content-center align-items-center"
@@ -266,6 +263,16 @@ const Login = () => {
                     t("login.signIn")
                   )}
                 </button>
+                <span className="tem-conta w-100 flex-fill col-12 col-lg-5 mx-3 py-2">
+                  <p>Não tem conta ainda?</p>
+                  <button
+                    type="button"
+                    className="px-5 btn-change-page text-center "
+                    onClick={() => navigate("/register")}
+                  >
+                    {t("login.register")}
+                  </button>
+                </span>
               </div>
             </form>
 
@@ -273,7 +280,7 @@ const Login = () => {
               <b>{t("login.or")}</b>
             </Divider>
 
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center w-100">
               <GoogleLogin
                 onSuccess={onGoogleSuccess}
                 onError={() => {
@@ -282,6 +289,8 @@ const Login = () => {
                     t("toast.googleLoginErrorDetail", "Não foi possível autenticar.")
                   );
                 }}
+                useOneTap={false}
+                scope="openid email profile https://www.googleapis.com/auth/calendar"
               />
             </div>
           </div>

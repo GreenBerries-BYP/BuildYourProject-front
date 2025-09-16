@@ -18,6 +18,11 @@ const Logout = () => {
         "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax";
     });
 
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user_info");
+    localStorage.removeItem("google_access_token");
+
     document.body.classList.remove('dark-theme');
     navigate('/');
   }, [navigate]);
