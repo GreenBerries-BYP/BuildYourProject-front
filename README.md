@@ -38,8 +38,8 @@
 | <img src="https://github.com/maris2606.png" width="100"/> | <img src="https://github.com/Mihcup.png" width="100"/> | <img src="https://github.com/RodrigoBettio.png" width="100"/> |
 
 
+![Alt](https://repobeats.axiom.co/api/embed/897d81a8d56e71eb6718c9da8acd3c427250dd15.svg "Repobeats analytics image")
 
-![Alt](https://repobeats.axiom.co/api/embed/e6dded7619f898ccb363c37cbd862c9a48978b95.svg "Repobeats analytics image")
 </div>
 
 
