@@ -39,7 +39,7 @@
 
 
 
-![Alt](![Alt](https://repobeats.axiom.co/api/embed/e6dded7619f898ccb363c37cbd862c9a48978b95.svg "Repobeats analytics image"))
+![Alt](https://repobeats.axiom.co/api/embed/e6dded7619f898ccb363c37cbd862c9a48978b95.svg "Repobeats analytics image")
 </div>
 
 
