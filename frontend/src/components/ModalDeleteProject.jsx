@@ -19,7 +19,7 @@ const ModalDeleteProject = ({ isOpen, onClose, projetoId, onDeleteSuccess }) => 
 
     try {
       const token = localStorage.getItem("access_token"); // JWT
-      const res = await fetch(`${API_URL}/projetos/delete/${projetoId}/`, {
+      const res = await fetch(`${API_URL}/projetos/${projetoId}/delete/`, {
         method: 'DELETE',
         headers: { 
           'Authorization': `Bearer ${token}`,
