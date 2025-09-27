@@ -142,5 +142,30 @@ export const fetchGoogleCalendarEvents = async () => {
   }
 };
 
+// api.js - Adicione estas funções
+
+export const analisarProjeto = async (projectId) => {
+  try {
+    const response = await api.post(`/projetos/${projectId}/analisar/`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao analisar projeto:', error);
+    throw error;
+  }
+};
+
+export const aplicarSugestao = async (projectId, sugestaoId, acao) => {
+  try {
+    const response = await api.post(`/projetos/${projectId}/aplicar-sugestao/`, {
+      sugestao_id: sugestaoId,
+      acao: acao
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao aplicar sugestão:', error);
+    throw error;
+  }
+};
+
 
 export default api;

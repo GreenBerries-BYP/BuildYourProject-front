@@ -76,15 +76,15 @@ const Login = () => {
 
   const onGoogleSuccess = async (response) => {
     setLoadingGoogle(true);
-    const token = response.credential;
+    const accessToken = response.credential;
 
     try {
       const res = await api.post("/auth/google/", {
-        access_token: token,
+        access_token: accessToken,
       });
       saveToken(res.data.access, true,res.data.refresh);
       
-      localStorage.setItem("google_access_token", token);
+      localStorage.setItem("google_access_token", accessToken);
       localStorage.setItem("refresh_token", res.data.refresh);
       localStorage.setItem("user_info", JSON.stringify(res.data.user));
 
@@ -97,7 +97,7 @@ const Login = () => {
       const userInfo = jwtDecode(res.data.access);
       console.log("Backend user info:", userInfo); 
 
-      const googleUserInfo = jwtDecode(token);
+      const googleUserInfo = jwtDecode(accessToken);
       console.log("google user info:", googleUserInfo); 
 
       navigate("/home");
@@ -282,7 +282,9 @@ const Login = () => {
 
             <div className="d-flex justify-content-center w-100">
               <GoogleLogin
-                onSuccess={onGoogleSuccess}
+                onSuccess={
+                  onGoogleSuccess
+                }
                 onError={() => {
                   toastService.error(
                     t("toast.googleLoginErrorTitle", "Erro no Google Login"),
@@ -290,6 +292,7 @@ const Login = () => {
                   );
                 }}
                 useOneTap={false}
+                flow="implicit" 
                 scope="openid email profile https://www.googleapis.com/auth/calendar"
               />
             </div>

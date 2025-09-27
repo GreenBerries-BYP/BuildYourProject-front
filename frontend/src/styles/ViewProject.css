@@ -85,6 +85,13 @@
     margin-top: 2rem;
 }
 
+.analisar-btn {
+    border: none;
+    color: rgb(128, 128, 128);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
 @media (max-width: 480px) {
     .project-options > div{
         flex-direction: column-reverse;

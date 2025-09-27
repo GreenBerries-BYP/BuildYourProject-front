@@ -1,0 +1,289 @@
+/* styles/ModalAnalise.css */
+.modal-analise {
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--modal-bg);
+  border-radius: 15px;
+}
+
+.analise-inicial {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.icone-analise {
+  height: 8rem;
+  width: 8rem;
+  font-size: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+  background: var(--btn-purple);
+  border-radius: 1rem;
+  color: var(--white-color);
+}
+
+.btn-analisar {
+  font-size: 1.6rem;
+  color: var(--white-color);
+  display: block;
+  background: var(--btn-purple);
+  padding: 1.2rem 2.4rem;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  margin: 2rem auto 0;
+  transition: all 200ms ease-in-out;
+  font-weight: 600;
+}
+
+.btn-analisar:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-analisar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Indicador de Risco */
+.indicador-risco {
+  text-align: center;
+  padding: 2.5rem;
+  border: 3px solid;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+  background: var(--card-background);
+}
+
+.probabilidade {
+  font-size: 4rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--black-color);
+}
+
+.texto-risco {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--black-color);
+}
+
+.label-risco {
+  color: var(--gray-color);
+  font-size: 1.4rem;
+}
+
+/* Sugestões */
+.sugestoes-lista {
+  margin-bottom: 2rem;
+}
+
+.sugestoes-lista h4 {
+  margin-bottom: 1.5rem;
+  color: var(--black-color);
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.sugestao-item {
+  background: var(--card-background);
+  border: 1px solid var(--gray-light-color);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sugestao-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.prioridade {
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.prioridade.alta {
+  background: rgba(255, 82, 82, 0.1);
+  color: var(--error-red-color);
+  border: 1px solid var(--error-red-color);
+}
+
+.prioridade.media {
+  background: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+  border: 1px solid #ff9800;
+}
+
+.prioridade.baixa {
+  background: rgba(76, 175, 80, 0.1);
+  color: var(--green-dark-color);
+  border: 1px solid var(--green-dark-color);
+}
+
+.sugestao-item h5 {
+  margin: 0;
+  color: var(--black-color);
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.sugestao-descricao {
+  color: var(--gray-color);
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  line-height: 1.4;
+}
+
+.sugestao-detalhes {
+  font-size: 1.3rem;
+  color: var(--gray-color);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.8rem;
+  border-radius: 6px;
+}
+
+.btn-aplicar {
+  width: 100%;
+  padding: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.4rem;
+  transition: all 0.2s;
+}
+
+.btn-aplicar.alta {
+  background: var(--error-red-color);
+  color: var(--white-color);
+}
+
+.btn-aplicar.media {
+  background: #ff9800;
+  color: var(--white-color);
+}
+
+.btn-aplicar.baixa {
+  background: var(--green-dark-color);
+  color: var(--white-color);
+}
+
+.btn-aplicar:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-aplicar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Ações Finais */
+.acoes-finais {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn-reanalisar {
+  background: var(--gray-light-color);
+  color: var(--white-color);
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-reanalisar:hover {
+  background: var(--gray-color);
+  transform: translateY(-1px);
+}
+
+.sem-sugestoes {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(52, 211, 153, 0.1);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  border: 1px solid var(--green-color);
+}
+
+.sem-sugestoes p {
+  color: var(--green-dark-color);
+  font-size: 1.6rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Cores dinâmicas para o indicador de risco baseado na probabilidade */
+.indicador-risco.baixo-risco {
+  border-color: var(--green-color);
+  background: rgba(52, 211, 153, 0.1);
+}
+
+.indicador-risco.medio-risco {
+  border-color: #ff9800;
+  background: rgba(255, 152, 0, 0.1);
+}
+
+.indicador-risco.alto-risco {
+  border-color: var(--error-red-color);
+  background: rgba(255, 82, 82, 0.1);
+}
+
+/* Header do Modal */
+.modal-analise .modal-header {
+  background: var(--modal-header-bg);
+  padding: 2rem;
+  border-radius: 15px 15px 0 0;
+  margin: 0;
+}
+
+.modal-analise .modal-header h2 {
+  color: var(--black-color);
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal-analise .close-btn {
+  background: none;
+  border: none;
+  font-size: 2.4rem;
+  color: var(--black-color);
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ajustes para dark theme */
+body.dark-theme .sugestao-detalhes {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-theme .sem-sugestoes {
+  background: rgba(52, 211, 153, 0.15);
+}
+
+body.dark-theme .indicador-risco {
+  background: rgba(255, 255, 255, 0.05);
+}
