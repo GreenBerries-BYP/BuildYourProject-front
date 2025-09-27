@@ -5,6 +5,7 @@ import TaskSection from './TaskSection';
 import ModalNewTask from './ModalNewTask';
 import ModalDeleteTask from "../components/ModalDeleteTask";
 import ModalAssignTask from "../components/ModalAssignTask";
+import ModalAnaliseProjeto from "../components/ModalAnaliseProjeto"; 
 import Schedule from '../components/Schedule';
 
 
@@ -22,6 +23,8 @@ const ViewProject = ({
     const [modalAberto, setModalAberto] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [assignModalOpen, setAssignModalOpen] = useState(false);
+    const [analiseModalOpen, setAnaliseModalOpen] = useState(false);
+
     const [selectedTasktId, setSelectedTasktId] = useState(null);
     const [selectedTaskIdForAssign, setSelectedTaskIdForAssign] = useState(null);
     const [tarefasProjetoState, setTarefasProjetoState] = useState(tarefasProjeto || []);
@@ -43,13 +46,15 @@ const ViewProject = ({
         setModalAberto(false);
     };
 
-
-
     const toggleSection = (section) => {
         setExpandedSections((prev) => ({
             ...prev,
             [section]: !prev[section],
         }));
+    };
+
+    const handleAnaliseConcluida = (resultadoAnalise) => {
+        console.log('Análise concluída:', resultadoAnalise);
     };
 
     return (
@@ -75,6 +80,14 @@ const ViewProject = ({
                 <div className="col-12 col-lg-6 order-1 order-lg-2 project-options">
                     <div className='row mb-5 w-100 justify-content-between justify-content-lg-end '>
                         <div className="btns col-6 col-lg-12 order-2 order-lg-1 justify-content-end">
+                            <button 
+                                className='analisar-btn'
+                                onClick={() => setAnaliseModalOpen(true)}
+                                title="Analisar saúde do projeto"
+                            >
+                                <img src="/imgs/icons-project/Chart.svg" alt="Analisar projeto" />
+                            </button>
+                            
                             <button className='compartilhar-btn'><img src="/imgs/icons-project/Link.svg" alt={t("altText.shareLink")} /></button>
                             <button className='editar-btn'><img src="/imgs/icons-project/Edit.svg" alt={t("altText.editProject")} /></button>
                             <button className='calendario-btn' onClick={() => setShowSchedule(true)}>
@@ -149,6 +162,12 @@ const ViewProject = ({
                     );
                     setSelectedTaskIdForAssign(null);
                 }}
+            />
+            <ModalAnaliseProjeto
+                isOpen={analiseModalOpen}
+                onClose={() => setAnaliseModalOpen(false)}
+                projectId={projetoId}
+                onAnaliseConcluida={handleAnaliseConcluida}
             />
         </div>
     );
