@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { GoogleLogin } from "@react-oauth/google";
 import ModalForgotPassword from "../components/ModalForgotPassword";
 import toastService from "../api/toastService";
-import { jwtDecode  } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 
 
@@ -48,7 +48,7 @@ const Login = () => {
         email: data.email,
         password: data.senha,
       });
-      saveToken(res.data.access, data.manterLogado);
+      saveToken(res.data.access, data.manterLogado, res.data.refresh);
 
       toastService.success(
         t("toast.loginSuccessTitle", "Bem-vindo!"),
@@ -82,7 +82,7 @@ const Login = () => {
       const res = await api.post("/auth/google/", {
         access_token: accessToken,
       });
-      saveToken(res.data.access, true,res.data.refresh);
+      saveToken(res.data.access, true,  res.data.refresh);
       
       localStorage.setItem("google_access_token", accessToken);
       localStorage.setItem("refresh_token", res.data.refresh);
@@ -282,9 +282,7 @@ const Login = () => {
 
             <div className="d-flex justify-content-center w-100">
               <GoogleLogin
-                onSuccess={
-                  onGoogleSuccess
-                }
+                onSuccess={onGoogleSuccess}
                 onError={() => {
                   toastService.error(
                     t("toast.googleLoginErrorTitle", "Erro no Google Login"),
@@ -292,7 +290,6 @@ const Login = () => {
                   );
                 }}
                 useOneTap={false}
-                flow="implicit" 
                 scope="openid email profile https://www.googleapis.com/auth/calendar"
               />
             </div>
