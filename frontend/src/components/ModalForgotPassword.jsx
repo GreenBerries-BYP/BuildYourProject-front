@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "../styles/ModalForgotPasswordDeleteProject.css"; // você pode reaproveitar o css do outro modal
 import { useTranslation } from "react-i18next";
+import api from "../api/api"; 
 
 const ModalForgotPassword = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
@@ -12,11 +13,15 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
   const [code, setCode] = useState(new Array(6).fill("")); // array com 6 posições
   const inputsRef = useRef([]);
 
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmitEmail = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setLoading(true);
 
     if (!email.trim()) {
       setError(t("messages.emailCantBeEmpty", "O e-mail é obrigatório."));
@@ -71,6 +76,52 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
         console.log("Código enviado:", verificationCode);
     };
 
+    const handleVerifyCode = async () => {
+      const verificationCode = code.join("");
+      if (verificationCode.length < 6) {
+        setError("Digite os 6 dígitos do código");
+        return;
+      }
+
+      setLoading(true);
+      try {
+        await api.post("/auth/verify-reset-code/", { 
+          email: email, 
+          code: verificationCode 
+        });
+        setSuccess("Código verificado com sucesso!");
+        setStep("newPassword");
+        setError("");
+      } catch (err) {
+        setError("Código inválido. Tente novamente.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const handleResetPassword = async () => {
+      if (newPassword !== confirmPassword) {
+        setError("As senhas não coincidem.");
+        return;
+      }
+
+      setLoading(true);
+      try {
+        await api.post("/auth/reset-password/", {
+          email: email,
+          code: code.join(""),
+          new_password: newPassword
+        });
+        
+        setSuccess("Senha redefinida com sucesso!");
+        setTimeout(() => onClose(), 2000);
+        
+      } catch (err) {
+        setError("Erro ao redefinir senha. Tente novamente.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
   useEffect(() => {
     const handleEsc = (e) => {
@@ -102,7 +153,7 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
           </button>
         </div>
         <div className="modal-body">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmitEmail}>
             <label htmlFor="forgotEmail">{t("inputs.email", "Digite seu e-mail")}</label>
             <input
               id="forgotEmail"
