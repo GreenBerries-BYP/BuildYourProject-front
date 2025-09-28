@@ -1,5 +1,9 @@
+h2 {
+  color: var(--white-color) !important;
+}
+
 .user-card {
-  background-color: #ffffff;
+  background-color: var(--white-color);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -7,12 +11,8 @@
 }
 
 .profile-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   margin-bottom: 2rem;
   border-bottom: 1px solid #eee;
-  padding-bottom: 2rem;
 }
 
 .avatar-container {
@@ -21,13 +21,14 @@
 }
 
 .username-display {
-  color: #6c757d;
-  font-size: 0.9rem;
+  color: var(--gray-color);
+  font-size: 1.2rem;
 }
 
 .password-section {
   text-align: center;
   margin-top: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .danger-zone {
@@ -38,12 +39,10 @@
   overflow: hidden;
 }
 
-.danger-zone h3 {
+.danger-zone h2 {
   background-color: #e57373;
-  color: white;
   padding: 1rem 1.5rem;
   margin: 0;
-  font-size: 1.1rem;
 }
 
 .danger-zone-content {
@@ -56,17 +55,22 @@
 
 .danger-zone-content p {
   color: var(--black-color);
+  font-size: 1.5rem;
 }
 
-.danger-zone-content .p-button.p-button-danger {
-  padding: 4px 2px;
+.danger-zone-content .p-button-danger {
+  padding: 4px;
   color: #dc2626 !important;
   border: 2px solid #dc2626 !important;
   border-radius: 8px;
 }
 
-.danger-zone-content .p-button.p-button-danger:hover {
+.danger-zone-content .p-button-danger:hover {
   cursor: pointer;
+}
+
+.p-confirm-dialog-accept .p-button-label {
+  color: red;
 }
 
 .spinner-container {

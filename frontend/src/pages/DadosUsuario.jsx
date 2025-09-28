@@ -3,12 +3,14 @@ import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { fetchUserData } from "../api/userService";
-import "../styles/Home.css";
 import { useTranslation } from "react-i18next";
-import ModalForgotPassword from "../components/ModalForgotPassword";
 import { Avatar } from "primereact/avatar";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { ProgressSpinner } from "primereact/progressspinner";
+
+import ModalForgotPassword from "../components/ModalForgotPassword";
+import "../styles/Home.css";
+import "../styles/DadosUsuario.css"
 
 const getInitials = (name = "") => {
   if (!name) return "";
@@ -78,10 +80,11 @@ function DadosUsuario() {
 
   return (
     <div className="d-flex flex-column">
+      <h2>{t("dadosUsuario.welcome")}{userData.full_name}</h2>
       <ConfirmDialog />
 
       <div className="user-card card-background">
-        <div className="profile-header">
+        <div className="profile-header d-flex flex-row align-items-center gap-2">
           <div className="avatar-container">
             <Avatar
               label={getInitials(userData.full_name)}
@@ -90,7 +93,6 @@ function DadosUsuario() {
               image={userData.avatar_url}
             />
           </div>
-          <h2>{userData.full_name}</h2>
           <p className="username-display">@{userData.username}</p>
         </div>
 
@@ -100,6 +102,14 @@ function DadosUsuario() {
               <p><strong>{t("dadosUsuario.name", "Nome completo")}:</strong> {userData.full_name}</p>
               <p><strong>{t("dadosUsuario.username", "Usuário")}:</strong> {userData.username}</p>
               <p><strong>{t("dadosUsuario.email", "Email")}:</strong> {userData.email}</p>
+            </div>
+            <div className="password-section">
+              <Button
+                label = {t("dadosUsuario.changePassword")}
+                icon="pi pi-key"
+                className="p-button-text"
+                onClick={() => setShowForgotModal(true)}
+              />
             </div>
             <Button
               label={t("dadosUsuario.editButton", "Editar dados")}
@@ -151,22 +161,14 @@ function DadosUsuario() {
           </form>
         )}
 
-        <div className="password-section">
-          <Button
-            label="Alterar Senha"
-            icon="pi pi-key"
-            className="p-button-text"
-            onClick={() => setShowForgotModal(true)}
-          />
-        </div>
       </div>
 
       <div className="danger-zone">
-        <h3>{t("dadosUsuario.dangerZone", "Zona de Perigo")}</h3>
+        <h2>{t("dadosUsuario.dangerZone")}</h2>
         <div className="danger-zone-content">
-          <p>Excluir sua conta removerá permanentemente todos os seus dados. Esta ação não pode ser desfeita.</p>
+          <p className="mt-2">{t("dadosUsuario.deleteText")}</p>
           <Button
-            label="Excluir Minha Conta"
+            label= {t("dadosUsuario.deleteAccount")}
             icon="pi pi-trash"
             className="p-button-danger"
             onClick={handleDeleteAccount}

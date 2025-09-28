@@ -390,7 +390,11 @@ const pt = {
     email: "Email",
     editButton: "Editar",
     loading: "Carregando dados do usuário...",
-    welcome: "Bem vindo, "
+    welcome: "Bem vind@, ",
+    deleteText: "Excluir sua conta removerá permanentemente todos os seus dados. Esta ação não pode ser desfeita.",
+    changePassword: "Alterar Senha",
+    dangerZone: "Zona de Perigo",
+    deleteAccount: "Excluir Minha Conta"
   },
   modalDeleteTask: {
     typeYesToDelete: "Digite",

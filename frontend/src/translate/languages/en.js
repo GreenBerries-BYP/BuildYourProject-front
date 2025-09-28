@@ -388,7 +388,13 @@ const en = {
     email: "Email",
     editButton: "Edit",
     loading: "Loading user data...",
-    welcome: "Welcome, "
+    welcome: "Welcome, ",
+    deleteText: "Deleting you account will permanently remove all of your data. This action cannot be undone.",
+    changePassword: "Change Password",
+    dangerZone: "Danger Zone",
+    deleteAccount: "Delete My Account"
+
+
   },
   modalDeleteTask: {
     typeYesToDelete: "Type",
