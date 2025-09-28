@@ -1,15 +1,9 @@
-.profile-page-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 1rem;
-}
-
-.profile-card {
-  background-color: var(--white-color);
+.user-card {
+  background-color: #ffffff;
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--gray-color);
+  border: 1px solid #e0e0e0;
 }
 
 .profile-header {
@@ -26,56 +20,9 @@
   margin-bottom: 1rem;
 }
 
-.avatar-edit-button {
-  position: absolute !important;
-  bottom: 5px;
-  right: 5px;
-  width: 2rem !important;
-  height: 2rem !important;
-  border-radius: 50% !important;
-}
-
 .username-display {
   color: #6c757d;
   font-size: 0.9rem;
-}
-
-.profile-form .form-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .profile-form .form-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-field label {
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #495057;
-}
-
-.form-field .p-inputtext {
-  width: 100%;
-}
-
-.profile-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 2rem;
-}
-
-.edit-mode-buttons {
-  display: flex;
-  gap: 0.5rem;
 }
 
 .password-section {
@@ -88,15 +35,15 @@
   border: 1px solid #e57373;
   border-radius: 12px;
   background-color: #fff5f5;
+  overflow: hidden;
 }
 
 .danger-zone h3 {
   background-color: #e57373;
   color: white;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   margin: 0;
-  border-top-left-radius: 11px;
-  border-top-right-radius: 11px;
+  font-size: 1.1rem;
 }
 
 .danger-zone-content {
@@ -104,4 +51,37 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+}
+
+.danger-zone-content p {
+  color: var(--black-color);
+}
+
+.danger-zone-content .p-button.p-button-danger {
+  padding: 4px 2px;
+  color: #dc2626 !important;
+  border: 2px solid #dc2626 !important;
+  border-radius: 8px;
+}
+
+.danger-zone-content .p-button.p-button-danger:hover {
+  cursor: pointer;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 5rem;
+}
+
+@media (max-width: 768px) {
+  .danger-zone-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
 }

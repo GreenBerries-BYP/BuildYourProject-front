@@ -388,6 +388,7 @@ const en = {
     email: "Email",
     editButton: "Edit",
     loading: "Loading user data...",
+    welcome: "Welcome, "
   },
   modalDeleteTask: {
     typeYesToDelete: "Type",

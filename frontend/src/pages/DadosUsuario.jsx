@@ -1,111 +1,71 @@
-// src/pages/DadosUsuario.jsx
-
 import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
+import { fetchUserData } from "../api/userService";
+import "../styles/Home.css";
+import { useTranslation } from "react-i18next";
+import ModalForgotPassword from "../components/ModalForgotPassword";
 import { Avatar } from "primereact/avatar";
-import { FileUpload } from "primereact/fileupload";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { ProgressSpinner } from "primereact/progressspinner";
 
-import { useAuthContext } from "../auth/authContext";
-import { fetchUserData } from "../api/userService";
-import toastService from "../api/toastService";
-
-import ModalForgotPassword from "../components/ModalForgotPassword";
-import "../styles/DadosUsuario.css";
-
 const getInitials = (name = "") => {
   if (!name) return "";
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .substring(0, 2)
-    .toUpperCase();
+  return name.split(" ").map((n) => n[0]).join("").substring(0, 2).toUpperCase();
 };
 
 function DadosUsuario() {
-  const { t } = useTranslation();
-  const { user: contextUser } = useAuthContext();
-
   const [userData, setUserData] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showForgotModal, setShowForgotModal] = useState(false);
+  const { t } = useTranslation();
 
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors, isDirty },
-  } = useForm();
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      full_name: "",
+      username: "",
+      email: "",
+    },
+  });
 
   useEffect(() => {
     fetchUserData()
       .then((data) => {
         setUserData(data);
-        reset(data);
+        reset({
+          full_name: data.full_name,
+          username: data.username,
+          email: data.email,
+        });
       })
-      .catch((err) => {
-        console.error("Erro ao buscar dados do usuário:", err);
-        toastService.error("Erro", "Não foi possível carregar seus dados.");
-      })
+      .catch((err) => console.error("Erro ao buscar dados do usuário:", err))
       .finally(() => setIsLoading(false));
   }, [reset]);
 
-  const onUpdateSubmit = async (formData) => {
-    // api de upload quando fizermos
-    /*
-    toastService.info("Aguarde", "Salvando suas alterações...");
+  const onSubmit = async (data) => {
     try {
-      // const updatedUser = await updateUserData(formData);
-      // setUserData(updatedUser);
-      // reset(updatedUser);
-      // setIsEditing(false);
-      // toastService.success("Sucesso!", "Seus dados foram atualizados.");
+      console.log("Salvando dados:", data);
+      setUserData({ ...userData, ...data });
+      setIsEditing(false);
     } catch (err) {
-      // toastService.error("Erro", "Não foi possível salvar as alterações.");
+      console.error("Erro ao atualizar dados:", err);
     }
-    */
-
-    console.log("Dados para atualizar:", formData);
-    toastService.success("Sucesso!", "Seus dados foram salvos (simulação).");
-    setUserData(formData);
-    setIsEditing(false);
-  };
-
-  const handleAvatarUpload = async (event) => {
-    // api de upload da foto de perfil do usuário se fizermos
-    const file = event.files[0];
-    console.log("Arquivo para upload:", file);
-    toastService.info(
-      "Funcionalidade em desenvolvimento",
-      "A API para upload de avatar ainda não foi implementada."
-    );
   };
 
   const handleDeleteAccount = () => {
     confirmDialog({
-      message:
-        "Você tem certeza que deseja excluir sua conta? Esta ação é irreversível.",
+      message: "Você tem certeza que deseja excluir sua conta? Esta ação é irreversível.",
       header: "Confirmação de Exclusão",
       icon: "pi pi-exclamation-triangle",
       acceptClassName: "p-button-danger",
       acceptLabel: "Sim, excluir",
       rejectLabel: "Não, cancelar",
       accept: () => {
-        // api de delete caso fizermos
-        toastService.warn("Ação necessária", "Conta excluída (simulação).");
+        console.log("Usuário confirmou a exclusão da conta.");
       },
     });
-  };
-
-  const handleCancelEdit = () => {
-    reset(userData);
-    setIsEditing(false);
   };
 
   if (isLoading) {
@@ -117,115 +77,79 @@ function DadosUsuario() {
   }
 
   return (
-    <div className="profile-page-container">
+    <div className="d-flex flex-column">
       <ConfirmDialog />
-      <h1>Bem vindo, {userData?.full_name?.split(" ")[0]}!</h1>
 
-      <div className="profile-card">
+      <div className="user-card card-background">
         <div className="profile-header">
           <div className="avatar-container">
             <Avatar
-              label={getInitials(userData?.full_name)}
+              label={getInitials(userData.full_name)}
               size="xlarge"
               shape="circle"
-              image={userData?.avatar_url}
+              image={userData.avatar_url}
             />
-            {isEditing && (
-              <FileUpload
-                mode="basic"
-                name="avatar"
-                accept="image/*"
-                maxFileSize={1000000} // 1MB
-                customUpload
-                uploadHandler={handleAvatarUpload}
-                auto
-                chooseLabel=" "
-                className="avatar-edit-button"
-                icon="pi pi-pencil"
-              />
-            )}
           </div>
-          <h2>{userData?.full_name}</h2>
-          <p className="username-display">@{userData?.username}</p>
+          <h2>{userData.full_name}</h2>
+          <p className="username-display">@{userData.username}</p>
         </div>
 
-        <form onSubmit={handleSubmit(onUpdateSubmit)} className="profile-form">
-          <div className="form-grid">
-            <div className="form-field">
-              <label htmlFor="fullName">{t("dadosUsuario.name")}</label>
+        {!isEditing ? (
+          <div className="user-info-container">
+            <div className="user-info">
+              <p><strong>{t("dadosUsuario.name", "Nome completo")}:</strong> {userData.full_name}</p>
+              <p><strong>{t("dadosUsuario.username", "Usuário")}:</strong> {userData.username}</p>
+              <p><strong>{t("dadosUsuario.email", "Email")}:</strong> {userData.email}</p>
+            </div>
+            <Button
+              label={t("dadosUsuario.editButton", "Editar dados")}
+              className="btn-edit"
+              onClick={() => setIsEditing(true)}
+            />
+          </div>
+        ) : (
+          <form className="user-edit-form" onSubmit={handleSubmit(onSubmit)}>
+            <div className="p-float-label">
               <Controller
                 name="full_name"
                 control={control}
-                rules={{ required: "Nome completo é obrigatório." }}
-                render={({ field }) => (
-                  <InputText
-                    id="fullName"
-                    {...field}
-                    disabled={!isEditing}
-                    className={errors.full_name ? "p-invalid" : ""}
-                  />
-                )}
+                render={({ field }) => <InputText {...field} />}
               />
-              {errors.full_name && (
-                <small className="p-error">{errors.full_name.message}</small>
-              )}
+              <label>{t("dadosUsuario.name", "Nome completo")}</label>
             </div>
 
-            <div className="form-field">
-              <label htmlFor="username">{t("dadosUsuario.username")}</label>
+            <div className="p-float-label">
               <Controller
                 name="username"
                 control={control}
-                rules={{ required: "Nome de usuário é obrigatório." }}
-                render={({ field }) => (
-                  <InputText
-                    id="username"
-                    {...field}
-                    disabled={!isEditing}
-                    className={errors.username ? "p-invalid" : ""}
-                  />
-                )}
+                render={({ field }) => <InputText {...field} />}
               />
-              {errors.username && (
-                <small className="p-error">{errors.username.message}</small>
-              )}
+              <label>{t("dadosUsuario.username", "Usuário")}</label>
             </div>
 
-            <div className="form-field">
-              <label htmlFor="email">{t("dadosUsuario.email")}</label>
-              <InputText id="email" value={userData.email || ""} disabled />
-              <small className="p-d-block">
-                O email não pode ser alterado.
-              </small>
+            <div className="p-float-label">
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => <InputText {...field} />}
+              />
+              <label>{t("dadosUsuario.email", "Email")}</label>
             </div>
-          </div>
 
-          <div className="profile-actions">
-            {!isEditing ? (
+            <div className="edit-buttons">
+              <Button type="submit" label={t("buttons.save", "Salvar")} className="btn-save" />
               <Button
-                label={t("dadosUsuario.editButton")}
-                icon="pi pi-user-edit"
-                onClick={() => setIsEditing(true)}
+                type="button"
+                label={t("buttons.cancel", "Cancelar")}
+                className="btn-cancel"
+                onClick={() => {
+                  setIsEditing(false);
+                  reset(userData);
+                }}
               />
-            ) : (
-              <div className="edit-mode-buttons">
-                <Button
-                  label={t("buttons.save")}
-                  icon="pi pi-check"
-                  type="submit"
-                  disabled={!isDirty}
-                />
-                <Button
-                  label={t("buttons.cancel")}
-                  icon="pi pi-times"
-                  className="p-button-secondary"
-                  type="button"
-                  onClick={handleCancelEdit}
-                />
-              </div>
-            )}
-          </div>
-        </form>
+            </div>
+          </form>
+        )}
 
         <div className="password-section">
           <Button
@@ -240,10 +164,7 @@ function DadosUsuario() {
       <div className="danger-zone">
         <h3>{t("dadosUsuario.dangerZone", "Zona de Perigo")}</h3>
         <div className="danger-zone-content">
-          <p>
-            Excluir sua conta removerá permanentemente todos os seus dados. Esta
-            ação não pode ser desfeita.
-          </p>
+          <p>Excluir sua conta removerá permanentemente todos os seus dados. Esta ação não pode ser desfeita.</p>
           <Button
             label="Excluir Minha Conta"
             icon="pi pi-trash"

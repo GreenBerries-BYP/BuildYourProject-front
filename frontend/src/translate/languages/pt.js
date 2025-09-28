@@ -390,6 +390,7 @@ const pt = {
     email: "Email",
     editButton: "Editar",
     loading: "Carregando dados do usuário...",
+    welcome: "Bem vindo, "
   },
   modalDeleteTask: {
     typeYesToDelete: "Digite",
