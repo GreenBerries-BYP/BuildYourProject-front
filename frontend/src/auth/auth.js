@@ -1,50 +1,56 @@
+// src/auth/auth.js
+
+import { jwtDecode } from "jwt-decode";
+import { STORAGE_KEYS } from "../constants/auth";
+
 export const saveToken = (token, keepLogged = false, refreshToken = null) => {
   if (!token) {
-    console.error("Token não fornecido para saveToken");
+    console.error("Tentativa de salvar um token nulo.");
     return;
   }
-  
-  removeToken();
+  const storage = keepLogged ? localStorage : sessionStorage;
+  storage.setItem(STORAGE_KEYS.ACCESS_TOKEN, token);
 
-  if (keepLogged) {
-    localStorage.setItem("access_token", token);
-    if (refreshToken) localStorage.setItem("refresh_token", refreshToken);
-  } else {
-    sessionStorage.setItem("access_token", token);
-    if (refreshToken) sessionStorage.setItem("refresh_token", refreshToken);
+  if (refreshToken) {
+    localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
   }
 };
 
 export const getToken = () => {
-  return localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
+  return (
+    localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) ||
+    sessionStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN)
+  );
 };
 
 export const getRefreshToken = () => {
-  return localStorage.getItem("refresh_token") || sessionStorage.getItem("refresh_token");
+  return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
 };
 
 export const removeToken = () => {
-  localStorage.removeItem('access_token'); 
-  localStorage.removeItem('refresh_token');
-  localStorage.removeItem('google_access_token');
-  sessionStorage.removeItem('access_token');
-  sessionStorage.removeItem('refresh_token');
-};
-
-export const getGoogleLoginStatus = () => {
-  return !!localStorage.getItem("google_access_token");
+  localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+  sessionStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.USER_INFO);
 };
 
 export const isAuthenticated = () => {
   const token = getToken();
-  if (!token) return false;
-  
-  // Verifica se o token está expirado (opcional)
+  if (!token) {
+    return false;
+  }
+
   try {
     const decoded = jwtDecode(token);
     const currentTime = Date.now() / 1000;
     return decoded.exp > currentTime;
   } catch (error) {
+    console.error("Erro ao decodificar token:", error);
+    removeToken();
     return false;
   }
+};
+
+export const getGoogleLoginStatus = () => {
+  return !!localStorage.getItem("google_access_token");
 };
