@@ -3,7 +3,7 @@
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  background: var(--modal-bg);
+  background-color: var(--white-color);
   border-radius: 15px;
 }
 

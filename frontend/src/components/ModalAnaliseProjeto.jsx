@@ -1,4 +1,3 @@
-// components/ModalAnaliseProjeto.jsx
 import React, { useState } from 'react';
 import '../styles/ModalAnalise.css';
 import { analisarProjeto, aplicarSugestao } from '../api/api';

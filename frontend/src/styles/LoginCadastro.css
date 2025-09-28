@@ -1,4 +1,4 @@
-.register {
+.login, .register {
   min-height: 100vh;
 }
 
@@ -34,7 +34,7 @@ label {
 }
 
 .link-esqueci {
-  font-size: 1.5rem;
+  font-size: 1.5rem !important;
   cursor: pointer;
 }
 
