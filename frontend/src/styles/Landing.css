@@ -115,14 +115,14 @@
   padding-bottom: 5px;
   height: 5rem;
   width: 5rem;
-  border: none;
+  border: none !important;
 }
 .navbar-toggler:focus,
 .navbar-toggler:active,
 .navbar-toggler:focus-visible {
   outline: none;
-  box-shadow: none;
-  border: none;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 #navbarNav {
