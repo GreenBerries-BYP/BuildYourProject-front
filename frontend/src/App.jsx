@@ -40,7 +40,7 @@ function App() {
           <Route path="/use_terms" element={<UseTerms />} />
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
 
-        <Route path="/home" element={<ProtectedRoute> <Home /></ProtectedRoute>}>
+        <Route path="/home" element={ <Home />}>
           <Route index element={ <HomeDefault/> }/>
           <Route path="projetos" element={ <Projetos />}/>
           <Route path="compartilhados" element={ <Compartilhados />}/>

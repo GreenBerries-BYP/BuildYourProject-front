@@ -319,7 +319,7 @@ const Register = () => {
               ) : (
                 <>
                   <FcGoogle className="google-icon" />
-                  <span>Cadastrar com o Google</span>
+                  <span>{t("register.google")}</span>
                 </>
               )}
             </button>
@@ -349,13 +349,13 @@ const Register = () => {
         </form>
 
         <div className="tem-conta w-100 text-center mt-5">
-          <span>Já possui uma conta?</span>
+          <span>{t("register.alredyHaveAccount")}</span>
           <button
             type="button"
             className="btn-change-page purple-color text-center"
             onClick={() => navigate("/login")}
           >
-            {t("landing.register.signIn", "Faça Login")}
+            {t("register.signIn")}
           </button>
         </div>
       </div>

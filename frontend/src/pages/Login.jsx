@@ -206,7 +206,7 @@ const Login = () => {
                   ) : (
                     <>
                       <FcGoogle className="google-icon" />
-                      <span>Fazer Login com o Google</span>
+                      <span>{t("login.google")}</span>
                     </>
                   )}
                 </button>
@@ -236,7 +236,7 @@ const Login = () => {
             </form>
 
             <div className="tem-conta mt-5">
-              <span>Não tem conta ainda?</span>
+              <span>{t("login.doesntHaveAccount")}</span>
               <button
                 type="button"
                 className="btn-change-page green-color"

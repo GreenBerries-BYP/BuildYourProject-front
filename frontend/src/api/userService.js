@@ -1,4 +1,3 @@
-// services/userService.js
 import axios from 'axios';
 import { getToken } from '../auth/auth';
 

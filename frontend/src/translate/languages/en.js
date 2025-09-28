@@ -95,6 +95,8 @@ const en = {
     number: "At least one number",
     suggestions: "Suggestions for a strong password:",
     or: "OR",
+    doesntHaveAccount: "Doesn't have an account?",
+    google: "Login with Google"
   },
   register: {
     fullNameLabel: "Full name:",
@@ -111,16 +113,18 @@ const en = {
     errorPasswordMismatch: "Passwords do not match.",
     errorAcceptTerms: "You must accept the terms of use and privacy policies.",
     errorRegistrationFailed:
-      "Error registering. Check your data and try again.",
+    "Error registering. Check your data and try again.",
     terms: {
       intro:
-        "By creating an account in this application, I declare that I accept the",
+      "By creating an account in this application, I declare that I accept the",
       termsLinkText: "terms of use",
       and: "and the",
       policyLinkText: "privacy policies",
     },
     submitButton: "Register",
-    signIn: "Sign In"
+    signIn: "Sign In",
+    alredyHaveAccount: "Alredy have an account?",
+    google: "Register with Google"
   },
   projectCard: {
     progressLabel: "Progress",

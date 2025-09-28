@@ -1,0 +1,107 @@
+.profile-page-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.profile-card {
+  background-color: var(--white-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--gray-color);
+}
+
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 2rem;
+}
+
+.avatar-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.avatar-edit-button {
+  position: absolute !important;
+  bottom: 5px;
+  right: 5px;
+  width: 2rem !important;
+  height: 2rem !important;
+  border-radius: 50% !important;
+}
+
+.username-display {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.profile-form .form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .profile-form .form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-field label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #495057;
+}
+
+.form-field .p-inputtext {
+  width: 100%;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+.edit-mode-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.password-section {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.danger-zone {
+  margin-top: 3rem;
+  border: 1px solid #e57373;
+  border-radius: 12px;
+  background-color: #fff5f5;
+}
+
+.danger-zone h3 {
+  background-color: #e57373;
+  color: white;
+  padding: 1rem;
+  margin: 0;
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+}
+
+.danger-zone-content {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

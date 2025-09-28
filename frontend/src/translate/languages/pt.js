@@ -95,6 +95,8 @@ const pt = {
     number: "Pelo menos um número",
     suggestions: "Sugestões para uma senha forte:",
     or: "OU",
+    doesntHaveAccount: 'Não tem uma conta?',
+    google: "Faça login com o Google"
   },
   register: {
     fullNameLabel: "Nome completo:",
@@ -120,7 +122,9 @@ const pt = {
       policyLinkText: "políticas de privacidade",
     },
     submitButton: "Realizar Cadastro",
-    signIn: "Fazer Login"
+    signIn: "Fazer Login",
+    alredyHaveAccount: "Já possui uma conta?",
+    google: "Cadastrar com o Google"
   },
   projectCard: {
     progressLabel: "Progresso",
