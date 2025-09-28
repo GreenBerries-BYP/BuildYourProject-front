@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+// src/components/Login.jsx
+
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Checkbox } from "primereact/checkbox";
@@ -8,24 +10,20 @@ import { Divider } from "primereact/divider";
 import { FloatLabel } from "primereact/floatlabel";
 import { useTranslation } from "react-i18next";
 import { GoogleLogin } from "@react-oauth/google";
-import ModalForgotPassword from "../components/ModalForgotPassword";
+import { FcGoogle } from "react-icons/fc";
+
+import { useAuth } from "../hooks/useAuth";
 import toastService from "../api/toastService";
-import { jwtDecode } from "jwt-decode";
 
-
-
-import api from "../api/api";
-import { saveToken } from "../auth/auth";
+import ModalForgotPassword from "../components/ModalForgotPassword";
 import "../styles/LoginCadastro.css";
 
 const Login = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [loadingGoogle, setLoadingGoogle] = useState(false);
-  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [showForgotModal, setShowForgotModal] = React.useState(false);
 
-  const googleToken = localStorage.getItem("google_access_token");
+  const { login, googleLogin, isLoading, isGoogleLoading } = useAuth();
 
   const {
     control,
@@ -40,86 +38,21 @@ const Login = () => {
     },
   });
 
-  const onSubmit = async (data) => {
-    
-    setLoading(true);
-    try {
-      const res = await api.post("/login/", {
-        email: data.email,
-        password: data.senha,
-      });
-      saveToken(res.data.access, data.manterLogado, res.data.refresh);
-
-      toastService.success(
-        t("toast.loginSuccessTitle", "Bem-vindo!"),
-        t("toast.loginSuccessDetail", "Login realizado com sucesso.")
-      );
-
-      setTimeout(() => navigate("/home"), 300);
-    } catch (err) {
-      if (err.response?.status === 401) {
-        toastService.error(
-          t("toast.loginFailedTitle", "Falha no login"),
-          t("toast.loginFailedDetail", "E-mail ou senha incorretos.")
-        );
-      } else {
-        toastService.error(
-          t("toast.serverErrorTitle", "Erro no servidor"),
-          t("toast.serverErrorDetail", "Tente novamente mais tarde.")
-        );
-      }
-      console.error("Erro ao logar:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onGoogleSuccess = async (response) => {
-    setLoadingGoogle(true);
-    const accessToken = response.credential;
-
-    try {
-      const res = await api.post("/auth/google/", {
-        access_token: accessToken,
-      });
-      saveToken(res.data.access, true,  res.data.refresh);
-      
-      localStorage.setItem("google_access_token", accessToken);
-      localStorage.setItem("refresh_token", res.data.refresh);
-      localStorage.setItem("user_info", JSON.stringify(res.data.user));
-
-
-      toastService.success(
-        t("toast.loginSuccessTitle", "Bem-vindo!"),
-        t("toast.loginSuccessDetail", "Login realizado com sucesso.")
-      );
-
-      const userInfo = jwtDecode(res.data.access);
-      console.log("Backend user info:", userInfo); 
-
-      const googleUserInfo = jwtDecode(accessToken);
-      console.log("google user info:", googleUserInfo); 
-
-      navigate("/home");
-    } catch (err) {
-      toastService.error(
-        t("toast.googleLoginErrorTitle", "Erro no Google Login"),
-        t("toast.googleLoginErrorDetail", "Não foi possível autenticar.")
-      );
-      console.error("Erro ao autenticar com Google:", err);
-    } finally {
-      setLoadingGoogle(false); 
-    }
+  const onSubmit = (data) => {
+    login(data);
   };
 
   return (
-    <div className="container-fluid login d-flex justify-content-center align-items-center p-0">
+    <div className="container-fluid login d-flex justify-content-center align-items-center mt-4">
       <div className="col-10 card-login rounded d-flex justify-content-center align-items-center bg-white shadow-lg">
         <div className="row w-100 justify-content-center">
           <div className="col-12 col-lg-6 d-none d-lg-flex justify-content-center align-items-center">
             <img
               src="/imgs/problem-solving.svg"
-              alt={t("altText.puzzlePeople", "Two people doing a puzzle")}
+              alt={t(
+                "altText.puzzlePeople",
+                "Duas pessoas montando um quebra-cabeça"
+              )}
               className="img-fluid"
             />
           </div>
@@ -128,8 +61,9 @@ const Login = () => {
             <img
               className="col-6 logo-h align-self-center mb-4"
               src="/imgs/logo_vert_BYP.svg"
-              alt={t("altText.logoBYPVertical", "BYP Vertical Logo")}
+              alt={t("altText.logoBYPVertical", "Logo Vertical BYP")}
               onClick={() => navigate("/")}
+              style={{ cursor: "pointer" }}
             />
 
             <form
@@ -149,7 +83,10 @@ const Login = () => {
                         ),
                         pattern: {
                           value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                          message: t("login.emailInvalid"),
+                          message: t(
+                            "login.emailInvalid",
+                            "Formato de email inválido"
+                          ),
                         },
                       }}
                       render={({ field }) => (
@@ -189,9 +126,6 @@ const Login = () => {
                           {...field}
                           toggleMask
                           feedback={false}
-                          className={`byp-input-field ${
-                            errors.senha ? "p-invalid" : ""
-                          }`}
                           inputClassName={`byp-input-field ${
                             errors.senha ? "p-invalid" : ""
                           }`}
@@ -199,7 +133,7 @@ const Login = () => {
                       )}
                     />
                     <label htmlFor="senha">
-                      {t("login.passwordLabel")}
+                      {t("login.passwordLabel", "Senha")}
                       <span className="required-asterisk">*</span>
                     </label>
                   </FloatLabel>
@@ -215,10 +149,7 @@ const Login = () => {
                   className="link-esqueci btn btn-link p-0"
                   onClick={() => setShowForgotModal(true)}
                 >
-                  {t(
-                    "login.forgotPasswordLink",
-                    "Esqueci ou quero trocar minha senha"
-                  )}
+                  {t("login.forgotPasswordLink", "Esqueci minha senha")}
                 </button>
               </div>
 
@@ -241,57 +172,78 @@ const Login = () => {
               </div>
 
               <div className="row p-0 pt-5 d-flex justify-content-center w-100 align-items-center gap-5">
-
                 <button
                   className="col-12 col-lg-5 mx-3 py-2 btn-acesso-verde flex-fill d-flex justify-content-center align-items-center"
                   type="submit"
-                  disabled={loading || !isValid}
+                  disabled={isLoading || !isValid}
                 >
-                  {loading ? (
-                    <>
-                      <div
-                        className="spinner-border text-light"
-                        style={{
-                          width: "2rem",
-                          height: "2rem",
-                          padding: "10px",
-                        }}
-                        role="status"
-                      ></div>
-                    </>
+                  {isLoading ? (
+                    <div
+                      className="spinner-border text-light"
+                      style={{ width: "2rem", height: "2rem" }}
+                      role="status"
+                    ></div>
                   ) : (
-                    t("login.signIn")
+                    t("login.signIn", "Entrar")
                   )}
                 </button>
-                <span className="tem-conta w-100 flex-fill col-12 col-lg-5 mx-3 py-2">
-                  <p>Não tem conta ainda?</p>
-                  <button
-                    type="button"
-                    className="px-5 btn-change-page text-center "
-                    onClick={() => navigate("/register")}
-                  >
-                    {t("login.register")}
-                  </button>
-                </span>
+              </div>
+              <Divider align="center" className="mt-1" type="dashed">
+                <b>{t("login.or", "ou")}</b>
+              </Divider>
+
+              <div className="d-flex justify-content-center w-100 position-relative">
+                <button
+                  type="button"
+                  className="btn-google-custom"
+                  disabled={isGoogleLoading}
+                >
+                  {isGoogleLoading ? (
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    ></div>
+                  ) : (
+                    <>
+                      <FcGoogle className="google-icon" />
+                      <span>Fazer Login com o Google</span>
+                    </>
+                  )}
+                </button>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    opacity: 0,
+                    cursor: "pointer",
+                  }}
+                >
+                  <GoogleLogin
+                    onSuccess={googleLogin}
+                    onError={() =>
+                      toastService.error(
+                        "Erro no Google",
+                        "Não foi possível autenticar."
+                      )
+                    }
+                    useOneTap={false}
+                  />
+                </div>
               </div>
             </form>
 
-            <Divider align="center" type="dashed">
-              <b>{t("login.or")}</b>
-            </Divider>
-
-            <div className="d-flex justify-content-center w-100">
-              <GoogleLogin
-                onSuccess={onGoogleSuccess}
-                onError={() => {
-                  toastService.error(
-                    t("toast.googleLoginErrorTitle", "Erro no Google Login"),
-                    t("toast.googleLoginErrorDetail", "Não foi possível autenticar.")
-                  );
-                }}
-                useOneTap={false}
-                scope="openid email profile https://www.googleapis.com/auth/calendar"
-              />
+            <div className="tem-conta mt-5">
+              <span>Não tem conta ainda?</span>
+              <button
+                type="button"
+                className="btn-change-page green-color"
+                onClick={() => navigate("/register")}
+              >
+                {t("login.register", "Cadastre-se")}
+              </button>
             </div>
           </div>
         </div>
@@ -301,7 +253,6 @@ const Login = () => {
         isOpen={showForgotModal}
         onClose={() => setShowForgotModal(false)}
       />
-
     </div>
   );
 };

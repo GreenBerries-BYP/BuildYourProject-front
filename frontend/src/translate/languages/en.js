@@ -120,6 +120,7 @@ const en = {
       policyLinkText: "privacy policies",
     },
     submitButton: "Register",
+    signIn: "Sign In"
   },
   projectCard: {
     progressLabel: "Progress",

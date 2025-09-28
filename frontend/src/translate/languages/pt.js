@@ -120,6 +120,7 @@ const pt = {
       policyLinkText: "políticas de privacidade",
     },
     submitButton: "Realizar Cadastro",
+    signIn: "Fazer Login"
   },
   projectCard: {
     progressLabel: "Progresso",
@@ -191,7 +192,7 @@ const pt = {
     errorSendingCode: "Erro ao enviar o código. Tente novamente.",
     enterFullCode: "Digite os 6 dígitos do código",
     enterVerificationCode: "Digite o código de 6 dígitos",
-    optional: "Opcional",   // para indicar que a seleção do responsável é opcional
+    optional: "Opcional", 
     none: "N/A", 
   
   },
