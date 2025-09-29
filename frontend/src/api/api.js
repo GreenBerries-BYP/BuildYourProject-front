@@ -6,6 +6,7 @@ const api = axios.create({
   baseURL: 'https://byp-backend-o4ku.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
+    'Acess-Control-Alow-Origin: '*'', 
   },
 });
 
