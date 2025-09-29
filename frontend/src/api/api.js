@@ -3,11 +3,10 @@ import { getToken } from '../auth/auth';
 import toastService from './toastService';
 
 const api = axios.create({
-  baseURL: 'https://byp-backend-o4ku.onrender.com/api',
-  headers: {
-    'Content-Type': 'application/json',
-    'Acess-Control-Alow-Origin: '*'', 
-  },
+  baseURL: 'https://byp-backend-o4ku.onrender.com/api'
+  /*headers: {
+    'Content-Type': 'application/json', 
+  },*/
 });
 
 // Add a request interceptor
