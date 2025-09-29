@@ -16,6 +16,7 @@ import Projetos from './pages/Projetos';
 import Compartilhados from './pages/Compartilhados';
 import Calendario from './pages/Calendario';
 import DadosUsuario from './pages/DadosUsuario';
+import InfoPage from './pages/Informacoes';
 
 //App.jsx faz o roteamento da aplicação, definindo as rotas para as páginas de login e registro.
 // Ele utiliza o BrowserRouter do react-router-dom para gerenciar as rotas da aplicação.
@@ -40,15 +41,16 @@ function App() {
           <Route path="/use_terms" element={<UseTerms />} />
           <Route path="/privacy_policy" element={<PrivacyPolicy />} />
 
-        <Route path="/home" element={<ProtectedRoute> <Home /></ProtectedRoute>}>
-          <Route index element={ <HomeDefault/> }/>
-          <Route path="projetos" element={ <Projetos />}/>
-          <Route path="compartilhados" element={ <Compartilhados />}/>
-          <Route path="calendario" element={ <Calendario />}/>
-          <Route path="dados_usuario" element={ <DadosUsuario />}/>
-        </Route>
-        
-        <Route path="/logout" element={<ProtectedRoute> <Logout /></ProtectedRoute>} />
+          <Route path="/home" element={<Home />}>
+            <Route index element={<HomeDefault />} />
+            <Route path="projetos" element={<Projetos />} />
+            <Route path="compartilhados" element={<Compartilhados />} />
+            <Route path="calendario" element={<Calendario />} />
+            <Route path="dados_usuario" element={<DadosUsuario />} />
+          </Route>
+
+          <Route path="/info" element={<InfoPage />}/>
+          <Route path="/logout" element={<ProtectedRoute> <Logout /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </>

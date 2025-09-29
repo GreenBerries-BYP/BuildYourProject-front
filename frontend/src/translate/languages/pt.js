@@ -95,6 +95,8 @@ const pt = {
     number: "Pelo menos um número",
     suggestions: "Sugestões para uma senha forte:",
     or: "OU",
+    doesntHaveAccount: "Não tem uma conta?",
+    google: "Faça login com o Google",
   },
   register: {
     fullNameLabel: "Nome completo:",
@@ -120,7 +122,9 @@ const pt = {
       policyLinkText: "políticas de privacidade",
     },
     submitButton: "Realizar Cadastro",
-    signIn: "Fazer Login"
+    signIn: "Fazer Login",
+    alredyHaveAccount: "Já possui uma conta?",
+    google: "Cadastrar com o Google",
   },
   projectCard: {
     progressLabel: "Progresso",
@@ -188,13 +192,13 @@ const pt = {
     endDateRequired: "Data de término é obrigatória.",
     endDateAfterStartDate:
       "Data de término não pode ser anterior à data de início.",
-    verificationCodeSent: "Um código de verificação foi enviado para seu e-mail.",
+    verificationCodeSent:
+      "Um código de verificação foi enviado para seu e-mail.",
     errorSendingCode: "Erro ao enviar o código. Tente novamente.",
     enterFullCode: "Digite os 6 dígitos do código",
     enterVerificationCode: "Digite o código de 6 dígitos",
-    optional: "Opcional", 
-    none: "N/A", 
-  
+    optional: "Opcional",
+    none: "N/A",
   },
   modalDeleteProject: {
     typeYesToDelete: "Digite",
@@ -202,7 +206,7 @@ const pt = {
     toDelete: "para apagar o projeto",
     inputPlaceholder: "Digite aqui",
     errorTypeYes: "Você precisa digitar SIM para confirmar",
-    errorDeleting: "Erro ao apagar o projeto"
+    errorDeleting: "Erro ao apagar o projeto",
   },
   buttons: {
     createProject: "Criar Projeto",
@@ -228,7 +232,7 @@ const pt = {
     assign: "Atribuir Tarefa",
     viewSchedule: "Ver Cronograma",
     back: "Voltar",
-    addSubtask: "Nova SubTarefa"
+    addSubtask: "Nova SubTarefa",
   },
   sideBar: {
     home: "Início",
@@ -247,7 +251,7 @@ const pt = {
     projectType: "Tipo de Projeto",
     phases: "Etapas",
     addPhase: "Adicionar etapa",
-    addCustomPhase:"Adicione sua própria etapa",
+    addCustomPhase: "Adicione sua própria etapa",
     taskName: "Nome da Tarefa",
     taskDescription: "Descrição da Tarefa",
     selectResponsible: "Selecione um responsável:",
@@ -256,12 +260,12 @@ const pt = {
     endDate: "Data de Término",
     academicArticle: "Artigo Acadêmico",
     collaboratorEmail: "Email do Colaborador",
-    selectResponsible: "Selecione um responsável"
+    selectResponsible: "Selecione um responsável",
   },
   placeholders: {
     projectName: "Insira o nome do projeto",
     email: "Seu e-mail",
-    enterEmail: "Digite o email"
+    enterEmail: "Digite o email",
   },
   steps: {
     basicInfo: "Info Básicas",
@@ -353,31 +357,36 @@ const pt = {
     googleLoginErrorTitle: "Erro no Google Login",
     googleLoginErrorDetail: "Não foi possível autenticar com o Google.",
     createProjectSuccessTitle: "Projeto criado com sucesso",
-    createProjectSuccessDetail: "Seu projeto foi salvo e está disponível na lista.",
+    createProjectSuccessDetail:
+      "Seu projeto foi salvo e está disponível na lista.",
     createProjectErrorTitle: "Erro ao criar projeto",
-    createProjectErrorDetail: "Não foi possível criar o projeto. Verifique os dados e tente novamente.",
+    createProjectErrorDetail:
+      "Não foi possível criar o projeto. Verifique os dados e tente novamente.",
     sessionExpiredTitle: "Sessão expirada",
     sessionExpiredDetail: "Faça login novamente para continuar.",
     registerSuccessTitle: "Cadastro realizado",
-    registerSuccessDetail: "Sua conta foi criada com sucesso! Você já pode fazer login.",
+    registerSuccessDetail:
+      "Sua conta foi criada com sucesso! Você já pode fazer login.",
     registerFailedTitle: "Falha no cadastro",
     registerEmailExists: "O email informado já está cadastrado. Tente outro.",
     serverErrorTitle: "Erro no servidor",
-    serverErrorDetail: "Não foi possível processar sua requisição. Tente novamente mais tarde.",
+    serverErrorDetail:
+      "Não foi possível processar sua requisição. Tente novamente mais tarde.",
     deleteProjectSuccessTitle: "Projeto excluído",
     deleteProjectSuccessDetail: "O projeto foi removido com sucesso.",
     deleteProjectErrorTitle: "Erro ao excluir projeto",
-    deleteProjectErrorDetail: "Não foi possível excluir o projeto. Tente novamente.",
+    deleteProjectErrorDetail:
+      "Não foi possível excluir o projeto. Tente novamente.",
     deleteTaskSuccessTitle: "Tarefa deletada",
     deleteTaskSuccessDetail: "A tarefa foi removida com sucesso.",
     deleteTaskErrorTitle: "Erro ao deletar tarefa",
-    deleteTaskErrorDetail: "Não foi possível deletar a tarefa. Tente novamente.",
+    deleteTaskErrorDetail:
+      "Não foi possível deletar a tarefa. Tente novamente.",
     assignTaskSuccessTitle: "Tarefa atribuída",
     assignTaskSuccessDetail: "A tarefa foi atribuída com sucesso.",
     assignTaskErrorTitle: "Erro ao atribuir tarefa",
-    assignTaskErrorDetail: "Não foi possível atribuir a tarefa. Tente novamente."
-
-
+    assignTaskErrorDetail:
+      "Não foi possível atribuir a tarefa. Tente novamente.",
   },
   dadosUsuario: {
     title: "Meus Dados",
@@ -386,6 +395,12 @@ const pt = {
     email: "Email",
     editButton: "Editar",
     loading: "Carregando dados do usuário...",
+    welcome: "Bem vind@, ",
+    deleteText:
+      "Excluir sua conta removerá permanentemente todos os seus dados. Esta ação não pode ser desfeita.",
+    changePassword: "Alterar Senha",
+    dangerZone: "Zona de Perigo",
+    deleteAccount: "Excluir Minha Conta",
   },
   modalDeleteTask: {
     typeYesToDelete: "Digite",
@@ -393,12 +408,35 @@ const pt = {
     toDelete: "para apagar a tarefa",
     inputPlaceholder: "Digite aqui",
     errorTypeYes: "Você precisa digitar SIM para confirmar",
-    errorDeleting: "Erro ao apagar a tarefa"
+    errorDeleting: "Erro ao apagar a tarefa",
   },
   modalAssignTask: {
     inputPlaceholder: "Digite o email",
     errorEmpty: "O email não pode ficar vazio",
-    errorInvalid: "Formato de email inválido"
+    errorInvalid: "Formato de email inválido",
+  },
+  infoPage: {
+    back: "Voltar",
+    title: "Central de Informações",
+    contactDescription:
+      "Para dúvidas, sugestões ou suporte técnico, envie um e-mail para:",
+    contactTitle: "Entre em Contato",
+    faqTitle: "Perguntas Frequentes (FAQ)",
+    faqQ1: "O que é a plataforma Build Your Project?",
+    faqA1:
+      "A Build Your Project (BYP) é uma plataforma projetada para ajudar desenvolvedores e equipes a gerenciar seus projetos de software, desde a concepção até a implantação, de forma organizada e eficiente.",
+    faqQ2: "Como posso alterar meus dados cadastrais?",
+    faqA2:
+      'Você pode alterar seu nome, nome de usuário e e-mail acessando a página "Meus Dados" através do menu de navegação. Lembre-se de salvar as alterações após a edição.',
+    faqQ3: "Esqueci minha senha, o que faço?",
+    faqA3:
+      "Na página 'Meus Dados', clique no botão 'Alterar Senha'. Um modal aparecerá com as instruções para que você possa redefinir sua senha com segurança.",
+    faqQ4: "É seguro excluir minha conta?",
+    faqA4:
+      "A exclusão de conta é uma ação permanente e irreversível. Todos os seus projetos e dados associados serão removidos de nossa plataforma. Proceda com cautela.",
+    linksTitle: "Links Úteis",
+    linksTerms: "Termos de Serviço",
+    linksPrivacyPolicy: "Política de Privacidade"
   },
 };
 

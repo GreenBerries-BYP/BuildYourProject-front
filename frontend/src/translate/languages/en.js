@@ -95,6 +95,8 @@ const en = {
     number: "At least one number",
     suggestions: "Suggestions for a strong password:",
     or: "OR",
+    doesntHaveAccount: "Doesn't have an account?",
+    google: "Login with Google",
   },
   register: {
     fullNameLabel: "Full name:",
@@ -120,7 +122,9 @@ const en = {
       policyLinkText: "privacy policies",
     },
     submitButton: "Register",
-    signIn: "Sign In"
+    signIn: "Sign In",
+    alredyHaveAccount: "Alredy have an account?",
+    google: "Register with Google",
   },
   projectCard: {
     progressLabel: "Progress",
@@ -191,8 +195,8 @@ const en = {
     errorSendingCode: "Error sending the code. Please try again.",
     enterFullCode: "Enter all 6 digits of the code",
     enterVerificationCode: "Enter the 6-digit code",
-    optional: "Optional",   // para indicar que a seleção do responsável é opcional
-    none: "N/A", 
+    optional: "Optional", // para indicar que a seleção do responsável é opcional
+    none: "N/A",
   },
   modalDeleteProject: {
     typeYesToDelete: "Type",
@@ -200,7 +204,7 @@ const en = {
     toDelete: "to delete the project",
     inputPlaceholder: "Type here",
     errorTypeYes: "You need to type YES to confirm",
-    errorDeleting: "Error deleting the project"
+    errorDeleting: "Error deleting the project",
   },
   buttons: {
     createProject: "Create Project",
@@ -226,7 +230,7 @@ const en = {
     assign: "Assign Task",
     viewSchedule: "View Schedule",
     back: "Back",
-    addSubtask: "Add SubTask"
+    addSubtask: "Add SubTask",
   },
   sideBar: {
     home: "Home",
@@ -245,7 +249,7 @@ const en = {
     projectType: "Project Type",
     phases: "Steps",
     addPhase: "Add step",
-    addCustomPhase:"Add your own phase",
+    addCustomPhase: "Add your own phase",
     selectResponsible: "Select responsible:",
     selectPhase: "Select a Step",
     startDate: "Start Date",
@@ -257,7 +261,7 @@ const en = {
   placeholders: {
     projectName: "Enter project name",
     email: "Your email",
-    enterEmail: "Enter email"
+    enterEmail: "Enter email",
   },
   steps: {
     basicInfo: "Basic Info",
@@ -340,8 +344,7 @@ const en = {
       title: "5. Your Rights",
       text: "You can access, correct, or delete your personal information at any time. Contact us to exercise these rights.",
     },
-    contact:
-      "For questions or requests, contact: privacidade@greenberries.com",
+    contact: "For questions or requests, contact: privacidade@greenberries.com",
   },
   toast: {
     loginSuccessTitle: "Welcome!",
@@ -353,17 +356,22 @@ const en = {
     googleLoginErrorTitle: "Google Login Error",
     googleLoginErrorDetail: "Unable to authenticate with Google.",
     createProjectSuccessTitle: "Project created successfully",
-    createProjectSuccessDetail: "Your project has been saved and is available in the list.",
+    createProjectSuccessDetail:
+      "Your project has been saved and is available in the list.",
     createProjectErrorTitle: "Error creating project",
-    createProjectErrorDetail: "Unable to create project. Please check your data and try again.",
+    createProjectErrorDetail:
+      "Unable to create project. Please check your data and try again.",
     sessionExpiredTitle: "Session expired",
     sessionExpiredDetail: "Please log in again to continue.",
     registerSuccessTitle: "Registration successful",
-    registerSuccessDetail: "Your account has been created successfully! You can now log in.",
+    registerSuccessDetail:
+      "Your account has been created successfully! You can now log in.",
     registerFailedTitle: "Registration failed",
-    registerEmailExists: "This email is already registered. Please try another.",
+    registerEmailExists:
+      "This email is already registered. Please try another.",
     serverErrorTitle: "Server error",
-    serverErrorDetail: "Unable to process your request. Please try again later.",
+    serverErrorDetail:
+      "Unable to process your request. Please try again later.",
     deleteProjectSuccessTitle: "Project deleted",
     deleteProjectSuccessDetail: "The project was successfully removed.",
     deleteProjectErrorTitle: "Error deleting project",
@@ -384,6 +392,12 @@ const en = {
     email: "Email",
     editButton: "Edit",
     loading: "Loading user data...",
+    welcome: "Welcome, ",
+    deleteText:
+      "Deleting you account will permanently remove all of your data. This action cannot be undone.",
+    changePassword: "Change Password",
+    dangerZone: "Danger Zone",
+    deleteAccount: "Delete My Account",
   },
   modalDeleteTask: {
     typeYesToDelete: "Type",
@@ -391,12 +405,35 @@ const en = {
     toDelete: "to delete the task",
     inputPlaceholder: "Type here",
     errorTypeYes: "You need to type YES to confirm",
-    errorDeleting: "Error deleting the task"
+    errorDeleting: "Error deleting the task",
   },
   modalAssignTask: {
     inputPlaceholder: "Enter email",
     errorEmpty: "Email cannot be empty",
-    errorInvalid: "Invalid email format"
+    errorInvalid: "Invalid email format",
+  },
+  infoPage: {
+    back: "Back",
+    title: "Info Center",
+    contactDescription:
+      "For questions, suggestions, or technical support, send an email to:",
+    contactTitle: "Contact Us",
+    faqTitle: "Frequently Asked Questions (FAQ)",
+    faqQ1: "What is the Build Your Project platform?",
+    faqA1:
+      "Build Your Project (BYP) is a platform designed to help developers and teams manage their software projects from conception to deployment in an organized and efficient way.",
+    faqQ2: "How can I change my registration data?",
+    faqA2:
+      'You can change your name, username, and email by accessing the "My Data" page through the navigation menu. Remember to save the changes after editing.',
+    faqQ3: "I forgot my password, what do I do?",
+    faqA3:
+      'On the "My Data" page, click the "Change Password" button. A modal will appear with instructions so you can safely reset your password.',
+    faqQ4: "Is it safe to delete my account?",
+    faqA4:
+      "Account deletion is a permanent and irreversible action. All your projects and associated data will be removed from our platform. Proceed with caution.",
+    linksTitle: "Useful Links",
+    linksTerms: "Terms",
+    linksPrivacyPolicy: "Privacy Policy",
   },
 };
 
