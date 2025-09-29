@@ -92,7 +92,7 @@ export const updateTaskStatus = async (taskId, isCompleted) => {
 
 export const fetchProjectWithTasks = async (projectId) => {
   try {
-    const response = await api.get(`/projects/${projectId}/tasks/`);
+    const response = await api.get(`/projetos/${projectId}/tasks/`);
     return response.data; // Deve retornar o objeto do projeto completo
   } catch (error) {
     console.error('Erro ao buscar projeto com tarefas:', error);
@@ -103,7 +103,7 @@ export const fetchProjectWithTasks = async (projectId) => {
 
 export const updateTask = async (projectId, taskId, data) => {
   try {
-    const response = await api.put(`/projects/${projectId}/tasks/${taskId}/`, data);
+    const response = await api.put(`/projetos/${projectId}/tasks/${taskId}/`, data);
     return response.data;
   } catch (error) {
     console.error('Erro ao atualizar tarefa:', error);
@@ -114,7 +114,7 @@ export const updateTask = async (projectId, taskId, data) => {
 
 export const updateSubtask = async (projectId, subtaskId, data) => {
   try {
-    const response = await api.put(`/projects/${projectId}/subtasks/${subtaskId}/`, data);
+    const response = await api.put(`/projetos/${projectId}/subtasks/${subtaskId}/`, data);
     return response.data;
   } catch (error) {
     console.error('Erro ao atualizar subtarefa:', error);
