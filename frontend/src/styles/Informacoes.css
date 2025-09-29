@@ -1,3 +1,7 @@
+p {
+  font-size: 1.4rem;
+}
+
 .btn-back {
     border-radius: 8px;
     border: 2px solid var(--white-color);
@@ -18,6 +22,7 @@
 .info-card {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  height: 82vh;
 }
 
 .info-section {
@@ -53,6 +58,10 @@
 
 .useful-links .p-button {
     margin-right: 1rem;
+}
+
+.acordion-tab {
+  font-size: 1.5rem;
 }
 
 /* Animação de entrada */
