@@ -409,6 +409,9 @@ const pt = {
     errorEmpty: "O email não pode ficar vazio",
     errorInvalid: "Formato de email inválido"
   },
+  infoPage: {
+    back: "Voltar"
+  }
 };
 
 export default pt;

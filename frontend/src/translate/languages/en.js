@@ -393,8 +393,6 @@ const en = {
     changePassword: "Change Password",
     dangerZone: "Danger Zone",
     deleteAccount: "Delete My Account"
-
-
   },
   modalDeleteTask: {
     typeYesToDelete: "Type",
@@ -409,6 +407,9 @@ const en = {
     errorEmpty: "Email cannot be empty",
     errorInvalid: "Invalid email format"
   },
+  infoPage: {
+    back: "Back"
+  }
 };
 
 export default en;
