@@ -25,6 +25,7 @@ const ModalDeleteProject = ({ isOpen, onClose, projetoId, onDeleteSuccess }) => 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+        credentials: 'include', 
       });
         
 
