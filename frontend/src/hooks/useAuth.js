@@ -72,7 +72,7 @@ export const useAuth = () => {
     setIsGoogleLoading(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/google/`,
+        `${import.meta.env.VITE_API_URL}/api${API_ENDPOINTS.GOOGLE_LOGIN}`,
         {
           access_token: tokenResponse.access_token,
         }
