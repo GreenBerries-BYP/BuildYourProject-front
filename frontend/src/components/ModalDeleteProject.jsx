@@ -10,6 +10,13 @@ const ModalDeleteProject = ({ isOpen, onClose, projetoId, onDeleteSuccess }) => 
   const [error, setError] = useState("");
   const API_URL = "https://byp-backend-o4ku.onrender.com/api";
 
+  try {
+  const token = localStorage.getItem("access_token");
+  
+  if (!token) {
+    throw new Error("Token de autenticação não encontrado. Faça login novamente.");
+  }
+    
   // Função para deletar o projeto
   const handleDelete = async () => {
     if (input.trim().toUpperCase() !== "SIM") {
