@@ -9,6 +9,7 @@ import { Checkbox } from "primereact/checkbox";
 import { Divider } from "primereact/divider";
 import { FloatLabel } from "primereact/floatlabel";
 import { useTranslation } from "react-i18next";
+import { useGoogleLogin } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 
@@ -24,6 +25,13 @@ const Login = () => {
   const [showForgotModal, setShowForgotModal] = React.useState(false);
 
   const { login, googleLogin, isLoading, isGoogleLoading } = useAuth();
+
+   const handleGoogleLogin = useGoogleLogin({
+    onSuccess: googleLogin,
+    onError: () => {
+      console.log('Google Login Failed');
+    }
+  });
 
   const {
     control,
@@ -193,10 +201,11 @@ const Login = () => {
               </Divider>
 
               <div className="d-flex justify-content-center w-100 position-relative">
-                <button
+                 <button
                   type="button"
                   className="btn-google-custom"
                   disabled={isGoogleLoading}
+                  onClick={() => handleGoogleLogin()}
                 >
                   {isGoogleLoading ? (
                     <div
@@ -210,7 +219,7 @@ const Login = () => {
                     </>
                   )}
                 </button>
-                <div
+                {/* <div
                   style={{
                     position: "absolute",
                     top: 0,
@@ -231,7 +240,7 @@ const Login = () => {
                     }
                     useOneTap={false}
                   />
-                </div>
+                </div> */}
               </div>
             </form>
 
