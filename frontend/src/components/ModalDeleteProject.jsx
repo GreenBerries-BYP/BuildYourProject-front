@@ -135,10 +135,10 @@ const ModalDeleteProject = ({
     toastService.error(
       t("toast.authErrorTitle", "Erro de autenticação"),
       t("toast.authErrorDetail", "Por favor, faça login novamente.")
-    );*/
+    );
     onClose();
     return null;
-  }
+  }*/
 };
 
 export default ModalDeleteProject;
