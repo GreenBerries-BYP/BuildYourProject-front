@@ -8,7 +8,7 @@ const ModalDeleteProject = ({ isOpen, onClose, projetoId, onDeleteSuccess }) => 
   const modalRef = useRef();
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
-  const API_URL = "https://buildyourproject-back.onrender.com";
+  const API_URL = "https://byp-backend-o4ku.onrender.com/api";
 
   // Função para deletar o projeto
   const handleDelete = async () => {
