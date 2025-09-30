@@ -8,7 +8,7 @@ const ModalDeleteTask = ({ isOpen, onClose, taskId, onDeleteSuccess }) => {
   const modalRef = useRef();
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
-  const API_URL = "https://buildyourproject-back.onrender.com";
+  const API_URL = "https://byp-backend-o4ku.onrender.com/api";
 
   // Função para deletar a tarefa
   const handleDelete = async () => {
