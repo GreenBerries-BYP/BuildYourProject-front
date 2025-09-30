@@ -25,6 +25,7 @@ const ModalDeleteTask = ({ isOpen, onClose, taskId, onDeleteSuccess }) => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
+        credentials: 'include', 
       });
 
       if (res.status === 204) {
