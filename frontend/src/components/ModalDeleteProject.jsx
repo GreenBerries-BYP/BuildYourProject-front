@@ -3,7 +3,12 @@ import "../styles/ModalForgotPasswordDeleteProject.css"; // reaproveita o CSS
 import { useTranslation } from "react-i18next";
 import toastService from "../api/toastService";
 
-const ModalDeleteProject = ({ isOpen, onClose, projetoId, onDeleteSuccess }) => {
+const ModalDeleteProject = ({
+  isOpen,
+  onClose,
+  projetoId,
+  onDeleteSuccess,
+}) => {
   const { t } = useTranslation();
   const modalRef = useRef();
   const [input, setInput] = useState("");
@@ -11,104 +16,129 @@ const ModalDeleteProject = ({ isOpen, onClose, projetoId, onDeleteSuccess }) => 
   const API_URL = "https://byp-backend-o4ku.onrender.com/api";
 
   try {
-  const token = localStorage.getItem("access_token");
-  
-  if (!token) {
-    throw new Error("Token de autenticação não encontrado. Faça login novamente.");
-  }
-    
-  // Função para deletar o projeto
-  const handleDelete = async () => {
-    if (input.trim().toUpperCase() !== "SIM") {
-      setError(t("modalDeleteProject.errorTypeYes", "Você precisa digitar SIM para confirmar"));
-      return;
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      throw new Error(
+        "Token de autenticação não encontrado. Faça login novamente."
+      );
     }
 
-    try {
-      const token = localStorage.getItem("access_token"); // JWT
-      const res = await fetch(`${API_URL}/projetos/${projetoId}/delete/`, {
-        method: 'DELETE',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include', 
-      });
-        
+    // Função para deletar o projeto
+    const handleDelete = async () => {
+      if (input.trim().toUpperCase() !== "SIM") {
+        setError(
+          t(
+            "modalDeleteProject.errorTypeYes",
+            "Você precisa digitar SIM para confirmar"
+          )
+        );
+        return;
+      }
 
-      if (res.status === 204) {
-        toastService.success(
+      try {
+        const token = localStorage.getItem("access_token"); // JWT
+        const res = await fetch(`${API_URL}/projetos/${projetoId}/delete/`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (res.status === 204) {
+          toastService.success(
             t("toast.deleteProjectSuccessTitle"),
             t("toast.deleteProjectSuccessDetail")
-        );
-        onClose();
-        setInput("");
-        setError("");
+          );
+          onClose();
+          setInput("");
+          setError("");
 
-        if (onDeleteSuccess) {
-          onDeleteSuccess(projetoId);
-        }
-      } else {
-        toastService.error(
+          if (onDeleteSuccess) {
+            onDeleteSuccess(projetoId);
+          }
+        } else {
+          toastService.error(
             t("toast.deleteProjectErrorTitle"),
             t("toast.deleteProjectErrorDetail")
-        );
+          );
         }
-    } catch (err) {
+      } catch (err) {
         toastService.error(
-        t("toast.deleteProjectErrorTitle"),
-        err.response?.data?.detail || err.message || t("toast.deleteProjectErrorDetail")
+          t("toast.deleteProjectErrorTitle"),
+          err.response?.data?.detail ||
+            err.message ||
+            t("toast.deleteProjectErrorDetail")
         );
-    }
-  };
-
-  // Fecha modal ao clicar fora
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (modalRef.current && !modalRef.current.contains(e.target)) onClose();
+      }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
 
-  // Fecha modal ao pressionar ESC
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", handleEsc);
-    return () => document.removeEventListener("keydown", handleEsc);
-  }, [onClose]);
+    // Fecha modal ao clicar fora
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (modalRef.current && !modalRef.current.contains(e.target)) onClose();
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }, [onClose]);
 
-  if (!isOpen) return null;
+    // Fecha modal ao pressionar ESC
+    useEffect(() => {
+      const handleEsc = (e) => {
+        if (e.key === "Escape") onClose();
+      };
+      document.addEventListener("keydown", handleEsc);
+      return () => document.removeEventListener("keydown", handleEsc);
+    }, [onClose]);
 
-  return (
-    <div className="modal-overlay">
-      <div className="modal-content" ref={modalRef}>
-        <div className="modal-header">
-          <h2>{t("titles.confirmDelete", "Confirmar exclusão")}</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
-        </div>
+    if (!isOpen) return null;
 
-        <div className="modal-body">
-          <label>
-            {t("modalDeleteProject.typeYesToDelete", "Digite")} <b>{t("modalDeleteProject.sim", "SIM")}</b> {t("modalDeleteProject.toDelete", "para apagar o projeto")}
-          </label>
-          <div className="input-confirm-container">
-            <input
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content" ref={modalRef}>
+          <div className="modal-header">
+            <h2>{t("titles.confirmDelete", "Confirmar exclusão")}</h2>
+            <button className="close-btn" onClick={onClose}>
+              ×
+            </button>
+          </div>
+
+          <div className="modal-body">
+            <label>
+              {t("modalDeleteProject.typeYesToDelete", "Digite")}{" "}
+              <b>{t("modalDeleteProject.sim", "SIM")}</b>{" "}
+              {t("modalDeleteProject.toDelete", "para apagar o projeto")}
+            </label>
+            <div className="input-confirm-container">
+              <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder={t("modalDeleteProject.inputPlaceholder", "Digite aqui")}
-            />
-            {error && <p className="input-error">{error}</p>}
-            <button className="save-btn" onClick={handleDelete}>
+                placeholder={t(
+                  "modalDeleteProject.inputPlaceholder",
+                  "Digite aqui"
+                )}
+              />
+              {error && <p className="input-error">{error}</p>}
+              <button className="save-btn" onClick={handleDelete}>
                 {t("buttons.confirm", "Confirmar")}
-            </button>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } catch (error) {
+    console.error("Erro ao obter o token de autenticação:", error);
+    toastService.error(
+      t("toast.authErrorTitle", "Erro de autenticação"),
+      t("toast.authErrorDetail", "Por favor, faça login novamente.")
+    );
+    onClose();
+    return null;
+  }
 };
 
 export default ModalDeleteProject;
