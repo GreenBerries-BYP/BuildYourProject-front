@@ -110,6 +110,10 @@ const pt = {
     passwordPlaceholder: "Digite sua senha",
     confirmPasswordLabel: "Confirmar Senha:",
     confirmPasswordPlaceholder: "Confirme sua senha",
+    iAccept: "Eu aceito os",
+    termsOfUse: "termos de uso",
+    and: "e as",
+    privacyPolicy: "políticas de privacidade",
     errorPasswordMismatch: "As senhas não coincidem.",
     errorAcceptTerms:
       "Você precisa aceitar os termos de uso e políticas de privacidade.",

@@ -110,6 +110,10 @@ const en = {
     passwordPlaceholder: "Enter your password",
     confirmPasswordLabel: "Confirm Password:",
     confirmPasswordPlaceholder: "Confirm your password",
+    iAccept: "I accept the",
+    termsOfUse: "terms of use",
+    and: "and the",
+    privacyPolicy: "privacy policies",
     errorPasswordMismatch: "Passwords do not match.",
     errorAcceptTerms: "You must accept the terms of use and privacy policies.",
     errorRegistrationFailed:

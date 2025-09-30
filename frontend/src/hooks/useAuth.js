@@ -79,7 +79,7 @@ export const useAuth = () => {
       );
 
       const { token } = response.data;
-      setToken(token);
+      saveToken(token);
       setUser(token);
       navigate("/home");
     } catch (error) {

@@ -9,6 +9,7 @@ import { Password } from "primereact/password";
 import { Checkbox } from "primereact/checkbox";
 import { Divider } from "primereact/divider";
 import { FloatLabel } from "primereact/floatlabel";
+import { useGoogleLogin } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 import { useAuth } from "../hooks/useAuth";
@@ -36,6 +37,18 @@ const Register = () => {
       password: "",
       confirmPassword: "",
       acceptTerms: false,
+    },
+  });
+
+  const handleGoogleRegister = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      googleLogin(tokenResponse);
+    },
+    onError: () => {
+      toastService.error(
+        "Erro no Google",
+        "Não foi possível se cadastrar com o Google."
+      );
     },
   });
 
@@ -265,17 +278,17 @@ const Register = () => {
               )}
             />
             <label htmlFor="acceptTerms" className="check-label">
-              Eu aceito os{" "}
+              {t("register.iAccept")}{" "}
               <a href="/use_terms" target="_blank" rel="noopener noreferrer">
-                termos de uso
+                {t("register.termsOfUse")}
               </a>{" "}
-              e as{" "}
+              {t("register.and")}{" "}
               <a
                 href="/privacy_policy"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                políticas de privacidade
+                {t("register.privacyPolicy")}
               </a>
               .
             </label>
@@ -310,6 +323,7 @@ const Register = () => {
               type="button"
               className="btn-google-custom"
               disabled={isGoogleLoading}
+              onClick={handleGoogleRegister}
             >
               {isGoogleLoading ? (
                 <div
@@ -319,11 +333,13 @@ const Register = () => {
               ) : (
                 <>
                   <FcGoogle className="google-icon" />
-                  <span>{t("register.google")}</span>
+                  <span>
+                    {t("register.google", "Cadastre-se com o Google")}
+                  </span>
                 </>
               )}
             </button>
-            <div
+            {/* <div
               style={{
                 position: "absolute",
                 top: 0,
@@ -344,7 +360,7 @@ const Register = () => {
                 }
                 useOneTap={false}
               />
-            </div>
+            </div> */}
           </div>
         </form>
 
