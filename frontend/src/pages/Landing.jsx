@@ -289,23 +289,7 @@ const Landing = () => {
                 </p>
               </div>
             </div>
-            <div className="bloco-ferramenta col-sm-5 col-lg-3">
-              <img
-                src="imgs/decor-landing/icons-ferramentas/bot.svg"
-                alt={t("altText.botIcon", "Bot icon")}
-              />
-              <div className="bloco-text">
-                <h3>
-                  {t("landing.toolsInfo.integratedAI.title", "IA integrada")}
-                </h3>
-                <p>
-                  {t(
-                    "landing.toolsInfo.integratedAI.description",
-                    "Dúvidas? Pergunte à Berry, nossa IA ajudante!"
-                  )}
-                </p>
-              </div>
-            </div>
+            
           </div>
         </div>
         

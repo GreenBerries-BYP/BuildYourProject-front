@@ -370,6 +370,7 @@
 }
 
 .titulo-sobre h1 {
+  color: var(--black-color);
   font-size: 5.5rem;
 }
 
@@ -387,6 +388,7 @@
 }
 
 .quem-somos h2 {
+  color: var(--black-color) !important;
   font-size: 3.5rem;
   padding-bottom: 3rem;
 }
