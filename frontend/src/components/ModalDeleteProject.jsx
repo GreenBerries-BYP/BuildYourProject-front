@@ -45,7 +45,7 @@ const ModalDeleteProject = ({
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        credentials: "include",
+        //credentials: "include",
       });
 
       if (res.status === 204) {
