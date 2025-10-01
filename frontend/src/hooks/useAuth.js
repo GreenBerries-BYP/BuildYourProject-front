@@ -3,6 +3,7 @@ import { useAuthContext } from "../auth/authContext";
 import { saveToken } from "../auth/auth";
 import { useState } from "react";
 import { API_ENDPOINTS } from "../constants/auth";
+import jwt_decode from "jwt-decode"; /
 
 import toastService from "../api/toastService";
 import api from "../api/api";
@@ -23,7 +24,10 @@ export const useAuth = () => {
       });
       if (res.data && res.data.access) {
         saveToken(res.data.access, manterLogado, res.data.refresh);
-        setUser(res.data.access);
+
+        const userData = jwt_decode(res.data.access);
+        setUser(userData);
+
         toastService.success("Bem-vindo!", "Login realizado com sucesso.");
         navigate("/home");
       } else {
@@ -80,7 +84,10 @@ export const useAuth = () => {
 
       const { token } = response.data;
       saveToken(token);
-      setUser(token);
+
+      const userData = jwt_decode(token);
+      setUser(userData);
+
       navigate("/home");
     } catch (error) {
       console.error("Erro no login com Google:", error);
