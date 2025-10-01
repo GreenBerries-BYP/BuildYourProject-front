@@ -24,7 +24,7 @@ export const useAuth = () => {
       if (res.data && res.data.access) {
         saveToken(res.data.access, manterLogado, res.data.refresh);
 
-        const userData = jwt_decode(res.data.access);
+        const userData = jwt-decode(res.data.access);
         setUser(userData);
 
         toastService.success("Bem-vindo!", "Login realizado com sucesso.");
@@ -84,7 +84,7 @@ export const useAuth = () => {
       const { token } = response.data;
       saveToken(token);
 
-      const userData = jwt_decode(token);
+      const userData = jwtDecode(token);
       setUser(userData);
 
       navigate("/home");
