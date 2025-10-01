@@ -3,7 +3,8 @@ import { useAuthContext } from "../auth/authContext";
 import { saveToken } from "../auth/auth";
 import { useState } from "react";
 import { API_ENDPOINTS } from "../constants/auth";
-import {jwtDecode} from "jwt-decode"; 
+
+import { jwtDecode } from "jwt-decode";
 
 import toastService from "../api/toastService";
 import api from "../api/api";
@@ -25,7 +26,7 @@ export const useAuth = () => {
       if (res.data && res.data.access) {
         saveToken(res.data.access, manterLogado, res.data.refresh);
 
-        const userData = {jwtDecode}(res.data.access);
+        const userData = jwtDecode(res.data.access);
         setUser(userData);
 
         toastService.success("Bem-vindo!", "Login realizado com sucesso.");
@@ -85,7 +86,7 @@ export const useAuth = () => {
       const { token } = response.data;
       saveToken(token);
 
-      const userData = {jwtDecode}(token);
+      const userData = jwtDecode(token);
       setUser(userData);
 
       navigate("/home");
