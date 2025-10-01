@@ -48,7 +48,7 @@ const ModalDeleteProject = ({
         //credentials: "include",
       });
 
-      if (res.status === 204) {
+      if (res.status === 200 || res.status === 204)  {
         toastService.success(
           t("toast.deleteProjectSuccessTitle"),
           t("toast.deleteProjectSuccessDetail")
