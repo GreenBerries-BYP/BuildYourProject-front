@@ -3,8 +3,7 @@ import { useAuthContext } from "../auth/authContext";
 import { saveToken } from "../auth/auth";
 import { useState } from "react";
 import { API_ENDPOINTS } from "../constants/auth";
-import jwt_decode from "jwt-decode"; 
-
+import { jwtDecode } from "jwt-decode";S
 import toastService from "../api/toastService";
 import api from "../api/api";
 import axios from "axios";
