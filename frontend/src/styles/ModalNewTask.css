@@ -182,3 +182,7 @@ body.dark-theme .options .selected {
 .options button.selected:hover {
   background-color: var(--purple-saturated-color);
 }
+
+select{
+  color:var(--black-color);
+}
