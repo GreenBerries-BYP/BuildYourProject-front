@@ -1,6 +1,6 @@
 // src/auth/auth.js
 
-import { jwtDecode } from "jwt-decode";
+import jwtDecode from "jwt-decode"; 
 import { STORAGE_KEYS } from "../constants/auth";
 
 export const saveToken = (token, keepLogged = false, refreshToken = null) => {
@@ -13,6 +13,14 @@ export const saveToken = (token, keepLogged = false, refreshToken = null) => {
 
   if (refreshToken) {
     localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+  }
+
+ 
+  try {
+    const decoded = jwtDecode(token);
+    localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(decoded));
+  } catch (err) {
+    console.error("Erro ao decodificar token ao salvar:", err);
   }
 };
 
@@ -31,7 +39,13 @@ export const removeToken = () => {
   localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
   sessionStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
   localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-  localStorage.removeItem(STORAGE_KEYS.USER_INFO);
+  localStorage.removeItem(STORAGE_KEYS.USER_INFO); // mantém limpeza
+};
+
+// ✅ helper extra para recuperar usuário salvo
+export const getUserInfo = () => {
+  const data = localStorage.getItem(STORAGE_KEYS.USER_INFO);
+  return data ? JSON.parse(data) : null;
 };
 
 export const isAuthenticated = () => {
@@ -43,7 +57,7 @@ export const isAuthenticated = () => {
   try {
     const decoded = jwtDecode(token);
     const currentTime = Date.now() / 1000;
-    return decoded.exp > currentTime;
+    return decoded.exp && decoded.exp > currentTime;
   } catch (error) {
     console.error("Erro ao decodificar token:", error);
     removeToken();
