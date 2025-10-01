@@ -1,6 +1,6 @@
 // src/auth/auth.js
 
-import jwtDecode from "jwt-decode"; 
+import { jwtDecode } from "jwt-decode"; 
 import { STORAGE_KEYS } from "../constants/auth";
 
 export const saveToken = (token, keepLogged = false, refreshToken = null) => {

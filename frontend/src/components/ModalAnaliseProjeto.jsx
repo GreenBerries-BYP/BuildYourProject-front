@@ -14,18 +14,23 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
     setCarregando(true);
     try {
       const resultado = await analisarProjeto(projectId);
-      setAnalise(resultado);
-      
-      if (resultado.sucesso) {
-        toastService.success(
-          'Análise concluída!',
-          `Probabilidade de atraso: ${resultado.probabilidade_atraso}%`
-        );
-        
-        if (onAnaliseConcluida) {
-          onAnaliseConcluida(resultado);
-        }
+     
+      if (resultado.erro) {
+        toastService.error('Erro na análise', resultado.erro);
+        return;
       }
+     
+      setAnalise(resultado);
+     
+      toastService.success(
+        'Análise concluída!',
+        `Probabilidade de atraso: ${resultado.probabilidade_atraso}%`
+      );
+     
+      if (onAnaliseConcluida) {
+        onAnaliseConcluida(resultado);
+      }
+     
     } catch (error) {
       toastService.error(
         'Erro na análise',
@@ -40,13 +45,13 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
     setAplicandoSugestao(sugestao.id);
     try {
       const resultado = await aplicarSugestao(projectId, sugestao.id, sugestao.acao);
-      
+     
       if (resultado.sucesso) {
         toastService.success(
           'Sugestão aplicada!',
           resultado.mensagem
         );
-        
+       
         // Recarregar a análise para mostrar novos dados
         const novaAnalise = await analisarProjeto(projectId);
         setAnalise(novaAnalise);
@@ -83,13 +88,12 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
 
         <div className="modal-body">
           {!analise ? (
-            // Tela inicial - botão para iniciar análise
             <div className="analise-inicial">
               <img className="icone-analise" src="/imgs/decor-landing/icons-ferramentas/bot.svg" />
               <h3>Analisar Saúde do Projeto</h3>
               <p>Nosso sistema irá analisar o andamento do projeto e sugerir melhorias automáticas.</p>
-              
-              <button 
+             
+              <button
                 className="btn-analisar"
                 onClick={handleAnalisar}
                 disabled={carregando}
@@ -98,12 +102,9 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
               </button>
             </div>
           ) : (
-            // Resultados da análise
             <div className="resultados-analise">
               {/* Indicador de Risco */}
-              <div 
-                className={`indicador-risco ${getClasseRisco(analise.probabilidade_atraso)}`}
-              >
+              <div className={`indicador-risco ${getClasseRisco(analise.probabilidade_atraso)}`}>
                 <div className="probabilidade">
                   {analise.probabilidade_atraso}%
                 </div>
@@ -113,11 +114,33 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                 <div className="label-risco">Probabilidade de Atraso</div>
               </div>
 
+              {/* Status do Projeto */}
+              <div className={`status-projeto ${analise.cor}`}>
+                <h4>{analise.status}</h4>
+                <p>{analise.explicacao}</p>
+              </div>
+
+              {/* Métricas Principais */}
+              <div className="metricas-principais">
+                <div className="metrica">
+                  <span className="valor">{analise.spi}</span>
+                  <span className="label">SPI</span>
+                </div>
+                <div className="metrica">
+                  <span className="valor">{analise.tarefas_atrasadas}</span>
+                  <span className="label">Tarefas Atrasadas</span>
+                </div>
+                <div className="metrica">
+                  <span className="valor">{analise.taxa_conclusao}%</span>
+                  <span className="label">Concluído</span>
+                </div>
+              </div>
+
               {/* Sugestões */}
               {analise.sugestoes && analise.sugestoes.length > 0 ? (
                 <div className="sugestoes-lista">
                   <h4>💡 Sugestões Recomendadas</h4>
-                  
+                 
                   {analise.sugestoes.map((sugestao, index) => (
                     <div key={index} className="sugestao-item">
                       <div className="sugestao-header">
@@ -126,13 +149,9 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                         </span>
                         <h5>{sugestao.titulo}</h5>
                       </div>
-                      
+                     
                       <p className="sugestao-descricao">{sugestao.descricao}</p>
-                      
-                      {sugestao.detalhes && (
-                        <p className="sugestao-detalhes">{sugestao.detalhes}</p>
-                      )}
-                      
+                     
                       <button
                         className={`btn-aplicar ${sugestao.prioridade}`}
                         onClick={() => handleAplicarSugestao(sugestao)}
@@ -151,13 +170,13 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
 
               {/* Botão para reanalisar */}
               <div className="acoes-finais">
-                <button 
+                <button
                   className="btn-reanalisar"
                   onClick={handleAnalisar}
                   disabled={carregando}
                 >
                   <img className="icone-reanalisar" src="/imgs/decor-landing/icons-ferramentas/Redo.svg" />
-                    &nbsp;Reanalisar Projeto
+                  Reanalisar Projeto
                 </button>
               </div>
             </div>
