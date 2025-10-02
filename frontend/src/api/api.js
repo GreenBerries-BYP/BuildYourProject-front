@@ -15,11 +15,15 @@ api.interceptors.request.use(
     // Lista de rotas que não precisam de Authorization
     const publicRoutes = ["/register/", "/login/", "/auth/google/", "/auth/send-reset-code/",    // ✅ ADICIONA ESTA
       "/auth/verify-reset-code/", "/auth/reset-password/"];
+    
+    const isPublicRoute = publicRoutes.some(route => 
+      config.url.startsWith(route)
+    );
 
-    if (token && !publicRoutes.some((route) => config.url.includes(route))) {
+    if (token && !isPublicRoute) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
+    
     return config;
   },
   (error) => Promise.reject(error)
