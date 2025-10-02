@@ -73,7 +73,7 @@ export const useAuth = () => {
     }
   };
 
-  const googleLogin = async (tokenResponse) => {
+  const googleLogin = async (credentialResponse) => {
   setIsGoogleLoading(true);
   try {
     const idToken = credentialResponse.credential;
@@ -93,7 +93,6 @@ export const useAuth = () => {
     );
 
     console.log("Resposta do backend:", response.data);
-
     const token = response.data.access;
     
     if (!token) {
