@@ -76,12 +76,16 @@ export const useAuth = () => {
   const googleLogin = async (tokenResponse) => {
   setIsGoogleLoading(true);
   try {
+    console.log("Token Response do Google:", tokenResponse);
+    
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api${API_ENDPOINTS.GOOGLE_LOGIN}`,
       {
-        access_token: tokenResponse.access_token,
+        access_token: tokenResponse.access_token, // ← CORRETO para seu backend
       }
     );
+
+    console.log("Resposta do backend:", response.data);
 
     // CORREÇÃO: O backend retorna "access", não "token"
     const token = response.data.access;
@@ -97,16 +101,19 @@ export const useAuth = () => {
     const userData = jwtDecode(token);
     setUser(userData);
 
-    // Adicione feedback de sucesso
     toastService.success("Bem-vindo!", "Login com Google realizado com sucesso.");
     navigate("/home");
   } catch (error) {
-    console.error("Erro no login com Google:", error);
+    console.error("Erro completo no login com Google:", error);
+    console.error("Detalhes do erro:", error.response?.data);
     
     // Adicione tratamento de erro mais específico
     if (error.response?.status === 400) {
-      const errorMessage = error.response.data?.error || 
-                          error.response.data?.details || 
+      const errorDetails = error.response.data;
+      console.error("Detalhes do erro 400:", errorDetails);
+      
+      const errorMessage = errorDetails?.error || 
+                          errorDetails?.details || 
                           "Token do Google inválido ou expirado.";
       toastService.error("Falha no login", errorMessage);
     } else {
