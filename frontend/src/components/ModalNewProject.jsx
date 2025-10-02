@@ -8,9 +8,8 @@ import { getToken } from "../auth/auth";
 import { abntTemplates } from "../mocks/abntMock";
 import { useNavigate } from "react-router-dom";
 
-const ModalNewProject = ({ isOpen, onClose }) => {
+const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const modalRef = useRef();
   const descriptionTextareaRef = useRef(null);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -39,7 +38,6 @@ const ModalNewProject = ({ isOpen, onClose }) => {
   oneMonthAgo.setMonth(today.getMonth() - 1);
 
   const formatDate = (date) => date.toISOString().split("T")[0];
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -199,7 +197,6 @@ const ModalNewProject = ({ isOpen, onClose }) => {
           startDate: formData.startDate,
           endDate: formData.endDate,
         };
-        // Add a comment about backend dependency
         // TODO: Ensure backend endpoint /api/projetos/ is fully implemented and handles auth correctly.
         const response = await api.post("/projetos/", submissionData, {
           headers: {
@@ -220,6 +217,7 @@ const ModalNewProject = ({ isOpen, onClose }) => {
           );
           // Successful creation
           onClose();
+          onProjectCreated();
           setFormData({
             name: "",
             description: "",
@@ -233,13 +231,11 @@ const ModalNewProject = ({ isOpen, onClose }) => {
           setEmailInput("");
           setFormErrors({});
           setIsDescriptionExpanded(false);
-
-          navigate("/home");
         } else {
           // This block might not be strictly necessary if Axios throws on non-2xx by default
           // For safety, keeping a generic error if it somehow reaches here
           const errorData = response.data;
-          
+
           throw new Error(errorData.detail || t("messages.errorNewProject"));
         }
       } catch (err) {
@@ -251,9 +247,11 @@ const ModalNewProject = ({ isOpen, onClose }) => {
           // Other HTTP errors (400, 500, etc.)
           toastService.error(
             t("toast.createProjectErrorTitle"),
-            err.response?.data?.detail || err.message || t("toast.createProjectErrorDetail")
+            err.response?.data?.detail ||
+              err.message ||
+              t("toast.createProjectErrorDetail")
           );
-          
+
           const errorData = err.response.data;
           let detailedMessage = "";
           if (typeof errorData === "object" && errorData !== null) {
@@ -450,13 +448,20 @@ const ModalNewProject = ({ isOpen, onClose }) => {
                               onChange={(e) => setNewPhase(e.target.value)}
                               placeholder={t("inputs.addCustomPhase")}
                             />
-                            <button id="addPhaseButton"
+                            <button
+                              id="addPhaseButton"
                               type="button"
                               onClick={(e) => {
                                 e.preventDefault();
-                                if (newPhase.trim() !== "" && !formData.phases.includes(newPhase)) {
+                                if (
+                                  newPhase.trim() !== "" &&
+                                  !formData.phases.includes(newPhase)
+                                ) {
                                   handlephasesChange(newPhase); // já seleciona
-                                  setCustomPhases((prev) => [...prev, newPhase]);
+                                  setCustomPhases((prev) => [
+                                    ...prev,
+                                    newPhase,
+                                  ]);
                                   setNewPhase(""); // limpa o input
                                 }
                               }}
@@ -464,12 +469,22 @@ const ModalNewProject = ({ isOpen, onClose }) => {
                               {t("inputs.addPhase")}
                             </button>
                           </div>
-                          {[...abntTemplates, ...customPhases.map((p) => ({ value: p, label: p }))].map((tmpl) => (
+                          {[
+                            ...abntTemplates,
+                            ...customPhases.map((p) => ({
+                              value: p,
+                              label: p,
+                            })),
+                          ].map((tmpl) => (
                             <button
                               key={tmpl.value}
                               type="button"
                               onClick={() => handlephasesChange(tmpl?.value)}
-                              className={formData.phases.includes(tmpl?.value) ? "selected" : ""}
+                              className={
+                                formData.phases.includes(tmpl?.value)
+                                  ? "selected"
+                                  : ""
+                              }
                             >
                               {t(tmpl?.label)}
                             </button>
@@ -605,13 +620,14 @@ const ModalNewProject = ({ isOpen, onClose }) => {
                       {formData.phases.length > 0
                         ? formData.phases
                             .map((value) => {
-                              const template = abntTemplates.find((tmpl) => tmpl?.value === value);
+                              const template = abntTemplates.find(
+                                (tmpl) => tmpl?.value === value
+                              );
                               return template ? t(template.label) : value; // se não tiver no padrão, usa o próprio valor
                             })
                             .join(", ")
                         : t("messages.notSpecified")}
                     </p>
-
                   </div>
                   <div className="review-section">
                     <h4>{t("titles.datesAndCollaborators")}</h4>
