@@ -83,8 +83,6 @@ export const useAuth = () => {
       return;
     }
     
-    console.log("Token Response do Google:", tokenResponse);
-    
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api${API_ENDPOINTS.GOOGLE_LOGIN}`,
       {
