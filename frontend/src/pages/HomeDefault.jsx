@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { fetchProjects } from "../api/api";
-import { fetchProjectWithTasks } from '../api/api';
+import { fetchProjectWithTasks } from "../api/api";
 
 import ProjectCard from "../components/ProjectCard";
 import CreateProjectCard from "../components/CreateProjectCard";
@@ -18,7 +18,6 @@ function HomeDefault() {
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
-
 
   useEffect(() => {
     fetchUserData()
@@ -47,36 +46,40 @@ function HomeDefault() {
   };
 
   const handleAbrirProjeto = async (projeto) => {
-  try {
-    const projetoCompleto = await fetchProjectWithTasks(projeto.id);
-    setProjetoSelecionado(projetoCompleto);
-    setSelectedProjectId(projeto.id);
-  } catch (error) {
-    console.error("Erro ao carregar projeto completo:", error);
-  }
-};
+    try {
+      const projetoCompleto = await fetchProjectWithTasks(projeto.id);
+      setProjetoSelecionado(projetoCompleto);
+      setSelectedProjectId(projeto.id);
+    } catch (error) {
+      console.error("Erro ao carregar projeto completo:", error);
+    }
+  };
 
   const handleVoltar = () => {
     setProjetoSelecionado(null);
     console.log(projetoSelecionado);
     console.log(selectedProjectId);
-   
   };
 
   const [projetos, setProjetos] = useState([]);
 
-  useEffect(() => {
-    const carregarProjetos = async () => {
-      try {
-        const data = await fetchProjects();
-        setProjetos(data);
-      } catch (error) {
-        console.error("Erro ao carregar projetos:", error);
-      }
-    };
-
-    carregarProjetos();
+  const carregarProjetos = useCallback(async () => {
+    try {
+      const data = await fetchProjects();
+      setProjetos(data);
+    } catch (error) {
+      console.error("Erro ao carregar projetos:", error);
+    }
   }, []);
+
+  useEffect(() => {
+    carregarProjetos();
+  }, [carregarProjetos]);
+
+  const handleProjectCreated = () => {
+    carregarProjetos();
+    setModalAberto(false);
+  };
 
   const handleToggleTask = async (projectId, taskId, isCompleted) => {
     try {
@@ -147,7 +150,7 @@ function HomeDefault() {
                 tarefasProjeto={projeto.tasks.slice(0, 4)}
                 estaAtrasado={estaAtrasado}
                 onClick={() => handleAbrirProjeto(projeto)}
-                onDeleteClick={handleDeleteProjectClick} 
+                onDeleteClick={handleDeleteProjectClick}
               />
             );
           })}
@@ -157,6 +160,7 @@ function HomeDefault() {
       <ModalNewProject
         isOpen={modalAberto}
         onClose={() => setModalAberto(false)}
+        onProjectCreated={handleProjectCreated}
       />
 
       <ModalDeleteProject
@@ -164,7 +168,7 @@ function HomeDefault() {
         onClose={() => setDeleteModalOpen(false)}
         projetoId={selectedProjectId}
         onDeleteSuccess={(id) => {
-          setProjetos(projetos.filter(p => p.id !== id));
+          setProjetos(projetos.filter((p) => p.id !== id));
           selectedProjectId(null);
         }}
       />

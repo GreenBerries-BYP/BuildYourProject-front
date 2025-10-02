@@ -148,7 +148,6 @@ const ViewProject = ({
                     setSelectedTasktId(null);
                 }}
             />
-            // No seu ViewProject, ajuste o ModalAssignTask
             <ModalAssignTask
                 isOpen={assignModalOpen}
                 onClose={() => setAssignModalOpen(false)}
