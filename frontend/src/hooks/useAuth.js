@@ -98,12 +98,13 @@ export const useAuth = () => {
       return;
     }
 
-    // Use a mesma assinatura da função saveToken do login normal
     saveToken(token, false, response.data.refresh);
 
     const userData = jwtDecode(token);
     setUser(userData);
 
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
     toastService.success("Bem-vindo!", "Login com Google realizado com sucesso.");
     navigate("/home");
   } catch (error) {
