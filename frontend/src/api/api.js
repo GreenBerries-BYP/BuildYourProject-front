@@ -166,5 +166,17 @@ export const aplicarSugestao = async (projectId, sugestaoId, acao) => {
   }
 };
 
+// atribuição de tarefas
+export const assignTaskToUser = async (taskId, userId) => {
+  try {
+    const response = await api.post(`/tasks/${taskId}/assign/`, {
+      user_id: userId
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao atribuir tarefa:', error);
+    throw error;
+  }
+};
 
 export default api;
