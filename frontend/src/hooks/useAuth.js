@@ -74,28 +74,48 @@ export const useAuth = () => {
   };
 
   const googleLogin = async (tokenResponse) => {
-    setIsGoogleLoading(true);
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api${API_ENDPOINTS.GOOGLE_LOGIN}`,
-        {
-          access_token: tokenResponse.access_token,
-        }
-      );
+  setIsGoogleLoading(true);
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api${API_ENDPOINTS.GOOGLE_LOGIN}`,
+      {
+        access_token: tokenResponse.access_token,
+      }
+    );
 
-      const { token } = response.data;
-      saveToken(token);
-
-      const userData = jwtDecode(token);
-      setUser(userData);
-
-      navigate("/home");
-    } catch (error) {
-      console.error("Erro no login com Google:", error);
-    } finally {
-      setIsGoogleLoading(false);
+    // CORREÇÃO: O backend retorna "access", não "token"
+    const token = response.data.access;
+    
+    if (!token) {
+      toastService.error("Erro no login", "Token não recebido do servidor.");
+      return;
     }
-  };
+
+    // Use a mesma assinatura da função saveToken do login normal
+    saveToken(token, false, response.data.refresh);
+
+    const userData = jwtDecode(token);
+    setUser(userData);
+
+    // Adicione feedback de sucesso
+    toastService.success("Bem-vindo!", "Login com Google realizado com sucesso.");
+    navigate("/home");
+  } catch (error) {
+    console.error("Erro no login com Google:", error);
+    
+    // Adicione tratamento de erro mais específico
+    if (error.response?.status === 400) {
+      const errorMessage = error.response.data?.error || 
+                          error.response.data?.details || 
+                          "Token do Google inválido ou expirado.";
+      toastService.error("Falha no login", errorMessage);
+    } else {
+      toastService.error("Erro no servidor", "Tente novamente mais tarde.");
+    }
+  } finally {
+    setIsGoogleLoading(false);
+  }
+};
 
   return { isLoading, isGoogleLoading, login, register, googleLogin };
 };
