@@ -76,18 +76,24 @@ export const useAuth = () => {
   const googleLogin = async (tokenResponse) => {
   setIsGoogleLoading(true);
   try {
+    const idToken = credentialResponse.credential;
+    
+    if (!idToken) {
+      toastService.error("Erro no login", "ID Token não recebido do Google.");
+      return;
+    }
+    
     console.log("Token Response do Google:", tokenResponse);
     
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api${API_ENDPOINTS.GOOGLE_LOGIN}`,
       {
-        access_token: tokenResponse.access_token, // ← CORRETO para seu backend
+        access_token: idToken, 
       }
     );
 
     console.log("Resposta do backend:", response.data);
 
-    // CORREÇÃO: O backend retorna "access", não "token"
     const token = response.data.access;
     
     if (!token) {
@@ -106,6 +112,10 @@ export const useAuth = () => {
   } catch (error) {
     console.error("Erro completo no login com Google:", error);
     console.error("Detalhes do erro:", error.response?.data);
+    //debug
+    if (error.config?.data) {
+      console.log("📤 Payload enviado:", error.config.data);
+    }
     
     // Adicione tratamento de erro mais específico
     if (error.response?.status === 400) {
