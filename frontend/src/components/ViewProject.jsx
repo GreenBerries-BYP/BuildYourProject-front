@@ -152,16 +152,27 @@ const ViewProject = ({
                 isOpen={assignModalOpen}
                 onClose={() => setAssignModalOpen(false)}
                 taskId={selectedTaskIdForAssign}
-                onAssignSuccess={(email) => {
+                project={{
+                    id: projetoId,
+                    name: nomeProjeto,
+                    collaborators: collaborators || [], // ← Agora passa os colaboradores corretamente
+                }}
+                onAssignSuccess={(collaborator) => {
+                    // Atualiza a UI com os dados do colaborador
                     setTarefasProjetoState((prev) =>
-                        prev.map((t) =>
-                            t.id === selectedTaskIdForAssign
-                            ? { ...t, subTarefas: t.subTarefas.map(sub => ({ ...sub, responsavel: email })) }
-                            : t
-                        )
+                    prev.map((t) =>
+                        t.id === selectedTaskIdForAssign
+                        ? { 
+                            ...t, 
+                            assignedTo: collaborator.full_name || collaborator.name,
+                            assignedEmail: collaborator.email,
+                            assignedUserId: collaborator.id
+                            }
+                        : t
+                    )
                     );
                     setSelectedTaskIdForAssign(null);
-                }}
+            }}
             />
             <ModalAnaliseProjeto
                 isOpen={analiseModalOpen}

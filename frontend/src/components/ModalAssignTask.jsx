@@ -1,14 +1,26 @@
 import { useState, useRef, useEffect } from "react";
-import "../styles/ModalNewProject.css"; // reutiliza o CSS do ModalNewProject
+import "../styles/ModalNewProject.css";
 import { useTranslation } from "react-i18next";
 import toastService from "../api/toastService";
+import { assignTaskToUser } from "../api/api"; // Importe a função da API
 
-const ModalAssignTask = ({ isOpen, onClose, taskId, onAssignSuccess }) => {
+const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) => {
   const { t } = useTranslation();
   const modalRef = useRef();
-  const [emailInput, setEmailInput] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [selectedCollaborator, setSelectedCollaborator] = useState("");
+  const [collaboratorError, setCollaboratorError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Extrai os colaboradores do projeto
+  const collaborators = project?.collaborators || [];
+
+  // Resetar estados quando o modal abrir
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedCollaborator("");
+      setCollaboratorError("");
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -19,34 +31,49 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, onAssignSuccess }) => {
     }
   };
 
+  const handleCollaboratorSelect = (e) => {
+    const collaboratorId = e.target.value;
+    setSelectedCollaborator(collaboratorId);
+    setCollaboratorError("");
+  };
+
   const handleAssign = async () => {
-    if (!emailInput.trim()) {
-      setEmailError(t("messages.emailCantBeEmpty"));
+    if (!selectedCollaborator) {
+      setCollaboratorError(t("messages.selectCollaborator") || "Selecione um colaborador");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput)) {
-      setEmailError(t("messages.invalidEmailFormat"));
+
+    // Encontrar o colaborador selecionado
+    const selectedCollaboratorData = collaborators.find(
+      collab => collab.id.toString() === selectedCollaborator
+    );
+
+    if (!selectedCollaboratorData) {
+      setCollaboratorError(t("messages.collaboratorNotFound") || "Colaborador não encontrado");
       return;
     }
 
     setLoading(true);
     try {
-      // Aqui você deve adaptar para sua API real
-      // Exemplo: await api.post(`/tasks/${taskId}/assign`, { email: emailInput });
-      await new Promise((res) => setTimeout(res, 500)); // mock
-
+      // 🔥 AGORA USA A API REAL
+      const response = await assignTaskToUser(taskId, selectedCollaboratorData.id);
+      
       toastService.success(
         t("toast.assignTaskSuccessTitle"),
         t("toast.assignTaskSuccessDetail")
       );
 
-      onAssignSuccess(emailInput);
-      setEmailInput("");
+      // Passa os dados completos do colaborador para atualizar a UI
+      onAssignSuccess(selectedCollaboratorData);
+      setSelectedCollaborator("");
       onClose();
     } catch (err) {
+      console.error('Erro ao atribuir tarefa:', err);
+      const errorMessage = err.response?.data?.error || err.message || t("toast.assignTaskErrorDetail");
+      
       toastService.error(
         t("toast.assignTaskErrorTitle"),
-        err.message || t("toast.assignTaskErrorDetail")
+        errorMessage
       );
     } finally {
       setLoading(false);
@@ -62,20 +89,32 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, onAssignSuccess }) => {
         </div>
 
         <div className="modal-body">
+          {/* Seletor de colaboradores */}
           <div className="input-group">
-            <label htmlFor="assignEmail">{t("inputs.collaboratorEmail")}</label>
-            <input
-              id="assignEmail"
-              type="email"
-              value={emailInput}
-              onChange={(e) => {
-                setEmailInput(e.target.value);
-                setEmailError("");
-              }}
+            <label htmlFor="collaboratorSelect">
+              {t("inputs.selectCollaborator") || "Selecionar colaborador"}
+            </label>
+            <select
+              id="collaboratorSelect"
+              value={selectedCollaborator}
+              onChange={handleCollaboratorSelect}
               onKeyDown={handleKeyDown}
-              placeholder={t("placeholders.enterEmail")}
-            />
-            {emailError && <p className="input-error">{emailError}</p>}
+              className="collaborator-select"
+            >
+              <option value="">
+                {t("placeholders.selectCollaborator") || "-- Selecione um colaborador --"}
+              </option>
+              {collaborators.map((collaborator) => (
+                <option 
+                  key={collaborator.id} 
+                  value={collaborator.id.toString()}
+                >
+                  {collaborator.full_name || collaborator.name} 
+                  {collaborator.email && ` (${collaborator.email})`}
+                </option>
+              ))}
+            </select>
+            {collaboratorError && <p className="input-error">{collaboratorError}</p>}
           </div>
 
           <div className="navigation-buttons">
@@ -83,7 +122,7 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, onAssignSuccess }) => {
               type="button"
               className="save-btn"
               onClick={handleAssign}
-              disabled={loading}
+              disabled={loading || !selectedCollaborator}
             >
               {loading ? t("buttons.saving") : t("buttons.assign")}
             </button>

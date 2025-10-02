@@ -13,7 +13,7 @@ api.interceptors.request.use(
     const token = getToken();
 
     // Lista de rotas que não precisam de Authorization
-    const publicRoutes = ["/register/", "/login/", "/auth/google/", "/auth/send-reset-code/",    // ✅ ADICIONA ESTA
+    const publicRoutes = ["/register/", "/login/", "/auth/google/", "/auth/send-reset-code/", 
       "/auth/verify-reset-code/", "/auth/reset-password/"];
 
     if (token && !publicRoutes.some((route) => config.url.includes(route))) {
@@ -166,5 +166,16 @@ export const aplicarSugestao = async (projectId, sugestaoId, acao) => {
   }
 };
 
+export const assignTaskToUser = async (taskId, userId) => {
+  try {
+    const response = await api.post(`/tasks/${taskId}/assign/`, {
+      user_id: userId
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao atribuir tarefa:', error);
+    throw error;
+  }
+};
 
 export default api;
