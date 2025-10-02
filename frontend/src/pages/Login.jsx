@@ -26,12 +26,7 @@ const Login = () => {
 
   const { login, googleLogin, isLoading, isGoogleLoading } = useAuth();
 
-   const handleGoogleLogin = useGoogleLogin({
-    onSuccess: googleLogin,
-    onError: () => {
-      console.log('Google Login Failed');
-    }
-  });
+  
 
   const {
     control,
@@ -201,46 +196,30 @@ const Login = () => {
               </Divider>
 
               <div className="d-flex justify-content-center w-100 position-relative">
-                 <button
-                  type="button"
-                  className="btn-google-custom"
-                  disabled={isGoogleLoading}
-                  onClick={() => handleGoogleLogin()}
-                >
-                  {isGoogleLoading ? (
-                    <div
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                    ></div>
-                  ) : (
-                    <>
-                      <FcGoogle className="google-icon" />
-                      <span>{t("login.google")}</span>
-                    </>
-                  )}
-                </button>
-                {/* <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    opacity: 0,
-                    cursor: "pointer",
+                <GoogleLogin
+                  onSuccess={googleLogin}
+                  onError={() => {
+                    toastService.error("Erro no Google", "Não foi possível autenticar.");
                   }}
-                >
-                  <GoogleLogin
-                    onSuccess={googleLogin}
-                    onError={() =>
-                      toastService.error(
-                        "Erro no Google",
-                        "Não foi possível autenticar."
-                      )
-                    }
-                    useOneTap={false}
-                  />
-                </div> */}
+                  useOneTap={false}
+                  render={({ onClick }) => (
+                    <button
+                      type="button"
+                      className="btn-google-custom"
+                      disabled={isGoogleLoading}
+                      onClick={onClick}
+                    >
+                      {isGoogleLoading ? (
+                        <div className="spinner-border spinner-border-sm" role="status"></div>
+                      ) : (
+                        <>
+                          <FcGoogle className="google-icon" />
+                          <span>{t("login.google")}</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+                />
               </div>
             </form>
 
