@@ -74,28 +74,44 @@ export const useAuth = () => {
   };
 
   const googleLogin = async (tokenResponse) => {
-    setIsGoogleLoading(true);
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api${API_ENDPOINTS.GOOGLE_LOGIN}`,
-        {
-          access_token: tokenResponse.access_token,
-        }
-      );
+  setIsGoogleLoading(true);
+  try {
+    // Pega o token correto: credential (GIS moderno) ou access_token (legado)
+    const token = tokenResponse.access_token || tokenResponse.credential;
 
-      const { token } = response.data;
-      saveToken(token);
-
-      const userData = jwtDecode(token);
-      setUser(userData);
-
-      navigate("/home");
-    } catch (error) {
-      console.error("Erro no login com Google:", error);
-    } finally {
-      setIsGoogleLoading(false);
+    if (!token) {
+      throw new Error("Google login retornou token inválido.");
     }
-  };
+
+    // Envia para o backend
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api${API_ENDPOINTS.GOOGLE_LOGIN}`,
+      { access_token: token } // chave que o backend espera
+    );
+
+    // Recebe JWT do backend
+    const { token: jwtToken } = response.data;
+
+    // Salva token localmente (cookies ou localStorage)
+    saveToken(jwtToken);
+
+    // Decodifica JWT e salva dados do usuário no contexto
+    const userData = jwtDecode(jwtToken);
+    setUser(userData);
+
+    // Redireciona para home
+    navigate("/home");
+  } catch (error) {
+    console.error("Erro no login com Google:", error);
+    toastService.error(
+      "Falha no login",
+      "Não foi possível realizar o login com Google. Tente novamente."
+    );
+  } finally {
+    setIsGoogleLoading(false);
+  }
+};
+
 
   return { isLoading, isGoogleLoading, login, register, googleLogin };
 };

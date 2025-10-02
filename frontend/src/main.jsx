@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -17,10 +15,11 @@ import './styles/Main.css';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+console.log('Google Client ID:', import.meta.env.VITE_GOOGLE_OAUTH2_CLIENT_ID); // 
 
 root.render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH2_CLIENT_ID}>
       <AuthProvider>
         <App />
       </AuthProvider>
