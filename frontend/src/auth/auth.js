@@ -42,7 +42,6 @@ export const removeToken = () => {
   localStorage.removeItem(STORAGE_KEYS.USER_INFO); // mantém limpeza
 };
 
-// ✅ helper extra para recuperar usuário salvo
 export const getUserInfo = () => {
   const data = localStorage.getItem(STORAGE_KEYS.USER_INFO);
   return data ? JSON.parse(data) : null;
@@ -67,4 +66,29 @@ export const isAuthenticated = () => {
 
 export const getGoogleLoginStatus = () => {
   return !!localStorage.getItem("google_access_token");
+};
+
+export const getGoogleLoginStatus = () => {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem('google_logged_in') === 'true';
+};
+
+export const setGoogleLoginStatus = (status) => {
+  if (typeof window === 'undefined') return;
+  if (status) {
+    localStorage.setItem('google_logged_in', 'true');
+  } else {
+    localStorage.removeItem('google_logged_in');
+    localStorage.removeItem('google_access_token'); // Remove o token antigo também
+  }
+};
+
+export const getGoogleToken = () => {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem('google_access_token');
+};
+
+export const saveGoogleToken = (token) => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem('google_access_token', token);
 };
