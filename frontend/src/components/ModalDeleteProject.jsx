@@ -1,5 +1,6 @@
+// src/components/ModalDeleteProject.jsx
 import { useState, useRef, useEffect } from "react";
-import "../styles/ModalForgotPasswordDeleteProject.css"; // reaproveita o CSS
+import "../styles/ModalForgotPasswordDeleteProject.css";
 import { useTranslation } from "react-i18next";
 import toastService from "../api/toastService";
 
@@ -13,7 +14,36 @@ const ModalDeleteProject = ({
   const modalRef = useRef();
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
   const API_URL = "https://byp-backend-o4ku.onrender.com/api";
+
+  // Função auxiliar para obter e validar o token
+  const getValidToken = () => {
+    try {
+      const token = localStorage.getItem("access_token");
+      
+      // Verifica se o token existe e é uma string válida
+      if (!token || typeof token !== 'string' || token.trim() === '') {
+        console.error('Token inválido:', token);
+        return null;
+      }
+      
+      // Limpa o token - remove aspas extras e espaços
+      const cleanToken = token.replace(/^"(.*)"$/, '$1').trim();
+      
+      if (cleanToken.length === 0) {
+        console.error('Token vazio após limpeza');
+        return null;
+      }
+      
+      console.log('Token válido obtido (primeiros 20 chars):', cleanToken.substring(0, 20) + '...');
+      return cleanToken;
+      
+    } catch (error) {
+      console.error('Erro ao obter token:', error);
+      return null;
+    }
+  };
 
   // Função para deletar o projeto
   const handleDelete = async () => {
@@ -27,13 +57,16 @@ const ModalDeleteProject = ({
       return;
     }
 
+    setIsDeleting(true);
+    setError("");
+
     try {
-      const token = localStorage.getItem("access_token"); // JWT
+      const token = getValidToken();
 
       if (!token) {
         toastService.error(
           t("toast.authErrorTitle", "Erro de autenticação"),
-          t("toast.authErrorDetail", "Por favor, faça login novamente.")
+          t("toast.authErrorDetail", "Token inválido. Por favor, faça login novamente.")
         );
         onClose();
         return;
@@ -42,58 +75,113 @@ const ModalDeleteProject = ({
       const res = await fetch(`${API_URL}/projetos/${projetoId}/delete/`, {
         method: "DELETE",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        //credentials: "include",
       });
 
-      if (res.status === 200 || res.status === 204)  {
+      if (res.ok) {
         toastService.success(
-          t("toast.deleteProjectSuccessTitle"),
-          t("toast.deleteProjectSuccessDetail")
+          t("toast.deleteProjectSuccessTitle", "Projeto excluído"),
+          t("toast.deleteProjectSuccessDetail", "Projeto excluído com sucesso!")
         );
-        onClose();
+        
+        // Limpa o input e fecha o modal
         setInput("");
         setError("");
+        onClose();
 
+        // Chama o callback de sucesso se existir
         if (onDeleteSuccess) {
           onDeleteSuccess(projetoId);
         }
-      } else {
+        
+      } else if (res.status === 401) {
+        // Token expirado ou inválido
         toastService.error(
-          t("toast.deleteProjectErrorTitle"),
-          t("toast.deleteProjectErrorDetail")
+          t("toast.authErrorTitle", "Erro de autenticação"),
+          t("toast.sessionExpired", "Sua sessão expirou. Faça login novamente.")
+        );
+        // Remove token inválido
+        localStorage.removeItem("access_token");
+        // Opcional: redirecionar para login
+        // window.location.href = '/login';
+        
+      } else if (res.status === 403) {
+        // Sem permissão
+        toastService.error(
+          t("toast.permissionErrorTitle", "Sem permissão"),
+          t("toast.deleteProjectPermissionError", "Você não tem permissão para excluir este projeto.")
+        );
+      } else if (res.status === 404) {
+        // Projeto não encontrado
+        toastService.error(
+          t("toast.projectNotFoundTitle", "Projeto não encontrado"),
+          t("toast.projectNotFoundDetail", "O projeto que você tentou excluir não existe.")
+        );
+      } else {
+        // Outros erros
+        const errorData = await res.json().catch(() => ({}));
+        toastService.error(
+          t("toast.deleteProjectErrorTitle", "Erro ao excluir"),
+          errorData.detail || 
+          errorData.message || 
+          t("toast.deleteProjectErrorDetail", "Erro ao excluir o projeto. Tente novamente.")
         );
       }
     } catch (err) {
+      console.error('Erro ao deletar projeto:', err);
       toastService.error(
-        t("toast.deleteProjectErrorTitle"),
-        err.response?.data?.detail ||
-          err.message ||
-          t("toast.deleteProjectErrorDetail")
+        t("toast.deleteProjectErrorTitle", "Erro ao excluir"),
+        t("toast.deleteProjectErrorDetail", "Erro ao excluir o projeto. Tente novamente.")
       );
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   // Fecha modal ao clicar fora
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (modalRef.current && !modalRef.current.contains(e.target)) onClose();
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
+        onClose();
+      }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () =>
+    
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    
+    return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
+    };
+  }, [isOpen, onClose]);
 
   // Fecha modal ao pressionar ESC
   useEffect(() => {
     const handleEsc = (e) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+      }
     };
-    document.addEventListener("keydown", handleEsc);
-    return () => document.removeEventListener("keydown", handleEsc);
-  }, [onClose]);
+    
+    if (isOpen) {
+      document.addEventListener("keydown", handleEsc);
+    }
+    
+    return () => {
+      document.removeEventListener("keydown", handleEsc);
+    };
+  }, [isOpen, onClose]);
+
+  // Limpa estados quando o modal abre/fecha
+  useEffect(() => {
+    if (!isOpen) {
+      setInput("");
+      setError("");
+      setIsDeleting(false);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -102,7 +190,11 @@ const ModalDeleteProject = ({
       <div className="modal-content" ref={modalRef}>
         <div className="modal-header">
           <h2>{t("titles.confirmDelete", "Confirmar exclusão")}</h2>
-          <button className="close-btn" onClick={onClose}>
+          <button 
+            className="close-btn" 
+            onClick={onClose}
+            disabled={isDeleting}
+          >
             ×
           </button>
         </div>
@@ -116,15 +208,37 @@ const ModalDeleteProject = ({
           <div className="input-confirm-container">
             <input
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value);
+                setError(""); // Limpa erro quando usuário digitar
+              }}
               placeholder={t(
                 "modalDeleteProject.inputPlaceholder",
                 "Digite aqui"
               )}
+              disabled={isDeleting}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleDelete();
+                }
+              }}
             />
             {error && <p className="input-error">{error}</p>}
-            <button className="save-btn" onClick={handleDelete}>
-              {t("buttons.confirm", "Confirmar")}
+            <button 
+              className="save-btn" 
+              onClick={handleDelete}
+              disabled={isDeleting || input.trim() === ""}
+            >
+              {isDeleting ? (
+                <div
+                  className="spinner-border spinner-border-sm"
+                  role="status"
+                >
+                  <span className="visually-hidden">Excluindo...</span>
+                </div>
+              ) : (
+                t("buttons.confirm", "Confirmar")
+              )}
             </button>
           </div>
         </div>
