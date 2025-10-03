@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 import toastService from "../api/toastService";
 import api from "../api/api";
 import axios from "axios";
+import { saveToken, setGoogleLoginStatus } from "../auth/auth"; 
 
 export const useAuth = () => {
   const navigate = useNavigate();
@@ -99,6 +100,7 @@ export const useAuth = () => {
     }
 
     saveToken(token, false, response.data.refresh);
+    setGoogleLoginStatus(true); 
 
     const userData = jwtDecode(token);
     setUser(userData);
