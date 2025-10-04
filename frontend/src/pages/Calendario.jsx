@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
-import { fetchGoogleCalendarEvents } from "../api/api";
+import { fetchGoogleCalendarEventsDirect } from "../api/api";
 import { 
   saveGoogleToken, 
   getGoogleToken, 
@@ -45,7 +45,7 @@ const Calendario = () => {
         throw new Error("Token do Google não encontrado");
       }
       
-      const data = await fetchGoogleCalendarEvents(token);
+      const data = await fetchGoogleCalendarEventsDirect(token);
       setEvents(data.items || []);
       toastService.success("Sucesso", "Eventos carregados com sucesso!");
     } catch (error) {

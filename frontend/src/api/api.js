@@ -124,28 +124,53 @@ export const updateSubtask = async (projectId, subtaskId, data) => {
   }
 };
 
-
-// Adiciona esta função no seu api.js
-export const fetchGoogleCalendarEvents = async () => {
+// api.js - FUNÇÃO MELHORADA
+export const fetchGoogleCalendarEventsDirect = async () => {
   try {
-    const token = localStorage.getItem("token"); // ou use getToken()
-    const response = await api.get("/google/calendar/sync/", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data; // eventos do Google Calendar
-  } catch (error) {
-    console.error("Erro ao buscar eventos do Google Calendar:", error);
-    toastService.error(
-      "Erro ao sincronizar calendário",
-      "Não foi possível acessar seus eventos do Google Calendar"
+    const googleToken = localStorage.getItem('google_access_token');
+    
+    console.log('🔑 Token sendo usado:', googleToken ? '✅ Presente' : '❌ Ausente');
+    
+    if (!googleToken) {
+      throw new Error("Token do Google não disponível");
+    }
+
+    // ✅ PARÂMETROS MELHORADOS
+    const response = await axios.get(
+      'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+      {
+        headers: {
+          'Authorization': `Bearer ${googleToken}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          maxResults: 20,
+          orderBy: 'startTime',
+          singleEvents: true,
+          timeMin: new Date().toISOString(),
+          timeMax: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // Próximos 30 dias
+        }
+      }
     );
+    
+    console.log('✅ Resposta da API Google:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Erro detalhado:", error);
+    
+    if (error.response) {
+      console.error('📊 Status:', error.response.status);
+      console.error('📄 Data:', error.response.data);
+      
+      if (error.response.status === 401) {
+        console.error('🔐 Erro de autenticação - Token provavelmente expirado ou sem scopes');
+      }
+    }
+    
     throw error;
   }
 };
 
-// api.js - Adicione estas funções
 
 export const analisarProjeto = async (projectId) => {
   try {
