@@ -103,7 +103,6 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
             </div>
           ) : (
             <div className="resultados-analise">
-              {/* Indicador de Risco */}
               <div className={`indicador-risco ${getClasseRisco(analise.probabilidade_atraso)}`}>
                 <div className="probabilidade">
                   {analise.probabilidade_atraso}%
@@ -114,32 +113,14 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                 <div className="label-risco">Probabilidade de Atraso</div>
               </div>
 
-              {/* Status do Projeto */}
               <div className={`status-projeto ${analise.cor}`}>
                 <h4>{analise.status}</h4>
                 <p>{analise.explicacao}</p>
               </div>
 
-              {/* Métricas Principais */}
-              <div className="metricas-principais">
-                <div className="metrica">
-                  <span className="valor">{analise.spi}</span>
-                  <span className="label">SPI</span>
-                </div>
-                <div className="metrica">
-                  <span className="valor">{analise.tarefas_atrasadas}</span>
-                  <span className="label">Tarefas Atrasadas</span>
-                </div>
-                <div className="metrica">
-                  <span className="valor">{analise.taxa_conclusao}%</span>
-                  <span className="label">Concluído</span>
-                </div>
-              </div>
-
-              {/* Sugestões */}
               {analise.sugestoes && analise.sugestoes.length > 0 ? (
                 <div className="sugestoes-lista">
-                  <h4>💡 Sugestões Recomendadas</h4>
+                  <h4>Sugestões Recomendadas</h4>
                  
                   {analise.sugestoes.map((sugestao, index) => (
                     <div key={index} className="sugestao-item">
@@ -168,7 +149,6 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                 </div>
               )}
 
-              {/* Botão para reanalisar */}
               <div className="acoes-finais">
                 <button
                   className="btn-reanalisar"
@@ -176,7 +156,7 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                   disabled={carregando}
                 >
                   <img className="icone-reanalisar" src="/imgs/decor-landing/icons-ferramentas/Redo.svg" />
-                  Reanalisar Projeto
+                  &nbsp;Reanalisar Projeto
                 </button>
               </div>
             </div>

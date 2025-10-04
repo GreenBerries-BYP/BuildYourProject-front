@@ -300,19 +300,23 @@ export const createGoogleCalendarEventFromTask = async (tarefa, nomeProjeto) => 
 };
 
 // api.js - MODIFICAR FUNÇÃO PARA CRIAR EVENTOS BASEADOS NAS TAREFAS EXISTENTES
-export const createGoogleCalendarEventsForProjectTasks = async (projetoId, nomeProjeto) => {
+export const createGoogleCalendarEventsForProjectTasks = async (projetoId, nomeProjeto, tarefasComDatas = null) => {
   try {
     const googleToken = localStorage.getItem('google_access_token');
     
-    // Se não tem token do Google, apenas retorna sem erro (não é obrigatório)
     if (!googleToken) {
       console.log('Token do Google não disponível - eventos não criados');
       return [];
     }
 
-    // Buscar projeto com tarefas para obter as datas calculadas
-    const projetoComTarefas = await fetchProjectWithTasks(projetoId);
-    const tarefas = projetoComTarefas.tarefasProjeto || [];
+    // Se não foram passadas tarefas, busca do backend
+    let tarefas;
+    if (tarefasComDatas) {
+      tarefas = tarefasComDatas;
+    } else {
+      const projetoComTarefas = await fetchProjectWithTasks(projetoId);
+      tarefas = projetoComTarefas.tarefasProjeto || [];
+    }
 
     const eventsCreated = [];
 
@@ -322,10 +326,11 @@ export const createGoogleCalendarEventsForProjectTasks = async (projetoId, nomeP
       
       // Verificar se a tarefa tem datas válidas
       if (!tarefa.data_inicio || !tarefa.data_fim) {
-        console.log(`ℹ️  Tarefa "${tarefa.nomeTarefa}" sem datas válidas - pulando`);
+        console.log(`Tarefa "${tarefa.nomeTarefa}" sem datas válidas - pulando`);
         continue;
       }
 
+      // Garantir que as datas são objetos Date
       const startDateTime = new Date(tarefa.data_inicio);
       const endDateTime = new Date(tarefa.data_fim);
 
@@ -345,7 +350,7 @@ export const createGoogleCalendarEventsForProjectTasks = async (projetoId, nomeP
         }
       };
 
-      console.log(`📅 Criando evento para tarefa "${tarefa.nomeTarefa}":`, evento);
+      console.log(`Criando evento para tarefa "${tarefa.nomeTarefa}":`, evento);
 
       try {
         const response = await axios.post(
@@ -359,67 +364,20 @@ export const createGoogleCalendarEventsForProjectTasks = async (projetoId, nomeP
           }
         );
 
-        console.log(`✅ Evento criado para tarefa "${tarefa.nomeTarefa}":`, response.data);
+        console.log(`Evento criado para tarefa "${tarefa.nomeTarefa}":`, response.data);
         eventsCreated.push(response.data);
 
-        // ✅ CRIAR EVENTOS PARA SUBTAREFAS TAMBÉM
-        if (tarefa.subTarefas && tarefa.subTarefas.length > 0) {
-          for (let j = 0; j < tarefa.subTarefas.length; j++) {
-            const subTarefa = tarefa.subTarefas[j];
-            
-            if (subTarefa.data_inicio && subTarefa.data_fim) {
-              const subStartDateTime = new Date(subTarefa.data_inicio);
-              const subEndDateTime = new Date(subTarefa.data_fim);
-
-              const subEvento = {
-                summary: `[${nomeProjeto}] ${tarefa.nomeTarefa} - ${subTarefa.title}`,
-                description: `Subtarefa: ${subTarefa.title}\nTarefa principal: ${tarefa.nomeTarefa}\nProjeto: ${nomeProjeto}`,
-                start: {
-                  dateTime: subStartDateTime.toISOString(),
-                  timeZone: 'America/Sao_Paulo'
-                },
-                end: {
-                  dateTime: subEndDateTime.toISOString(),
-                  timeZone: 'America/Sao_Paulo'
-                },
-                reminders: {
-                  useDefault: true
-                }
-              };
-
-              try {
-                const subResponse = await axios.post(
-                  'https://www.googleapis.com/calendar/v3/calendars/primary/events',
-                  subEvento,
-                  {
-                    headers: {
-                      'Authorization': `Bearer ${googleToken}`,
-                      'Content-Type': 'application/json'
-                    }
-                  }
-                );
-
-                console.log(`✅ Evento criado para subtarefa "${subTarefa.title}":`, subResponse.data);
-                eventsCreated.push(subResponse.data);
-              } catch (subError) {
-                console.error(`❌ Erro ao criar evento para subtarefa "${subTarefa.title}":`, subError);
-              }
-            }
-          }
-        }
 
       } catch (taskError) {
-        console.error(`❌ Erro ao criar evento para tarefa "${tarefa.nomeTarefa}":`, taskError);
-        // Continua para as próximas tarefas mesmo se uma falhar
+        console.error(`Erro ao criar evento para tarefa "${tarefa.nomeTarefa}":`, taskError);
       }
     }
 
-    console.log(`🎉 Total de ${eventsCreated.length} eventos criados no Google Calendar`);
+    console.log(`Total de ${eventsCreated.length} eventos criados no Google Calendar`);
     return eventsCreated;
   } catch (error) {
-    console.error("❌ Erro geral ao criar eventos do projeto:", error);
+    console.error("Erro geral ao criar eventos do projeto:", error);
     return [];
   }
 };
-
 export default api;

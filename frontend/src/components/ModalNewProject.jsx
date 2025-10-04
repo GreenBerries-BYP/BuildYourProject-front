@@ -46,18 +46,36 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
         console.log(`Verificando tarefas do projeto (tentativa ${attempt + 1})...`);
         const projetoComTarefas = await fetchProjectWithTasks(projetoId);
         
-        // Verifica se existem tarefas com datas válidas
-        const tarefasComDatas = (projetoComTarefas.tarefasProjeto || []).filter(tarefa => 
-          tarefa.data_inicio && tarefa.data_fim
-        );
+        // Verifica se existem tarefas (mesmo sem datas)
+        if (projetoComTarefas.tarefasProjeto && projetoComTarefas.tarefasProjeto.length > 0) {
+          console.log(`Encontradas ${projetoComTarefas.tarefasProjeto.length} tarefas`);
+          
+          // Gera as datas automaticamente da mesma forma que o Schedule faz
+          const tarefasComDatasGeradas = projetoComTarefas.tarefasProjeto.map((fase, fIdx) => {
+            const { data_inicio, data_fim } = generateSystemDates(fIdx, null);
 
-        if (tarefasComDatas.length > 0) {
-          console.log(`Tarefas com datas encontradas! Criando eventos...`);
-          await createGoogleCalendarEventsForProjectTasks(projetoId, nomeProjeto);
+            const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
+              const subDates = generateSystemDates(fIdx, sIdx);
+              return {
+                ...sub,
+                data_inicio: subDates.data_inicio,
+                data_fim: subDates.data_fim,
+              };
+            });
+
+            return {
+              ...fase,
+              data_inicio,
+              data_fim,
+              subTarefas,
+            };
+          });
+
+          console.log(`Datas geradas para ${tarefasComDatasGeradas.length} tarefas`);
+          await createGoogleCalendarEventsForProjectTasks(projetoId, nomeProjeto, tarefasComDatasGeradas);
           return true;
         }
 
-        // Aguarda 2 segundos antes da próxima tentativa
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (error) {
         console.error(`Erro na tentativa ${attempt + 1}:`, error);
@@ -68,6 +86,17 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
     return false;
   };
 
+  // Adicione a mesma função generateSystemDates do Schedule
+  const generateSystemDates = (faseIdx, subIdx) => {
+    const today = new Date();
+    const faseInicio = new Date(today.getTime() + faseIdx * 7 * 24 * 60 * 60 * 1000); // +7 dias por fase
+    const faseFim = new Date(faseInicio.getTime() + 5 * 24 * 60 * 60 * 1000); // duração 5 dias
+    if (subIdx === null) return { data_inicio: faseInicio, data_fim: faseFim };
+    // Subtarefa dentro da fase
+    const subInicio = new Date(faseInicio.getTime() + subIdx * 1 * 24 * 60 * 60 * 1000);
+    const subFim = new Date(subInicio.getTime() + 1 * 24 * 60 * 60 * 1000);
+    return { data_inicio: subInicio, data_fim: subFim };
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -241,10 +270,27 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
           response.status >= 200 &&
           response.status < 300
         ) {
+          const novoProjeto = response.data;
+
           toastService.success(
             t("toast.createProjectSuccessTitle"),
             t("toast.createProjectSuccessDetail")
           );
+
+          waitForTasksAndCreateEvents(novoProjeto.id, novoProjeto.name)
+            .then(success => {
+              if (success) {
+                console.log("🎉 Eventos do Google Calendar criados com sucesso!");
+                // Opcional: mostrar toast de sucesso
+                toastService.success(
+                  "Eventos criados!",
+                  "Os eventos foram adicionados ao Google Calendar"
+                );
+              }
+            })
+            .catch(err => {
+              console.error("Erro ao criar eventos:", err);
+            });
           // Successful creation
           onClose();
           onProjectCreated();
