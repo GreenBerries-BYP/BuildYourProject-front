@@ -237,6 +237,8 @@ const pt = {
     viewSchedule: "Ver Cronograma",
     back: "Voltar",
     addSubtask: "Nova SubTarefa",
+    savingAndCreatingEvent: "Salvando e criando evento...",
+    creatingProjectAndEvents: "Criando projeto e eventos...", 
   },
   sideBar: {
     home: "Início",

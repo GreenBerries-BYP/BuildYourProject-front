@@ -213,28 +213,30 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
             {(fase.subTarefas || []).map((sub, sIdx) => (
               <div key={sIdx} className="subtask-item">
                 <span>{sub.title}</span>
-                <label>
-                  {t("inputs.startDate", "Início")}{": "}
-                  <input
-                    type="date"
-                    value={sub.data_inicio.toISOString().split("T")[0]}
-                    onChange={(e) =>
-                      handleDateChange(fIdx, sIdx, "data_inicio", e.target.value)
-                    }
-                    disabled={!editing}
-                  />
-                </label>
-                <label>
-                  {t("inputs.endDate", "Fim")}{": "}
-                  <input
-                    type="date"
-                    value={sub.data_fim.toISOString().split("T")[0]}
-                    onChange={(e) =>
-                      handleDateChange(fIdx, sIdx, "data_fim", e.target.value)
-                    }
-                    disabled={!editing}
-                  />
-                </label>
+                <div className="date-container">
+                  <label>
+                    {t("inputs.startDate", "Início")}{": "}
+                    <input
+                      type="date"
+                      value={sub.data_inicio.toISOString().split("T")[0]}
+                      onChange={(e) =>
+                        handleDateChange(fIdx, sIdx, "data_inicio", e.target.value)
+                      }
+                      disabled={!editing}
+                    />
+                  </label>
+                  <label>
+                    {t("inputs.endDate", "Fim")}{": "}
+                    <input
+                      type="date"
+                      value={sub.data_fim.toISOString().split("T")[0]}
+                      onChange={(e) =>
+                        handleDateChange(fIdx, sIdx, "data_fim", e.target.value)
+                      }
+                      disabled={!editing}
+                    />
+                  </label>
+                </div>
               </div>
             ))}
           </div>

@@ -3,8 +3,9 @@ import "../styles/ModalNewTask.css";
 import { useTranslation } from "react-i18next";
 import api from "../api/api";
 import { getToken } from "../auth/auth";
+import { createGoogleCalendarEventFromTask } from "../api/api";
 
-const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators: initialCollaborators = [] }) => {
+const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators: initialCollaborators = [], nomeProjeto = "" }) => {
   const modalRef = useRef();
   const { t } = useTranslation();
 
@@ -15,6 +16,7 @@ const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators
   const [collaborators, setCollaborators] = useState(initialCollaborators);
   const [formErrors, setFormErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [creatingCalendarEvent, setCreatingCalendarEvent] = useState(false);
 
   // Validação do formulário
   const validateForm = () => {
@@ -46,6 +48,16 @@ const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators
       const response = await api.post(`/projetos/${projetoId}/tarefas-novas/`, tarefa, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      try {
+        setCreatingCalendarEvent(true);
+        await createGoogleCalendarEventFromTask(tarefa, nomeProjeto);
+        console.log(' Evento criado no Google Calendar com sucesso');
+      } catch (calendarError) {
+        console.log(' Evento não criado no Google Calendar (não crítico)');
+      } finally {
+        setCreatingCalendarEvent(false);
+      }
 
       if (onTaskCreated) onTaskCreated(response.data);
       onClose();
@@ -143,8 +155,12 @@ const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators
             {formErrors.submit && <p className="input-error center">{formErrors.submit}</p>}
 
             <div className="save-wrapper">
-              <button type="submit" className="save-btn" disabled={loading}>
-                {loading ? t("buttons.saving") : t("buttons.save")}
+              <button type="submit" className="save-btn" disabled={loading|| creatingCalendarEvent}>
+                 {loading ? (
+                    creatingCalendarEvent ? t("buttons.savingAndCreatingEvent") : t("buttons.saving")
+                  ) : (
+                    t("buttons.save")
+                  )}
               </button>
             </div>
           </form>

@@ -135,7 +135,8 @@ const ViewProject = ({
             <ModalNewTask 
                 isOpen={modalAberto} 
                 onClose={() => setModalAberto(false)} 
-                projetoId={projetoId} // <-- passar o ID do projeto atual
+                projetoId={projetoId} 
+                nomeProjeto={nomeProjeto} 
                 onTaskCreated={handleCreateTask}
                 collaborators={collaborators}
             />

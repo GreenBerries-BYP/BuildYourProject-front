@@ -6,6 +6,8 @@ import { fetchUserData } from "../api/userService";
 import { fetchGoogleCalendarEventsDirect } from "../api/api";
 import ModalNewCalendarEvent from "../components/ModalNewCalendarEvent"; // ✅ IMPORTAR MODAL
 import "../styles/Calendario.css"
+import { MdOutlineCalendarMonth } from "react-icons/md";
+
 
 const Calendario = () => {
   const [events, setEvents] = useState([]);
@@ -140,7 +142,10 @@ const Calendario = () => {
   return (
     <div className="calendar-container container">
       <div className="conectar d-flex justify-content-between align-items-center mb-4">
-        <h2>Meu Calendário</h2>
+        <h2>
+          <MdOutlineCalendarMonth />
+          &nbsp;Meu Calendário
+        </h2>
         <div className="conectar-text">
           Logado como: <strong>{userData?.email || userData?.full_name || 'Usuário'}</strong>
         </div>
@@ -150,7 +155,10 @@ const Calendario = () => {
         <div className="google-login-container">
           <div className="conectar card">
             <div className="conectar-text card-body text-center">
-              <h4>Conectar Google Calendar</h4>
+              <h4>
+                <MdOutlineCalendarMonth />
+                &nbsp;Conectar Google Calendar
+              </h4>
               <p className=" mb-4">
                 Olá <strong>{userData?.username || 'Usuário'}</strong>! 
                 Conecte seu Google Calendar para visualizar seus eventos.

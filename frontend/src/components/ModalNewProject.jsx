@@ -7,6 +7,7 @@ import toastService from "../api/toastService";
 import { getToken } from "../auth/auth";
 import { abntTemplates } from "../mocks/abntMock";
 import { useNavigate } from "react-router-dom";
+import { createGoogleCalendarEventsForProjectTasks, fetchProjectWithTasks } from "../api/api";
 
 const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
   const { t } = useTranslation();
@@ -38,6 +39,35 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
   oneMonthAgo.setMonth(today.getMonth() - 1);
 
   const formatDate = (date) => date.toISOString().split("T")[0];
+
+  const waitForTasksAndCreateEvents = async (projetoId, nomeProjeto, maxAttempts = 10) => {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      try {
+        console.log(`Verificando tarefas do projeto (tentativa ${attempt + 1})...`);
+        const projetoComTarefas = await fetchProjectWithTasks(projetoId);
+        
+        // Verifica se existem tarefas com datas válidas
+        const tarefasComDatas = (projetoComTarefas.tarefasProjeto || []).filter(tarefa => 
+          tarefa.data_inicio && tarefa.data_fim
+        );
+
+        if (tarefasComDatas.length > 0) {
+          console.log(`Tarefas com datas encontradas! Criando eventos...`);
+          await createGoogleCalendarEventsForProjectTasks(projetoId, nomeProjeto);
+          return true;
+        }
+
+        // Aguarda 2 segundos antes da próxima tentativa
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } catch (error) {
+        console.error(`Erro na tentativa ${attempt + 1}:`, error);
+      }
+    }
+    
+    console.log("Timeout: tarefas não foram geradas a tempo");
+    return false;
+  };
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;

@@ -235,6 +235,8 @@ const en = {
     viewSchedule: "View Schedule",
     back: "Back",
     addSubtask: "Add SubTask",
+    savingAndCreatingEvent: "Saving and creating event...",
+    creatingProjectAndEvents: "Creating project and events...",
   },
   sideBar: {
     home: "Home",
