@@ -33,7 +33,7 @@
   --blue-link-color: #1e76e8;
 
   /* Erro */
-  --error-red-color: #ff4d4d;
+  --error-red-color: #dc2626;
 
 
   --btn-green: linear-gradient(45deg, var(--green-color), var(--green-dark-color));
@@ -105,7 +105,7 @@ body.dark-theme {
   --blue-link-color: #5e9dff;
 
   /* Erro (Tema Escuro) */
-  --error-red-color: #ff7d7d;
+  --error-red-color: #ff4848;
 
   /* Gradientes (Tema Escuro) */
   --btn-green: linear-gradient(90deg, var(--green-color), var(--teal-bright-color));

@@ -24,9 +24,9 @@ function InfoPage() {
         ></Button>
       </div>
 
-      <Card className="info-card">
+      <div className="info-card">
         <div className="info-section">
-          <h3>{t("infoPage.contactTitle")}</h3>
+          <h3 className="subtitles">{t("infoPage.contactTitle")}</h3>
           <div className="contact-content border rounded p-3">
             <div className="contact-details">
               <p className="mt-2">{t("infoPage.contactDescription")}</p>
@@ -44,7 +44,7 @@ function InfoPage() {
         </div>
 
         <div className="info-section">
-          <h3>{t("infoPage.faqTitle")}</h3>
+          <h3 className="subtitles">{t("infoPage.faqTitle")}</h3>
           <Accordion activeIndex={0}>
             <AccordionTab className="acordion-tab" header={t("infoPage.faqQ1")}>
               <p>{t("infoPage.faqA1")}</p>
@@ -62,7 +62,7 @@ function InfoPage() {
         </div>
 
         <div className="info-section">
-          <h3>{t("infoPage.linksTitle")}</h3>
+          <h3 className="subtitles">{t("infoPage.linksTitle")}</h3>
           <div className="useful-links border rounded p-3">
             <Button
               label={t("infoPage.linksTerms")}
@@ -78,7 +78,7 @@ function InfoPage() {
             />
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
