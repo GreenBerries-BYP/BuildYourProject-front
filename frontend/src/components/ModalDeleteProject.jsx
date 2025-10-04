@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import "../styles/ModalForgotPasswordDeleteProject.css";
 import { useTranslation } from "react-i18next";
 import toastService from "../api/toastService";
+import { getToken } from "../auth/auth";
 
 const ModalDeleteProject = ({
   isOpen,
@@ -16,34 +17,6 @@ const ModalDeleteProject = ({
   const [error, setError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const API_URL = "https://byp-backend-o4ku.onrender.com/api";
-
-  // Função auxiliar para obter e validar o token
-  const getValidToken = () => {
-    try {
-      const token = localStorage.getItem("access_token");
-      
-      // Verifica se o token existe e é uma string válida
-      if (!token || typeof token !== 'string' || token.trim() === '') {
-        console.error('Token inválido:', token);
-        return null;
-      }
-      
-      // Limpa o token - remove aspas extras e espaços
-      const cleanToken = token.replace(/^"(.*)"$/, '$1').trim();
-      
-      if (cleanToken.length === 0) {
-        console.error('Token vazio após limpeza');
-        return null;
-      }
-      
-      console.log('Token válido obtido (primeiros 20 chars):', cleanToken.substring(0, 20) + '...');
-      return cleanToken;
-      
-    } catch (error) {
-      console.error('Erro ao obter token:', error);
-      return null;
-    }
-  };
 
   // Função para deletar o projeto
   const handleDelete = async () => {
@@ -61,7 +34,7 @@ const ModalDeleteProject = ({
     setError("");
 
     try {
-      const token = getValidToken();
+      const token = getToken();
 
       if (!token) {
         toastService.error(
@@ -91,10 +64,11 @@ const ModalDeleteProject = ({
         setError("");
         onClose();
 
-        // Chama o callback de sucesso se existir
-        if (onDeleteSuccess) {
+        if (onDeleteSuccess && typeof onDeleteSuccess === 'function') {
           onDeleteSuccess(projetoId);
-        }
+      } else {
+          console.log('onDeleteSuccess não é uma função, mas o projeto foi deletado');
+      }
         
       } else if (res.status === 401) {
         // Token expirado ou inválido
