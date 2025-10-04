@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import "../styles/ModalNewProject.css";
 import { useTranslation } from "react-i18next";
 import toastService from "../api/toastService";
-import { assignTaskToUser, fetchProjectCollaborators } from "../api/api"; // Importe a função da API
+import { assignTaskToUser, fetchProjectCollaborators } from "../api/api";
 
 const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) => {
   const { t } = useTranslation();
@@ -19,7 +19,7 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
       setSelectedCollaborator("");
       setCollaboratorError("");
       
-      // 🔥 BUSCAR COLABORADORES DO PROJETO QUANDO O MODAL ABRIR
+      // Buscar colaboradores do projeto quando o modal abrir
       if (project?.id) {
         fetchCollaborators(project.id);
       }
@@ -31,6 +31,7 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
     setLoadingCollaborators(true);
     try {
       const collaboratorsData = await fetchProjectCollaborators(projectId);
+      console.log('Colaboradores carregados:', collaboratorsData); // DEBUG
       setCollaborators(collaboratorsData || []);
     } catch (err) {
       console.error('Erro ao buscar colaboradores:', err);
@@ -77,7 +78,6 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
 
     setLoading(true);
     try {
-      // 🔥 USA A API REAL
       const response = await assignTaskToUser(taskId, selectedCollaboratorData.id);
       
       toastService.success(
@@ -85,7 +85,6 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
         t("toast.assignTaskSuccessDetail")
       );
 
-      // Passa os dados completos do colaborador para atualizar a UI
       onAssignSuccess(selectedCollaboratorData);
       setSelectedCollaborator("");
       onClose();
@@ -101,6 +100,11 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
       setLoading(false);
     }
   };
+
+  // DEBUG: Mostrar informações no console
+  console.log('Collaborators state:', collaborators);
+  console.log('Loading collaborators:', loadingCollaborators);
+  console.log('Project:', project);
 
   return (
     <div className="modal-overlay">
@@ -128,7 +132,6 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
                 onChange={handleCollaboratorSelect}
                 onKeyDown={handleKeyDown}
                 className="collaborator-select"
-                disabled={collaborators.length === 0}
               >
                 <option value="">
                   {collaborators.length === 0 
@@ -141,8 +144,8 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
                     key={collaborator.id} 
                     value={collaborator.id.toString()}
                   >
-                    {collaborator.full_name || collaborator.name} 
-                    {collaborator.email && ` (${collaborator.email})`}
+                    {collaborator.full_name || collaborator.name || collaborator.email} 
+                    {collaborator.email && collaborator.full_name && ` (${collaborator.email})`}
                   </option>
                 ))}
               </select>
@@ -150,10 +153,11 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
             
             {collaboratorError && <p className="input-error">{collaboratorError}</p>}
             
-            {collaborators.length === 0 && !loadingCollaborators && (
-              <p className="input-info">
-                {t("messages.noCollaborators") || "Nenhum colaborador disponível neste projeto."}
-              </p>
+            {/* Mostrar informações de debug */}
+            {!loadingCollaborators && (
+              <div style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+                {collaborators.length} colaborador(es) encontrado(s)
+              </div>
             )}
           </div>
 
@@ -162,7 +166,7 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
               type="button"
               className="save-btn"
               onClick={handleAssign}
-              disabled={loading || !selectedCollaborator || loadingCollaborators}
+              disabled={loading || !selectedCollaborator || loadingCollaborators || collaborators.length === 0}
             >
               {loading ? t("buttons.saving") : t("buttons.assign")}
             </button>
