@@ -21,13 +21,25 @@
     border-color: var(--gray-color) !important;
 }
 
-.conectar .conectar-text, .aviso{
+.conectar .conectar-text, .aviso, .info-small{
+    font-size: 1.3rem;
     color: var(--gray-color);
 }
 
-.eventos { 
-    display: 'flex';
-    justifyContent: 'space-between';
-    alignItems: 'center';
-    marginBottom: '2rem' 
+.eventos{ 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-inline: 2rem;
+}
+
+
+.events-list{
+    padding-inline: 2rem;
+}
+
+.btn-container > .btn-calendar{
+    padding: .5rem;
+    font-size: 1.3rem;
 }

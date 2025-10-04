@@ -202,4 +202,40 @@ export const assignTaskToUser = async (taskId, userId) => {
   }
 };
 
+// api.js - ADICIONAR FUNÇÃO PARA CRIAR EVENTO
+export const createGoogleCalendarEvent = async (evento) => {
+  try {
+    const googleToken = localStorage.getItem('google_access_token');
+    
+    if (!googleToken) {
+      throw new Error("Token do Google não disponível");
+    }
+
+    console.log('📅 Criando evento:', evento);
+
+    const response = await axios.post(
+      'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+      evento,
+      {
+        headers: {
+          'Authorization': `Bearer ${googleToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    console.log('Evento criado com sucesso:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao criar evento:", error);
+    
+    if (error.response) {
+      console.error('Status:', error.response.status);
+      console.error('Data:', error.response.data);
+    }
+    
+    throw error;
+  }
+};
+
 export default api;
