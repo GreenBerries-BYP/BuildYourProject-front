@@ -124,18 +124,17 @@ export const updateSubtask = async (projectId, subtaskId, data) => {
   }
 };
 
-// api.js - FUNÇÃO MELHORADA
+// api.js - GARANTIR QUE USA O ACCESS_TOKEN
 export const fetchGoogleCalendarEventsDirect = async () => {
   try {
     const googleToken = localStorage.getItem('google_access_token');
     
-    console.log('🔑 Token sendo usado:', googleToken ? '✅ Presente' : '❌ Ausente');
+    console.log('Token sendo usado:', googleToken ? 'Presente' : 'Ausente');
     
     if (!googleToken) {
       throw new Error("Token do Google não disponível");
     }
 
-    // ✅ PARÂMETROS MELHORADOS
     const response = await axios.get(
       'https://www.googleapis.com/calendar/v3/calendars/primary/events',
       {
@@ -148,29 +147,24 @@ export const fetchGoogleCalendarEventsDirect = async () => {
           orderBy: 'startTime',
           singleEvents: true,
           timeMin: new Date().toISOString(),
-          timeMax: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // Próximos 30 dias
+          timeMax: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         }
       }
     );
     
-    console.log('✅ Resposta da API Google:', response.data);
+    console.log('Resposta da API Google:', response.data);
     return response.data;
   } catch (error) {
-    console.error("❌ Erro detalhado:", error);
+    console.error("Erro detalhado:", error);
     
     if (error.response) {
-      console.error('📊 Status:', error.response.status);
-      console.error('📄 Data:', error.response.data);
-      
-      if (error.response.status === 401) {
-        console.error('🔐 Erro de autenticação - Token provavelmente expirado ou sem scopes');
-      }
+      console.error('Status:', error.response.status);
+      console.error('Data:', error.response.data);
     }
     
     throw error;
   }
 };
-
 
 export const analisarProjeto = async (projectId) => {
   try {

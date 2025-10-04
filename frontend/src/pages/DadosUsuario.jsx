@@ -79,7 +79,7 @@ function DadosUsuario() {
   }
 
   return (
-    <div className="d-flex flex-column">
+    <div className="dados-usuario-container d-flex flex-column">
       <h2>{t("dadosUsuario.welcome")}{userData.full_name}</h2>
       <ConfirmDialog />
 

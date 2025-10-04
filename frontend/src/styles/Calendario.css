@@ -1,3 +1,33 @@
 .google-login-button{
     width: 5rem;
 }
+
+.calendar-container, .google-login-container{
+    background-color: var(--white-color);
+    color: var(--black-color);
+    padding: 2rem;
+    border-radius: 15px;
+}
+
+.calendar-container > h2{
+    color: var(--black-color);
+    border-radius: 15px;
+}
+
+.conectar{
+    background-color: var(--white-color) !important;
+    color: var(--black-color);
+    padding: 2rem;
+    border-color: var(--gray-color) !important;
+}
+
+.conectar .conectar-text, .aviso{
+    color: var(--gray-color);
+}
+
+.eventos { 
+    display: 'flex';
+    justifyContent: 'space-between';
+    alignItems: 'center';
+    marginBottom: '2rem' 
+}

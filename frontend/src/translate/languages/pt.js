@@ -399,7 +399,7 @@ const pt = {
     email: "Email",
     editButton: "Editar",
     loading: "Carregando dados do usuário...",
-    welcome: "Bem vind@, ",
+    welcome: "Bem vindo(a), ",
     deleteText:
       "Excluir sua conta removerá permanentemente todos os seus dados. Esta ação não pode ser desfeita.",
     changePassword: "Alterar Senha",
