@@ -1,5 +1,7 @@
+// Calendario.jsx - COM CLIENT ID DIFERENTE
 import React, { useEffect, useState } from "react";
-import { GoogleLogin, googleLogout } from "@react-oauth/google";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import { FcGoogle } from "react-icons/fc";
 import { fetchGoogleCalendarEvents } from "../api/api";
 import { 
   saveGoogleToken, 
@@ -16,13 +18,15 @@ const Calendario = () => {
   const [googleCalendarAuth, setGoogleCalendarAuth] = useState(isGoogleCalendarAuthenticated());
   const { user, isLoggedIn } = useAuthContext();
 
-  // Verificar se já está autenticado com Google (via login principal)
+  // Client ID específico para Calendar
+  const calendarClientId = import.meta.env.VITE_GOOGLE_CALENDAR_CLIENT_ID;
+
+  // Verificar se já está autenticado com Google
   useEffect(() => {
     const checkGoogleAuth = () => {
       const status = getGoogleCalendarStatus();
       setGoogleCalendarAuth(status.isAuthenticated);
       
-      // Se já está autenticado com Google, carrega eventos automaticamente
       if (status.isAuthenticated && status.accessToken) {
         loadEvents(status.accessToken);
       }
@@ -52,7 +56,7 @@ const Calendario = () => {
     }
   };
 
-  // Callback quando login com Google for bem-sucedido (APENAS para Calendar)
+  // Callback específico para Calendar
   const handleGoogleCalendarSuccess = async (response) => {
     try {
       const token = response.access_token || response.credential;
@@ -65,6 +69,7 @@ const Calendario = () => {
       saveGoogleToken(token);
       localStorage.setItem('google_calendar_authenticated', 'true');
       localStorage.setItem('google_access_token', token);
+      localStorage.setItem('google_client_id', calendarClientId); // Salva qual client ID foi usado
       
       setGoogleCalendarAuth(true);
       toastService.success("Google Calendar", "Calendário conectado com sucesso!");
@@ -78,19 +83,20 @@ const Calendario = () => {
   };
 
   const handleGoogleCalendarLogout = () => {
-    googleLogout();
+    // Não usa googleLogout() pois é outro client_id
     localStorage.removeItem('google_access_token');
     localStorage.removeItem('google_calendar_authenticated');
+    localStorage.removeItem('google_client_id');
     setGoogleCalendarAuth(false);
     setEvents([]);
     toastService.success("Google Calendar", "Calendário desconectado!");
   };
 
-  // 🔒 Só mostra o componente se usuário estiver logado no sistema
+  // Se não está logado no sistema
   if (!isLoggedIn) {
     return (
       <div className="container">
-        <div className="alert alert-warning">
+        <div className="alert alert-warning text-center">
           <h3>🔒 Acesso Restrito</h3>
           <p>Você precisa fazer login para acessar o calendário.</p>
         </div>
@@ -108,17 +114,18 @@ const Calendario = () => {
             <div className="card-body text-center">
               <h4>Conectar Google Calendar</h4>
               <p>Para visualizar seus eventos, conecte com sua conta Google</p>
-              <div className="google-login-button">
-                <GoogleLogin
-                  onSuccess={handleGoogleCalendarSuccess}
-                  onError={() => toastService.error("Erro Google", "Não foi possível conectar com Google Calendar.")}
-                  useOneTap={false}
-                  scope="https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly"
-                  theme="filled_blue"
-                  size="large"
-                  text="continue_with"
-                />
-              </div>
+              
+              {/* ✅ GOOGLE OAUTH PROVIDER COM CLIENT ID ESPECÍFICO */}
+              <GoogleOAuthProvider clientId={calendarClientId}>
+                <div className="google-login-button">
+                  <GoogleLogin
+                    onSuccess={handleGoogleCalendarSuccess}
+                    onError={() => toastService.error("Erro Google", "Não foi possível conectar com Google Calendar.")}
+                    useOneTap={false}
+                    scope="https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly"
+                  />
+                </div>
+              </GoogleOAuthProvider>
             </div>
           </div>
         </div>
