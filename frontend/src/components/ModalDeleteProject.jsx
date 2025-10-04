@@ -64,10 +64,11 @@ const ModalDeleteProject = ({
         setError("");
         onClose();
 
-        // Chama o callback de sucesso se existir
-        if (onDeleteSuccess) {
+        if (onDeleteSuccess && typeof onDeleteSuccess === 'function') {
           onDeleteSuccess(projetoId);
-        }
+      } else {
+          console.log('onDeleteSuccess não é uma função, mas o projeto foi deletado');
+      }
         
       } else if (res.status === 401) {
         // Token expirado ou inválido
