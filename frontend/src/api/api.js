@@ -218,6 +218,17 @@ export const assignTaskToUser = async (taskId, userId) => {
   }
 };
 
+
+export const fetchProjectCollaborators = async (projectId) => {
+  try {
+    const response = await api.get(`/projects/${projectId}/collaborators/`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar colaboradores:', error);
+    throw error;
+  }
+};
+
 export const createGoogleCalendarEvent = async (evento) => {
   try {
     const googleToken = localStorage.getItem('google_access_token');
