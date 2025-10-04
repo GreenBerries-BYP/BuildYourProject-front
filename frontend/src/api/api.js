@@ -51,6 +51,22 @@ export const fetchUserData = async () => {
   }
 };
 
+export const fetchProjectData = async (projectId) => {
+  const token = localStorage.getItem('access_token');
+  const response = await api.get(`/projetos/`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  
+  // Encontra o projeto específico na lista
+  const projeto = response.data.find(p => p.id === projectId);
+  return projeto;
+};
+
+// Função para buscar tarefas do projeto
+export const fetchProjectTasks = async (projectId) => {
+  const projeto = await fetchProjectWithTasks(projectId);
+  return projeto.tarefasProjeto || [];
+};
 
 export const fetchProjects = async () => {
   try {
