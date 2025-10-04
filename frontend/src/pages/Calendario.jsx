@@ -1,21 +1,44 @@
-// Calendario.jsx - COMPONENTE CORRIGIDO
 import React, { useEffect, useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 import { fetchGoogleCalendarEventsDirect } from "../api/api";
 import { useAuthContext } from "../auth/authContext";
 import toastService from "../api/toastService";
+import { useForm, Controller } from "react-hook-form";
+import { fetchUserData } from "../api/userService";
 
 const Calendario = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [googleCalendarAuth, setGoogleCalendarAuth] = useState(false);
-  const { isLoggedIn } = useAuthContext();
+  const [userData, setUserData] = useState(null);
+
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      full_name: "",
+      username: "",
+      email: "",
+    },
+  });
+
+  useEffect(() => {
+    fetchUserData()
+      .then((data) => {
+        setUserData(data);
+        reset({
+          full_name: data.full_name,
+          username: data.username,
+          email: data.email,
+        });
+      })
+      .catch((err) => console.error("Erro ao buscar dados do usuário:", err))
+      .finally(() => setIsLoading(false));
+  }, [reset]);
 
   // Client ID específico para Calendar COM SCOPES
   const calendarClientId = import.meta.env.VITE_GOOGLE_CALENDAR_CLIENT_ID;
 
-  // Verificar se já está autenticado
+  // Verificar se já está autenticado com Google Calendar
   useEffect(() => {
     const token = localStorage.getItem('google_access_token');
     const hasCalendarAuth = localStorage.getItem('google_calendar_authenticated');
@@ -51,19 +74,17 @@ const Calendario = () => {
     }
   };
 
-  // ✅ CALLBACK CORRETO PARA GOOGLE CALENDAR
   const handleGoogleCalendarSuccess = async (response) => {
     try {
       console.log('🔑 Resposta do Google:', response);
       
-      // ✅ USAR access_token, não credential
       const token = response.access_token || response.credential;
       
       if (!token) {
         throw new Error("Token não recebido do Google");
       }
       
-      // ✅ SALVAR TOKEN CORRETAMENTE
+      // Salvar token do Google para Calendar
       localStorage.setItem('google_access_token', token);
       localStorage.setItem('google_calendar_authenticated', 'true');
       localStorage.setItem('google_token_type', response.token_type || 'Bearer');
@@ -71,7 +92,7 @@ const Calendario = () => {
       setGoogleCalendarAuth(true);
       toastService.success("Google Calendar", "Calendário conectado com sucesso!");
       
-      // ✅ CARREGAR EVENTOS
+      // Carregar eventos automaticamente
       await loadEvents();
     } catch (err) {
       console.error("❌ Erro ao conectar Google Calendar:", err);
@@ -88,29 +109,26 @@ const Calendario = () => {
     toastService.success("Google Calendar", "Calendário desconectado!");
   };
 
-  if (!isLoggedIn) {
-    return (
-      <div className="container">
-        <div className="alert alert-warning text-center">
-          <h3>🔒 Acesso Restrito</h3>
-          <p>Você precisa fazer login para acessar o calendário.</p>
-        </div>
-      </div>
-    );
-  }
-
+  // ✅ USUÁRIO ESTÁ LOGADO - MOSTRAR CALENDÁRIO
   return (
     <div className="container">
-      <h2>📅 Meu Calendário</h2>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2>📅 Meu Calendário</h2>
+        <div className="text-muted">
+          Logado como: <strong>{userData?.email || userData?.full_name || 'Usuário'}</strong>
+        </div>
+      </div>
       
       {!googleCalendarAuth ? (
         <div className="google-login-container">
           <div className="card">
             <div className="card-body text-center">
               <h4>Conectar Google Calendar</h4>
-              <p>Para visualizar seus eventos, conecte com sua conta Google</p>
+              <p className="text-muted mb-4">
+                Olá <strong>{userData?.username || 'Usuário'}</strong>! 
+                Conecte seu Google Calendar para visualizar seus eventos.
+              </p>
               
-              {/* ✅ GOOGLE OAUTH COM SCOPES ESPECÍFICOS */}
               <GoogleOAuthProvider clientId={calendarClientId}>
                 <div className="google-login-button">
                   <GoogleLogin
@@ -124,30 +142,54 @@ const Calendario = () => {
                   />
                 </div>
               </GoogleOAuthProvider>
+              <div className="mt-4 p-3 bg-light rounded">
+                <small className="text-muted">
+                  🔐 Você já está logado no sistema. Esta conexão é apenas para 
+                  acessar seus eventos do Google Calendar.
+                </small>
+              </div>
             </div>
           </div>
         </div>
       ) : (
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h3>Seus Eventos do Google Calendar</h3>
+            <div>
+              <h3>Seus Eventos do Google Calendar</h3>
+              <small className="text-muted">
+                Conectado como: {userData?.email || 'Usuário Google'}
+              </small>
+            </div>
             <button onClick={handleGoogleCalendarLogout} className="btn btn-outline-danger btn-sm">
               Desconectar Google Calendar
             </button>
           </div>
           
           {loading ? (
-            <div className="text-center">
-              <p>📥 Carregando seus eventos...</p>
+            <div className="text-center py-4">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Carregando...</span>
+              </div>
+              <p className="mt-2">📥 Carregando seus eventos...</p>
             </div>
           ) : events.length === 0 ? (
             <div className="alert alert-info">
               <p>📭 Nenhum evento encontrado no seu calendário.</p>
+              <small className="text-muted">
+                Os eventos dos próximos 30 dias serão exibidos aqui.
+              </small>
             </div>
           ) : (
             <div className="events-list">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5>Próximos Eventos ({events.length})</h5>
+                <small className="text-muted">
+                  Atualizado em: {new Date().toLocaleDateString()}
+                </small>
+              </div>
+              
               {events.map((event) => (
-                <div key={event.id} className="card mb-2">
+                <div key={event.id} className="card mb-3">
                   <div className="card-body">
                     <h5 className="card-title">{event.summary || 'Evento sem título'}</h5>
                     <p className="card-text">
@@ -155,6 +197,11 @@ const Calendario = () => {
                     </p>
                     {event.description && (
                       <p className="card-text"><small>{event.description}</small></p>
+                    )}
+                    {event.location && (
+                      <p className="card-text">
+                        <strong>📍 Local:</strong> {event.location}
+                      </p>
                     )}
                   </div>
                 </div>
