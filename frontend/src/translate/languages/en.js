@@ -441,6 +441,49 @@ const en = {
     linksTerms: "Terms",
     linksPrivacyPolicy: "Privacy Policy",
   },
+  calendar: {
+    title: "My Calendar",
+    connectTitle: "Connect Google Calendar",
+    loggedInAs: "Logged in as:",
+    helloUser: "Hello",
+    connectDescription: "Connect your Google Calendar to view your events.",
+    connectButton: "Connect Google Calendar",
+    connecting: "Connecting...",
+    connectionNotice: "You are already logged into the system. This connection is only to access your Google Calendar events.",
+    
+    // Events section
+    eventsTitle: "Your Google Calendar Events",
+    connectedAs: "Connected as:",
+    newEvent: "New Event",
+    disconnect: "Disconnect",
+    
+    // Loading states
+    loading: "Loading...",
+    loadingEvents: "Loading your events...",
+    
+    // Events list
+    noEventsTitle: "No events found",
+    noEventsMessage: "Your calendar is empty for the next 30 days.",
+    noEventsHint: 'Click "New Event" to add an event to your calendar.',
+    upcomingEvents: "Upcoming Events",
+    updatedOn: "Updated on:",
+    
+    // Event details
+    eventNoTitle: "Untitled event",
+    eventDate: "Date:",
+    eventLocation: "Location:",
+    
+    // Status messages
+    calendarConnected: "Calendar connected successfully!",
+    calendarDisconnected: "Calendar disconnected!",
+    eventCreated: "Event created in Google Calendar!",
+    
+    // Errors
+    googleConfigError: "Google client ID not configured.",
+    connectionError: "Unable to connect to Google Calendar.",
+    loadEventsError: "Unable to load events.",
+    tokenError: "Unable to connect with Google Calendar.",
+  }
 };
 
 export default en;

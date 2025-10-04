@@ -9,6 +9,7 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
   const [phases, setPhases] = useState([]);
   const [chartSeries, setChartSeries] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [projectDates, setProjectDates] = useState({ startDate: null, endDate: null });
 
   // Função para gerar timestamp a partir de string ou fallback
   const parseDate = (dateStr, fallbackDate) => {
@@ -17,43 +18,128 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
     return isNaN(d.getTime()) ? fallbackDate.getTime() : d.getTime();
   };
 
-  // Gera datas automáticas para fases/subtasks
-  const generateSystemDates = (faseIdx, subIdx) => {
-    const today = new Date();
-    const faseInicio = new Date(today.getTime() + faseIdx * 7 * 24 * 60 * 60 * 1000); // +7 dias por fase
-    const faseFim = new Date(faseInicio.getTime() + 5 * 24 * 60 * 60 * 1000); // duração 5 dias
-    if (subIdx === null) return { data_inicio: faseInicio, data_fim: faseFim };
-    // Subtarefa dentro da fase
-    const subInicio = new Date(faseInicio.getTime() + subIdx * 1 * 24 * 60 * 60 * 1000);
-    const subFim = new Date(subInicio.getTime() + 1 * 24 * 60 * 60 * 1000);
-    return { data_inicio: subInicio, data_fim: subFim };
-  };
+  const generateProjectDates = (tarefas, startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    // Ajusta para início do dia e final do dia
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+    
+    const totalProjectMs = end - start;
+    const totalProjectDays = Math.ceil(totalProjectMs / (1000 * 60 * 60 * 24));
+    
+    console.log(`Prazo do projeto: ${totalProjectDays} dias (${start.toDateString()} até ${end.toDateString()})`);
 
-  // Carrega tarefas do backend (ou datas automáticas)
+    if (tarefas.length === 0) return [];
+
+    // Calcula a duração disponível por tarefa principal (sem considerar subtarefas)
+    const durationPerTask = Math.floor(totalProjectMs / tarefas.length);
+    
+    console.log(`Duração por tarefa: ${Math.ceil(durationPerTask / (1000 * 60 * 60 * 24))} dias`);
+    
+    return tarefas.map((fase, fIdx) => {
+      // Calcula datas para a tarefa principal
+      const taskStart = new Date(start.getTime() + fIdx * durationPerTask);
+      let taskEnd = new Date(taskStart.getTime() + durationPerTask - 1);
+      
+      // Garante que a última tarefa termine exatamente no fim do projeto
+      if (fIdx === tarefas.length - 1) {
+        taskEnd = new Date(end.getTime());
+      }
+
+      // Garante que não ultrapasse o fim do projeto
+      if (taskEnd > end) {
+        taskEnd = new Date(end.getTime());
+      }
+
+      // Calcula datas para subtarefas (se houver)
+      const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
+        const subTaskCount = fase.subTarefas.length;
+        
+        // Se não há subtarefas, retorna a subtarefa sem modificar datas
+        if (subTaskCount === 0) return sub;
+        
+        // Divide o período da tarefa principal entre as subtarefas
+        const taskDurationMs = taskEnd - taskStart;
+        const subDuration = Math.floor(taskDurationMs / subTaskCount);
+        
+        const subStart = new Date(taskStart.getTime() + sIdx * subDuration);
+        const subEnd = new Date(subStart.getTime() + subDuration - 1);
+        
+        // Para a última subtarefa, ajusta para terminar com a tarefa principal
+        if (sIdx === subTaskCount - 1) {
+          subEnd.setTime(taskEnd.getTime());
+        }
+
+        // Garante que não ultrapasse o fim da tarefa principal
+        if (subEnd > taskEnd) {
+          subEnd.setTime(taskEnd.getTime());
+        }
+
+        return {
+          ...sub,
+          data_inicio: subStart,
+          data_fim: subEnd,
+        };
+      });
+
+      return {
+        ...fase,
+        data_inicio: taskStart,
+        data_fim: taskEnd,
+        subTarefas,
+      };
+    });
+  };
+  // Carrega tarefas do backend respeitando o prazo do projeto
   useEffect(() => {
     const carregarTarefas = async () => {
       try {
         const projeto = await fetchProjectWithTasks(projetoId);
 
-        const tarefas = (projeto.tarefasProjeto || []).map((fase, fIdx) => {
-          const { data_inicio, data_fim } = generateSystemDates(fIdx, null);
+        // Salva as datas do projeto
+        if (projeto.data_inicio && projeto.data_fim) {
+          setProjectDates({
+            startDate: projeto.data_inicio,
+            endDate: projeto.data_fim
+          });
+        }
 
-          const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
-            const subDates = generateSystemDates(fIdx, sIdx);
+        let tarefas;
+        
+        // Se o projeto tem datas definidas, usa a lógica que respeita o prazo
+        if (projeto.data_inicio && projeto.data_fim) {
+          tarefas = generateProjectDates(
+            projeto.tarefasProjeto || [], 
+            projeto.data_inicio, 
+            projeto.data_fim
+          );
+        } else {
+          // Fallback: usa datas automáticas (comportamento antigo)
+          tarefas = (projeto.tarefasProjeto || []).map((fase, fIdx) => {
+            const today = new Date();
+            const faseInicio = new Date(today.getTime() + fIdx * 7 * 24 * 60 * 60 * 1000);
+            const faseFim = new Date(faseInicio.getTime() + 5 * 24 * 60 * 60 * 1000);
+
+            const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
+              const subInicio = new Date(faseInicio.getTime() + sIdx * 1 * 24 * 60 * 60 * 1000);
+              const subFim = new Date(subInicio.getTime() + 1 * 24 * 60 * 60 * 1000);
+              return {
+                ...sub,
+                data_inicio: subInicio,
+                data_fim: subFim,
+              };
+            });
+
             return {
-              ...sub,
-              data_inicio: subDates.data_inicio,
-              data_fim: subDates.data_fim,
+              ...fase,
+              data_inicio: faseInicio,
+              data_fim: faseFim,
+              subTarefas,
             };
           });
-
-          return {
-            ...fase,
-            data_inicio,
-            data_fim,
-            subTarefas,
-          };
-        });
+        }
 
         setPhases(tarefas);
         formatChartData(tarefas);

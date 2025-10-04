@@ -40,7 +40,7 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
 
   const formatDate = (date) => date.toISOString().split("T")[0];
 
-  const waitForTasksAndCreateEvents = async (projetoId, nomeProjeto, maxAttempts = 10) => {
+  const waitForTasksAndCreateEvents = async (projetoId, nomeProjeto, projetoStartDate, projetoEndDate, maxAttempts = 10) => {
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       try {
         console.log(`Verificando tarefas do projeto (tentativa ${attempt + 1})...`);
@@ -50,28 +50,14 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
         if (projetoComTarefas.tarefasProjeto && projetoComTarefas.tarefasProjeto.length > 0) {
           console.log(`Encontradas ${projetoComTarefas.tarefasProjeto.length} tarefas`);
           
-          // Gera as datas automaticamente da mesma forma que o Schedule faz
-          const tarefasComDatasGeradas = projetoComTarefas.tarefasProjeto.map((fase, fIdx) => {
-            const { data_inicio, data_fim } = generateSystemDates(fIdx, null);
+          // Gera as datas respeitando o prazo do projeto
+          const tarefasComDatasGeradas = generateProjectDates(
+            projetoComTarefas.tarefasProjeto, 
+            projetoStartDate, 
+            projetoEndDate
+          );
 
-            const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
-              const subDates = generateSystemDates(fIdx, sIdx);
-              return {
-                ...sub,
-                data_inicio: subDates.data_inicio,
-                data_fim: subDates.data_fim,
-              };
-            });
-
-            return {
-              ...fase,
-              data_inicio,
-              data_fim,
-              subTarefas,
-            };
-          });
-
-          console.log(`Datas geradas para ${tarefasComDatasGeradas.length} tarefas`);
+          console.log(`Datas geradas para ${tarefasComDatasGeradas.length} tarefas respeitando o prazo do projeto`);
           await createGoogleCalendarEventsForProjectTasks(projetoId, nomeProjeto, tarefasComDatasGeradas);
           return true;
         }
@@ -85,17 +71,52 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
     console.log("Timeout: tarefas não foram geradas a tempo");
     return false;
   };
+  // Função que gera datas respeitando o prazo do projeto
+  const generateProjectDates = (tarefas, projetoStartDate, projetoEndDate) => {
+    const start = new Date(projetoStartDate);
+    const end = new Date(projetoEndDate);
+    const totalProjectDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    
+    console.log(`Prazo do projeto: ${totalProjectDays} dias (${start.toISOString()} até ${end.toISOString()})`);
 
-  // Adicione a mesma função generateSystemDates do Schedule
-  const generateSystemDates = (faseIdx, subIdx) => {
-    const today = new Date();
-    const faseInicio = new Date(today.getTime() + faseIdx * 7 * 24 * 60 * 60 * 1000); // +7 dias por fase
-    const faseFim = new Date(faseInicio.getTime() + 5 * 24 * 60 * 60 * 1000); // duração 5 dias
-    if (subIdx === null) return { data_inicio: faseInicio, data_fim: faseFim };
-    // Subtarefa dentro da fase
-    const subInicio = new Date(faseInicio.getTime() + subIdx * 1 * 24 * 60 * 60 * 1000);
-    const subFim = new Date(subInicio.getTime() + 1 * 24 * 60 * 60 * 1000);
-    return { data_inicio: subInicio, data_fim: subFim };
+    // Calcula dias disponíveis por tarefa (distribui igualmente)
+    const daysPerTask = Math.floor(totalProjectDays / tarefas.length);
+    
+    return tarefas.map((fase, fIdx) => {
+      // Calcula datas para a tarefa principal
+      const taskStart = new Date(start.getTime() + fIdx * daysPerTask * 24 * 60 * 60 * 1000);
+      const taskEnd = new Date(taskStart.getTime() + (daysPerTask - 1) * 24 * 60 * 60 * 1000);
+      
+      // Garante que não ultrapasse o fim do projeto
+      if (taskEnd > end) {
+        taskEnd.setTime(end.getTime());
+      }
+
+      // Calcula datas para subtarefas (distribui dentro do período da tarefa principal)
+      const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
+        const subTaskDuration = Math.floor(daysPerTask / (fase.subTarefas.length + 1));
+        const subStart = new Date(taskStart.getTime() + sIdx * subTaskDuration * 24 * 60 * 60 * 1000);
+        const subEnd = new Date(subStart.getTime() + (subTaskDuration - 1) * 24 * 60 * 60 * 1000);
+        
+        // Garante que não ultrapasse o fim da tarefa principal
+        if (subEnd > taskEnd) {
+          subEnd.setTime(taskEnd.getTime());
+        }
+
+        return {
+          ...sub,
+          data_inicio: subStart,
+          data_fim: subEnd,
+        };
+      });
+
+      return {
+        ...fase,
+        data_inicio: taskStart,
+        data_fim: taskEnd,
+        subTarefas,
+      };
+    });
   };
 
   const handleChange = (e) => {
@@ -276,21 +297,26 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
             t("toast.createProjectSuccessTitle"),
             t("toast.createProjectSuccessDetail")
           );
+            
+            waitForTasksAndCreateEvents(
+              novoProjeto.id, 
+              novoProjeto.name, 
+              formData.startDate, 
+              formData.endDate
+            )
+              .then(success => {
+                if (success) {
+                  console.log("Eventos do Google Calendar criados com sucesso!");
+                  toastService.success(
+                    "Eventos criados!",
+                    "Os eventos foram adicionados ao Google Calendar"
+                  );
+                }
+              })
+              .catch(err => {
+                console.error("Erro ao criar eventos:", err);
+              });
 
-          waitForTasksAndCreateEvents(novoProjeto.id, novoProjeto.name)
-            .then(success => {
-              if (success) {
-                console.log("🎉 Eventos do Google Calendar criados com sucesso!");
-                // Opcional: mostrar toast de sucesso
-                toastService.success(
-                  "Eventos criados!",
-                  "Os eventos foram adicionados ao Google Calendar"
-                );
-              }
-            })
-            .catch(err => {
-              console.error("Erro ao criar eventos:", err);
-            });
           // Successful creation
           onClose();
           onProjectCreated();
