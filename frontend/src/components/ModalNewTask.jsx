@@ -29,42 +29,25 @@ const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators
 
   // Submissão do formulário
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const errors = validateForm();
-  setFormErrors(errors);
-  if (Object.keys(errors).length > 0) return;
+    e.preventDefault();
+    const errors = validateForm();
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
 
-  const tarefa = {
-    nome,
-    descricao,
-    dataEntrega,
-    user: responsavel,
-    projetoId,
-  };
-
-  setLoading(true);
-  try {
-    const token = getToken();
-    const response = await api.post(`/projetos/${projetoId}/tarefas-novas/`, tarefa, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const tarefaParaUI = {
-      id: response.data.id, 
-      nome: nome,
-      status: 'pendente',
-      prazo: dataEntrega,
-      responsavel: responsavel,
+    const tarefa = {
+      nome,
+      descricao,
+      dataEntrega,
+      user: responsavel, // string ou null
+      projetoId,
     };
 
-    if (onTaskCreated) onTaskCreated(tarefaParaUI); 
-    onClose();
-  } catch (err) {
-    setFormErrors({ submit: err.message || t("messages.errorNewTask") });
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    try {
+      const token = getToken();
+      const response = await api.post(`/projetos/${projetoId}/tarefas-novas/`, tarefa, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       try {
         setCreatingCalendarEvent(true);
