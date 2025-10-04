@@ -45,7 +45,7 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
 
     // Encontrar o colaborador selecionado
     const selectedCollaboratorData = collaborators.find(
-      collab => collab.id.toString() === selectedCollaborator
+      collab => collab?.id.toString() === selectedCollaborator
     );
 
     if (!selectedCollaboratorData) {
@@ -57,7 +57,7 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
     try {
       // 🔥 AGORA USA A API REAL
       const response = await assignTaskToUser(taskId, selectedCollaboratorData.id);
-      
+
       toastService.success(
         t("toast.assignTaskSuccessTitle"),
         t("toast.assignTaskSuccessDetail")
@@ -70,7 +70,7 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
     } catch (err) {
       console.error('Erro ao atribuir tarefa:', err);
       const errorMessage = err.response?.data?.error || err.message || t("toast.assignTaskErrorDetail");
-      
+
       toastService.error(
         t("toast.assignTaskErrorTitle"),
         errorMessage
@@ -104,13 +104,13 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
               <option value="">
                 {t("placeholders.selectCollaborator") || "-- Selecione um colaborador --"}
               </option>
-              {collaborators.map((collaborator) => (
-                <option 
-                  key={collaborator.id} 
-                  value={collaborator.id.toString()}
+              {/* --- CÓDIGO CORRIGIDO AQUI --- */}
+              {collaborators.map((collaboratorName, index) => (
+                <option
+                  key={index} // Usamos o index como chave, já que nomes podem se repetir
+                  value={collaboratorName} // O valor da opção será o próprio nome do colaborador
                 >
-                  {collaborator.full_name || collaborator.name} 
-                  {collaborator.email && ` (${collaborator.email})`}
+                  {collaboratorName} {/* O texto exibido é o nome do colaborador */}
                 </option>
               ))}
             </select>
