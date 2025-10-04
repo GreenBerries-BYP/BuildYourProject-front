@@ -12,68 +12,74 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
   const [projectDates, setProjectDates] = useState({ startDate: null, endDate: null });
 
   // Função para gerar timestamp a partir de string ou fallback
-  const parseDate = (dateStr, fallbackDate) => {
-    if (!dateStr) return fallbackDate.getTime();
-    const d = new Date(dateStr);
-    return isNaN(d.getTime()) ? fallbackDate.getTime() : d.getTime();
+  // Função para converter data brasileira para objeto Date
+  const parseBrazilianDate = (dateString) => {
+    if (!dateString) return null;
+    
+    // Se já é um objeto Date, retorna diretamente
+    if (dateString instanceof Date) return dateString;
+    
+    // Converte de YYYY-MM-DD (input type="date") para Date
+    if (dateString.includes('-')) {
+      return new Date(dateString);
+    }
+    
+    // Converte de DD/MM/YYYY para Date
+    if (dateString.includes('/')) {
+      const [day, month, year] = dateString.split('/');
+      return new Date(year, month - 1, day);
+    }
+    
+    // Fallback para o construtor padrão
+    return new Date(dateString);
   };
 
-  const generateProjectDates = (tarefas, startDate, endDate) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+  const generateProjectDates = (tarefas, projetoStartDate, projetoEndDate) => {
+    console.log('Datas recebidas:', projetoStartDate, projetoEndDate);
     
-    // Ajusta para início do dia e final do dia
+    const start = new Date(projetoStartDate);
+    const end = new Date(projetoEndDate);
+    
     start.setHours(0, 0, 0, 0);
     end.setHours(23, 59, 59, 999);
     
-    const totalProjectMs = end - start;
-    const totalProjectDays = Math.ceil(totalProjectMs / (1000 * 60 * 60 * 24));
+    const totalProjectDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
     
-    console.log(`Prazo do projeto: ${totalProjectDays} dias (${start.toDateString()} até ${end.toDateString()})`);
+    console.log(`Prazo do projeto: ${totalProjectDays} dias (${start.toLocaleDateString('pt-BR')} até ${end.toLocaleDateString('pt-BR')})`);
 
     if (tarefas.length === 0) return [];
 
-    // Calcula a duração disponível por tarefa principal (sem considerar subtarefas)
-    const durationPerTask = Math.floor(totalProjectMs / tarefas.length);
+    // Distribuição SIMPLES: divide igualmente e a última pega o que sobrou
+    const baseDays = Math.floor(totalProjectDays / tarefas.length);
     
-    console.log(`Duração por tarefa: ${Math.ceil(durationPerTask / (1000 * 60 * 60 * 24))} dias`);
+    let currentDate = new Date(start);
     
     return tarefas.map((fase, fIdx) => {
-      // Calcula datas para a tarefa principal
-      const taskStart = new Date(start.getTime() + fIdx * durationPerTask);
-      let taskEnd = new Date(taskStart.getTime() + durationPerTask - 1);
+      const isLastTask = fIdx === tarefas.length - 1;
       
-      // Garante que a última tarefa termine exatamente no fim do projeto
-      if (fIdx === tarefas.length - 1) {
-        taskEnd = new Date(end.getTime());
+      const taskStart = new Date(currentDate);
+      let taskEnd;
+      
+      if (isLastTask) {
+        // Última tarefa termina exatamente no fim do projeto
+        taskEnd = new Date(end);
+      } else {
+        taskEnd = new Date(taskStart);
+        taskEnd.setDate(taskStart.getDate() + baseDays - 1);
       }
 
-      // Garante que não ultrapasse o fim do projeto
-      if (taskEnd > end) {
-        taskEnd = new Date(end.getTime());
-      }
-
-      // Calcula datas para subtarefas (se houver)
+      // Calcula subtarefas de forma simples
       const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
-        const subTaskCount = fase.subTarefas.length;
+        const taskDuration = Math.ceil((taskEnd - taskStart) / (1000 * 60 * 60 * 24)) + 1;
+        const subDuration = Math.floor(taskDuration / fase.subTarefas.length);
         
-        // Se não há subtarefas, retorna a subtarefa sem modificar datas
-        if (subTaskCount === 0) return sub;
+        const subStart = new Date(taskStart);
+        subStart.setDate(taskStart.getDate() + sIdx * subDuration);
         
-        // Divide o período da tarefa principal entre as subtarefas
-        const taskDurationMs = taskEnd - taskStart;
-        const subDuration = Math.floor(taskDurationMs / subTaskCount);
+        const subEnd = new Date(subStart);
+        subEnd.setDate(subStart.getDate() + subDuration - 1);
         
-        const subStart = new Date(taskStart.getTime() + sIdx * subDuration);
-        const subEnd = new Date(subStart.getTime() + subDuration - 1);
-        
-        // Para a última subtarefa, ajusta para terminar com a tarefa principal
-        if (sIdx === subTaskCount - 1) {
-          subEnd.setTime(taskEnd.getTime());
-        }
-
-        // Garante que não ultrapasse o fim da tarefa principal
-        if (subEnd > taskEnd) {
+        if (sIdx === fase.subTarefas.length - 1) {
           subEnd.setTime(taskEnd.getTime());
         }
 
@@ -84,6 +90,14 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
         };
       });
 
+      console.log(`Tarefa ${fIdx + 1}: ${taskStart.toLocaleDateString('pt-BR')} - ${taskEnd.toLocaleDateString('pt-BR')}`);
+      
+      // Prepara para próxima tarefa
+      if (!isLastTask) {
+        currentDate = new Date(taskEnd);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      
       return {
         ...fase,
         data_inicio: taskStart,
@@ -92,17 +106,21 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
       };
     });
   };
-  // Carrega tarefas do backend respeitando o prazo do projeto
+    // Carrega tarefas do backend respeitando o prazo do projeto
   useEffect(() => {
     const carregarTarefas = async () => {
       try {
         const projeto = await fetchProjectWithTasks(projetoId);
 
-        // Salva as datas do projeto
+        console.log('Projeto do backend:', projeto);
+        console.log('Datas do projeto:', projeto.data_inicio, projeto.data_fim);
+        console.log('Tarefas do projeto:', projeto.tarefasProjeto);
+
+        // Salva as datas do projeto (já parseadas)
         if (projeto.data_inicio && projeto.data_fim) {
           setProjectDates({
-            startDate: projeto.data_inicio,
-            endDate: projeto.data_fim
+            startDate: parseBrazilianDate(projeto.data_inicio),
+            endDate: parseBrazilianDate(projeto.data_fim)
           });
         }
 
@@ -119,12 +137,19 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
           // Fallback: usa datas automáticas (comportamento antigo)
           tarefas = (projeto.tarefasProjeto || []).map((fase, fIdx) => {
             const today = new Date();
-            const faseInicio = new Date(today.getTime() + fIdx * 7 * 24 * 60 * 60 * 1000);
-            const faseFim = new Date(faseInicio.getTime() + 5 * 24 * 60 * 60 * 1000);
+            const faseInicio = new Date(today);
+            faseInicio.setDate(today.getDate() + fIdx * 7);
+            
+            const faseFim = new Date(faseInicio);
+            faseFim.setDate(faseInicio.getDate() + 5);
 
             const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
-              const subInicio = new Date(faseInicio.getTime() + sIdx * 1 * 24 * 60 * 60 * 1000);
-              const subFim = new Date(subInicio.getTime() + 1 * 24 * 60 * 60 * 1000);
+              const subInicio = new Date(faseInicio);
+              subInicio.setDate(faseInicio.getDate() + sIdx);
+              
+              const subFim = new Date(subInicio);
+              subFim.setDate(subInicio.getDate() + 1);
+              
               return {
                 ...sub,
                 data_inicio: subInicio,

@@ -223,20 +223,13 @@ const Calendario = () => {
               <p className="mt-2">{t("calendar.loadingEvents")}</p>
             </div>
           ) : events.length === 0 ? (
-            <div className="alert alert-info text-center">
+            <div className="alert w-100 alert-warning text-center">
               <h5>{t("calendar.noEventsTitle")}</h5>
               <p>{t("calendar.noEventsMessage")}</p>
               <small className="info-small">
                 {t("calendar.noEventsHint")}
               </small>
-              <div className="mt-3">
-                <button 
-                  onClick={() => setModalAberto(true)}
-                  className="btn btn-outline-primary btn-sm"
-                >
-                  + {t("calendar.newEvent")}
-                </button>
-              </div>
+              
             </div>
           ) : (
             <div className="events-list">

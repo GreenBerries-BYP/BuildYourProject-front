@@ -72,32 +72,59 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
     return false;
   };
   // Função que gera datas respeitando o prazo do projeto
+  // Função que gera datas respeitando o prazo do projeto - VERSÃO CORRIGIDA
   const generateProjectDates = (tarefas, projetoStartDate, projetoEndDate) => {
     const start = new Date(projetoStartDate);
     const end = new Date(projetoEndDate);
-    const totalProjectDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
     
-    console.log(`Prazo do projeto: ${totalProjectDays} dias (${start.toISOString()} até ${end.toISOString()})`);
+    // Ajusta horários para início e fim do dia
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+    
+    const totalProjectMs = end - start;
+    const totalProjectDays = Math.ceil(totalProjectMs / (1000 * 60 * 60 * 24));
+    
+    console.log(`Prazo do projeto: ${totalProjectDays} dias (${start.toLocaleDateString('pt-BR')} até ${end.toLocaleDateString('pt-BR')})`);
 
-    // Calcula dias disponíveis por tarefa (distribui igualmente)
-    const daysPerTask = Math.floor(totalProjectDays / tarefas.length);
+    if (tarefas.length === 0) return [];
+
+    // Calcula duração por tarefa em milissegundos (sem subtrair 1)
+    const durationPerTask = Math.floor(totalProjectMs / tarefas.length);
+    
+    console.log(`Duração por tarefa: ${Math.ceil(durationPerTask / (1000 * 60 * 60 * 24))} dias`);
     
     return tarefas.map((fase, fIdx) => {
-      // Calcula datas para a tarefa principal
-      const taskStart = new Date(start.getTime() + fIdx * daysPerTask * 24 * 60 * 60 * 1000);
-      const taskEnd = new Date(taskStart.getTime() + (daysPerTask - 1) * 24 * 60 * 60 * 1000);
+      // Calcula datas para a tarefa principal (sem -1)
+      const taskStart = new Date(start.getTime() + fIdx * durationPerTask);
+      let taskEnd = new Date(taskStart.getTime() + durationPerTask); // SEM -1
       
-      // Garante que não ultrapasse o fim do projeto
-      if (taskEnd > end) {
-        taskEnd.setTime(end.getTime());
+      // Ajusta a última tarefa para terminar exatamente no fim do projeto
+      if (fIdx === tarefas.length - 1) {
+        taskEnd = new Date(end.getTime());
       }
 
-      // Calcula datas para subtarefas (distribui dentro do período da tarefa principal)
+      // Garante que não ultrapasse o fim do projeto
+      if (taskEnd > end) {
+        taskEnd = new Date(end.getTime());
+      }
+
+      // Calcula datas para subtarefas
       const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
-        const subTaskDuration = Math.floor(daysPerTask / (fase.subTarefas.length + 1));
-        const subStart = new Date(taskStart.getTime() + sIdx * subTaskDuration * 24 * 60 * 60 * 1000);
-        const subEnd = new Date(subStart.getTime() + (subTaskDuration - 1) * 24 * 60 * 60 * 1000);
+        const subTaskCount = fase.subTarefas.length;
+        if (subTaskCount === 0) return sub;
         
+        // Divide o período da tarefa principal entre as subtarefas
+        const taskDurationMs = taskEnd - taskStart;
+        const subDuration = Math.floor(taskDurationMs / subTaskCount);
+        
+        const subStart = new Date(taskStart.getTime() + sIdx * subDuration);
+        const subEnd = new Date(subStart.getTime() + subDuration); // SEM -1
+        
+        // Ajusta a última subtarefa para terminar com a tarefa principal
+        if (sIdx === subTaskCount - 1) {
+          subEnd.setTime(taskEnd.getTime());
+        }
+
         // Garante que não ultrapasse o fim da tarefa principal
         if (subEnd > taskEnd) {
           subEnd.setTime(taskEnd.getTime());
@@ -110,6 +137,8 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
         };
       });
 
+      console.log(`Tarefa ${fIdx + 1}: ${taskStart.toLocaleDateString('pt-BR')} - ${taskEnd.toLocaleDateString('pt-BR')}`);
+      
       return {
         ...fase,
         data_inicio: taskStart,
@@ -118,7 +147,6 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
       };
     });
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
