@@ -1,98 +1,93 @@
-// Calendario.jsx - COM CLIENT ID DIFERENTE
+// Calendario.jsx - COMPONENTE CORRIGIDO
 import React, { useEffect, useState } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
 import { fetchGoogleCalendarEventsDirect } from "../api/api";
-import { 
-  saveGoogleToken, 
-  getGoogleToken, 
-  isGoogleCalendarAuthenticated,
-  getGoogleCalendarStatus 
-} from "../auth/auth";
 import { useAuthContext } from "../auth/authContext";
 import toastService from "../api/toastService";
 
 const Calendario = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [googleCalendarAuth, setGoogleCalendarAuth] = useState(isGoogleCalendarAuthenticated());
-  const { user, isLoggedIn } = useAuthContext();
+  const [googleCalendarAuth, setGoogleCalendarAuth] = useState(false);
+  const { isLoggedIn } = useAuthContext();
 
-  // Client ID específico para Calendar
+  // Client ID específico para Calendar COM SCOPES
   const calendarClientId = import.meta.env.VITE_GOOGLE_CALENDAR_CLIENT_ID;
 
-  // Verificar se já está autenticado com Google
+  // Verificar se já está autenticado
   useEffect(() => {
-    const checkGoogleAuth = () => {
-      const status = getGoogleCalendarStatus();
-      setGoogleCalendarAuth(status.isAuthenticated);
-      
-      if (status.isAuthenticated && status.accessToken) {
-        loadEvents(status.accessToken);
-      }
-    };
-
-    checkGoogleAuth();
+    const token = localStorage.getItem('google_access_token');
+    const hasCalendarAuth = localStorage.getItem('google_calendar_authenticated');
+    
+    setGoogleCalendarAuth(!!(token && hasCalendarAuth));
+    
+    if (token && hasCalendarAuth) {
+      loadEvents();
+    }
   }, []);
 
   // Função para carregar eventos
-  const loadEvents = async (googleToken = null) => {
+  const loadEvents = async () => {
     setLoading(true);
     try {
-      const token = googleToken || getGoogleToken();
-      
-      if (!token) {
-        throw new Error("Token do Google não encontrado");
-      }
-      
-      const data = await fetchGoogleCalendarEventsDirect(token);
+      const data = await fetchGoogleCalendarEventsDirect();
       setEvents(data.items || []);
       toastService.success("Sucesso", "Eventos carregados com sucesso!");
     } catch (error) {
-      console.error("Falha ao carregar eventos:", error);
-      toastService.error("Erro", "Não foi possível carregar os eventos.");
+      console.error("❌ Falha ao carregar eventos:", error);
+      
+      if (error.response?.status === 401) {
+        // Token expirado ou sem permissão
+        localStorage.removeItem('google_access_token');
+        localStorage.removeItem('google_calendar_authenticated');
+        setGoogleCalendarAuth(false);
+        toastService.error("Sessão expirada", "Conecte novamente com Google Calendar");
+      } else {
+        toastService.error("Erro", "Não foi possível carregar os eventos.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // Callback específico para Calendar
+  // ✅ CALLBACK CORRETO PARA GOOGLE CALENDAR
   const handleGoogleCalendarSuccess = async (response) => {
     try {
+      console.log('🔑 Resposta do Google:', response);
+      
+      // ✅ USAR access_token, não credential
       const token = response.access_token || response.credential;
       
       if (!token) {
         throw new Error("Token não recebido do Google");
       }
       
-      // Salva token do Google especificamente para Calendar
-      saveGoogleToken(token);
-      localStorage.setItem('google_calendar_authenticated', 'true');
+      // ✅ SALVAR TOKEN CORRETAMENTE
       localStorage.setItem('google_access_token', token);
-      localStorage.setItem('google_client_id', calendarClientId); // Salva qual client ID foi usado
+      localStorage.setItem('google_calendar_authenticated', 'true');
+      localStorage.setItem('google_token_type', response.token_type || 'Bearer');
       
       setGoogleCalendarAuth(true);
       toastService.success("Google Calendar", "Calendário conectado com sucesso!");
       
-      // Carrega eventos automaticamente
-      await loadEvents(token);
+      // ✅ CARREGAR EVENTOS
+      await loadEvents();
     } catch (err) {
-      console.error("Erro ao conectar Google Calendar:", err);
+      console.error("❌ Erro ao conectar Google Calendar:", err);
       toastService.error("Erro Google", "Não foi possível conectar com Google Calendar.");
     }
   };
 
   const handleGoogleCalendarLogout = () => {
-    // Não usa googleLogout() pois é outro client_id
     localStorage.removeItem('google_access_token');
     localStorage.removeItem('google_calendar_authenticated');
-    localStorage.removeItem('google_client_id');
+    localStorage.removeItem('google_token_type');
     setGoogleCalendarAuth(false);
     setEvents([]);
     toastService.success("Google Calendar", "Calendário desconectado!");
   };
 
-  // Se não está logado no sistema
   if (!isLoggedIn) {
     return (
       <div className="container">
@@ -115,7 +110,7 @@ const Calendario = () => {
               <h4>Conectar Google Calendar</h4>
               <p>Para visualizar seus eventos, conecte com sua conta Google</p>
               
-              {/* ✅ GOOGLE OAUTH PROVIDER COM CLIENT ID ESPECÍFICO */}
+              {/* ✅ GOOGLE OAUTH COM SCOPES ESPECÍFICOS */}
               <GoogleOAuthProvider clientId={calendarClientId}>
                 <div className="google-login-button">
                   <GoogleLogin
@@ -123,6 +118,9 @@ const Calendario = () => {
                     onError={() => toastService.error("Erro Google", "Não foi possível conectar com Google Calendar.")}
                     useOneTap={false}
                     scope="https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar.readonly"
+                    theme="filled_blue"
+                    size="large"
+                    text="continue_with"
                   />
                 </div>
               </GoogleOAuthProvider>
