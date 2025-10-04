@@ -64,14 +64,6 @@ export const isAuthenticated = () => {
   }
 };
 
-export const getGoogleLoginStatus = () => {
-  return !!localStorage.getItem("google_access_token");
-};
-
-export const getGoogleLoginStatus = () => {
-  if (typeof window === 'undefined') return false;
-  return localStorage.getItem('google_logged_in') === 'true';
-};
 
 export const setGoogleLoginStatus = (status) => {
   if (typeof window === 'undefined') return;
@@ -91,4 +83,16 @@ export const getGoogleToken = () => {
 export const saveGoogleToken = (token) => {
   if (typeof window === 'undefined') return;
   localStorage.setItem('google_access_token', token);
+};
+
+export const isGoogleCalendarAuthenticated = () => {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem('google_calendar_authenticated') === 'true';
+};
+
+export const getGoogleCalendarStatus = () => {
+  return {
+    isAuthenticated: isGoogleCalendarAuthenticated(),
+    accessToken: localStorage.getItem('google_access_token')
+  };
 };

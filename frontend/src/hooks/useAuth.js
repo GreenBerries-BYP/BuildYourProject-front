@@ -102,6 +102,9 @@ export const useAuth = () => {
     saveToken(token, false, response.data.refresh);
     setGoogleLoginStatus(true); 
 
+    localStorage.setItem('google_access_token', idToken);
+    localStorage.setItem('google_calendar_authenticated', 'true');
+
     const userData = jwtDecode(token);
     setUser(userData);
 
