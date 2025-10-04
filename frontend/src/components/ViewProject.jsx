@@ -5,7 +5,7 @@ import TaskSection from './TaskSection';
 import ModalNewTask from './ModalNewTask';
 import ModalDeleteTask from "../components/ModalDeleteTask";
 import ModalAssignTask from "../components/ModalAssignTask";
-import ModalAnaliseProjeto from "../components/ModalAnaliseProjeto"; 
+import ModalAnaliseProjeto from "../components/ModalAnaliseProjeto";
 import Schedule from '../components/Schedule';
 
 
@@ -41,8 +41,33 @@ const ViewProject = ({
         setAssignModalOpen(true);
     };
 
-    const handleCreateTask = (novaTarefa) => {
-        setTarefasProjetoState((prev) => [...prev, novaTarefa]);
+    const handleCreateTask = (novaSubtarefa) => {
+        setTarefasProjetoState((prevGrupos) => {
+            const nomeDoGrupo = novaSubtarefa.nome;
+            const grupoExistenteIndex = prevGrupos.findIndex(
+                (grupo) => grupo.nomeTarefa === nomeDoGrupo
+            );
+
+            if (grupoExistenteIndex > -1) {
+                const novosGrupos = [...prevGrupos];
+                const grupoAtualizado = {
+                    ...novosGrupos[grupoExistenteIndex],
+                    subTarefas: [
+                        ...novosGrupos[grupoExistenteIndex].subTarefas,
+                        novaSubtarefa,
+                    ],
+                };
+                novosGrupos[grupoExistenteIndex] = grupoAtualizado;
+                return novosGrupos;
+            } else {
+                const novoGrupo = {
+                    nomeTarefa: nomeDoGrupo,
+                    subTarefas: [novaSubtarefa],
+                    id: novaSubtarefa.id,
+                };
+                return [...prevGrupos, novoGrupo];
+            }
+        });
         setModalAberto(false);
     };
 
@@ -80,14 +105,14 @@ const ViewProject = ({
                 <div className="col-12 col-lg-6 order-1 order-lg-2 project-options">
                     <div className='row mb-5 w-100 justify-content-between justify-content-lg-end '>
                         <div className="btns col-6 col-lg-12 order-2 order-lg-1 justify-content-end">
-                            <button 
+                            <button
                                 className='analisar-btn'
                                 onClick={() => setAnaliseModalOpen(true)}
                                 title="Analisar saúde do projeto"
                             >
                                 <img src="/imgs/icons-project/Chart.svg" alt="Analisar projeto" />
                             </button>
-                            
+
                             <button className='compartilhar-btn'><img src="/imgs/icons-project/Link.svg" alt={t("altText.shareLink")} /></button>
                             <button className='editar-btn'><img src="/imgs/icons-project/Edit.svg" alt={t("altText.editProject")} /></button>
                             <button className='calendario-btn' onClick={() => setShowSchedule(true)}>
@@ -161,19 +186,19 @@ const ViewProject = ({
                 onAssignSuccess={(collaborator) => {
                     // Atualiza a UI com os dados do colaborador
                     setTarefasProjetoState((prev) =>
-                    prev.map((t) =>
-                        t.id === selectedTaskIdForAssign
-                        ? { 
-                            ...t, 
-                            assignedTo: collaborator.full_name || collaborator.name,
-                            assignedEmail: collaborator.email,
-                            assignedUserId: collaborator.id
-                            }
-                        : t
-                    )
+                        prev.map((t) =>
+                            t.id === selectedTaskIdForAssign
+                                ? {
+                                    ...t,
+                                    assignedTo: collaborator.full_name || collaborator.name,
+                                    assignedEmail: collaborator.email,
+                                    assignedUserId: collaborator.id
+                                }
+                                : t
+                        )
                     );
-                    setSelectedTaskIdForAssign(null);       
-            }}
+                    setSelectedTaskIdForAssign(null);
+                }}
             />
             <ModalAnaliseProjeto
                 isOpen={analiseModalOpen}

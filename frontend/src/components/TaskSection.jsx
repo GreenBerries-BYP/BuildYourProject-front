@@ -33,10 +33,9 @@ const TaskSection = ({
     setSubtasks(subTarefas || []);
   }, [subTarefas]);
 
-  // como ainda não foi implementada a atribuição de tarefas, força responsavel como "-"
   const subtasksWithResponsible = subtasks.map((sub) => ({
     ...sub,
-    responsavel: "-",
+    responsavel: sub.responsavel || '-',
     nome: nomeTarefa,
   }));
 

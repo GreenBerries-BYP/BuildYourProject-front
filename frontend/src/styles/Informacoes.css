@@ -1,10 +1,12 @@
 p {
   font-size: 1.4rem;
+  color: var(--black-color);
 }
 
 .btn-back {
     border-radius: 8px;
     border: 2px solid var(--white-color);
+    color: var(--white-color);
     font-size: 1.2rem;
     padding: 4px;
 }
@@ -14,15 +16,12 @@ p {
   animation: fadeIn 0.5s ease-in-out;
 }
 
-.info-page-container h2 {
-  margin-bottom: 1.5rem;
-  color: var(--text-color); /* Usando variáveis de cor do PrimeReact se disponíveis */
-}
-
 .info-card {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  border: 1px solid var(--project-bg);
+  border-radius: 10px;
   height: 80%;
+  padding: 2rem;
+  background-color: var(--project-bg);
 }
 
 .info-section {
@@ -33,11 +32,17 @@ p {
   margin-bottom: 0;
 }
 
-.info-section h3 {
+.info-section .subtitles {
+  color: var(--black-color);
   margin-bottom: 1rem;
   font-weight: 600;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--purple-light-color);
   padding-bottom: 0.5rem;
+}
+
+.contact-content, .useful-links {
+    border: 1px solid var(--gray-light-color) !important;
+    background-color: var(--form-bg);
 }
 
 .contact-content {
@@ -48,7 +53,7 @@ p {
 
 .support-email {
   font-weight: bold;
-  color: var(--primary-color, #4F46E5); /* Cor primária do tema */
+  color: var(--purple-color); 
   text-decoration: none;
 }
 
@@ -58,11 +63,53 @@ p {
 
 .useful-links .p-button {
     margin-right: 1rem;
+    color: var(--purple-color);
+}
+
+.useful-links .p-button .p-button-label {
+    color: var(--purple-color);
 }
 
 .acordion-tab {
   font-size: 1.5rem;
 }
+
+
+/* --- PRIME REACT OVERRIDES --- */
+.info-card.p-card .p-card-body,
+.info-card.p-card .p-card-content {
+    padding: 2rem;
+    color: var(--black-color);
+    background-color: var(--project-bg);
+}
+
+.p-accordion .p-accordion-header .p-accordion-header-link {
+    background-color: var(--white-color);
+    border: 1px solid var(--gray-light-color);
+    color: var(--black-color);
+}
+
+.p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link {
+    background-color: var(--purple-light-color);
+    border-color: var(--purple-color);
+    color: var(--purple-saturated-color);
+}
+
+.p-accordion .p-accordion-header:not(.p-disabled) .p-accordion-header-link:focus {
+    box-shadow: 0 0 0 0.2rem var(--purple-light-color);
+}
+
+.p-accordion .p-accordion-content {
+    background-color: var(--form-bg);
+    color: var(--black-color);
+    border: 1px solid var(--gray-light-color);
+}
+
+.p-avatar {
+    background-color: var(--purple-color);
+    color: var(--white-color);
+}
+
 
 /* Animação de entrada */
 @keyframes fadeIn {

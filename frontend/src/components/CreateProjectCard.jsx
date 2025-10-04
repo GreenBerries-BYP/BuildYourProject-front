@@ -6,7 +6,7 @@ const CreateProjectCard = ({ onClick }) => {
 
   return (
     <div className="create-project-card" onClick={onClick}>
-      <p className="fs-1">{t('titles.newProject')}</p>
+      <p className="fs-1 new-project">{t('titles.newProject')}</p>
       <div className="plus">+</div>
     </div>
   );
