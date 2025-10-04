@@ -123,7 +123,8 @@ function Projetos() {
 
             return (
               <ProjectCard
-                key={index}
+                key={projeto.id}            
+                projetoId={projeto.id}  
                 nomeProjeto={projeto.name}
                 progressoProjeto={progressoProjeto}
                 progressoIndividual={progressoProjeto} // por enquanto igual
