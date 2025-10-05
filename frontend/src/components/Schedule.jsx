@@ -135,8 +135,16 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
     }
 
     const cores = [
-      "#7852b8", "#4ea562", "#8c9399", "#008FFB", "#FEB019",
-      "#FF4560", "#775DD0", "#3F51B5", "#546E7A", "#D4526E"
+      "#7852b8", 
+      "#4ea562", 
+      "#8c9399", 
+      "#008FFB", 
+      "#FEB019",
+      "#FF4560", 
+      "#775DD0", 
+      "#3F51B5", 
+      "#546E7A", 
+      "#D4526E"
     ];
 
     const series = tasks.map((fase, fIdx) => {
@@ -174,6 +182,7 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
 
     console.log('Séries do gráfico:', series);
     setChartSeries(series);
+    
   };
 
   const handleDateChange = (faseIdx, subIdx, field, value) => {
@@ -208,6 +217,7 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
           await updateTask(projetoId, fase.id, {
             data_inicio: fase.data_inicio.toISOString(),
             data_fim: fase.data_fim.toISOString(),
+
           });
         }
 
@@ -217,12 +227,15 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
               data_inicio: sub.data_inicio.toISOString(),
               data_fim: sub.data_fim.toISOString(),
             });
+
           }
         }
       }
       alert("Datas atualizadas com sucesso!");
       setEditing(false);
+
     } catch (err) {
+
       console.error("Erro ao salvar alterações:", err);
       alert("Erro ao salvar alterações!");
     }
@@ -268,6 +281,7 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
         const w = opts.ctx.w;
         const label = w.config.series[opts.seriesIndex].data[opts.dataPointIndex]?.x || "";
         const serie = w.config.series[opts.seriesIndex]?.name || "";
+
         return `
           <div class="apexcharts-tooltip-rangebar">
             <div><b>${serie}</b></div>
@@ -282,6 +296,7 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
       <div className="schedule-header">
         <h2>{nomeProjeto} - Cronograma</h2>
         <div className="btns-right">
+
           {editing ? (
             <button className="salvar-btn" onClick={handleSalvar}>
               {t("buttons.save", "Salvar")}
@@ -291,6 +306,7 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
               {t("buttons.edit", "Editar")}
             </button>
           )}
+
           <button className="fechar-schedule-btn" onClick={onVoltar}>
             {t("buttons.back", "Voltar")}
           </button>
@@ -331,6 +347,7 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
                     disabled={!editing}
                   />
                 </label>
+
                 <label>
                   {t("inputs.endDate", "Fim")}{": "}
                   <input
@@ -359,6 +376,7 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
                         disabled={!editing}
                       />
                     </label>
+
                     <label>
                       {t("inputs.endDate", "Fim")}{": "}
                       <input
