@@ -164,6 +164,7 @@ const en = {
     confirmDelete: "Confirm Deletion",
     forgotPassword: "Forgot Password",
     assignTask: "Assign Task",
+    newSubtask: "New Subtask",
   },
   messages: {
     welcome: "Welcome to Build Your Project",
@@ -201,6 +202,9 @@ const en = {
     enterVerificationCode: "Enter the 6-digit code",
     optional: "Optional", // para indicar que a seleção do responsável é opcional
     none: "N/A",
+    errorNewSubtask: "Error creating subtask", // ← FALTA
+    optional: "optional", // ← FALTA  
+    none: "None" // ← FALTA
   },
   modalDeleteProject: {
     typeYesToDelete: "Type",
@@ -234,9 +238,9 @@ const en = {
     assign: "Assign Task",
     viewSchedule: "View Schedule",
     back: "Back",
-    addSubtask: "Add SubTask",
     savingAndCreatingEvent: "Saving and creating event...",
     creatingProjectAndEvents: "Creating project and events...",
+    addSubtask: "Add Subtask",
   },
   sideBar: {
     home: "Home",
@@ -262,7 +266,10 @@ const en = {
     endDate: "End Date",
     academicArticle: "Academic Article",
     collaboratorEmail: "Collaborator Email",
-    selectResponsible: "Select a responsible",
+    taskName: "Task Name",
+    subtaskName: "Subtask Name",
+    taskDescription: "Task Description",
+
   },
   placeholders: {
     projectName: "Enter project name",

@@ -23,7 +23,8 @@ const TaskSection = ({
   expanded, 
   onToggle, 
   onDeleteClick, 
-  onAssignClick
+  onAssignClick,
+  onAddSubTask // ← ADICIONAR ESTA PROP
 }) => {
   const { t } = useTranslation();
   const [subtasks, setSubtasks] = useState(subTarefas || []);
@@ -79,7 +80,6 @@ const TaskSection = ({
       new Set(subTarefas.map((t) => t.responsavel).filter(Boolean))
     );
   }, [subTarefas]);
-
 
   const statusTemplate = (rowData) => {
     const isFinished = rowData.status === "concluído";
@@ -147,22 +147,22 @@ const TaskSection = ({
                   { 
                     label: t("buttons.assignTask"),
                     command: (e) => {
-                        e.originalEvent.preventDefault(); // <- previne comportamento padrão
+                        e.originalEvent.preventDefault();
                         if (onAssignClick) onAssignClick();
                       },                  
                     },
                   { 
-                    label: t("buttons.deleteTask"),
+                    label: t("buttons.addSubtask"), // ← AGORA ESTÁ DEFINIDO
                     command: (e) => {
-                        e.originalEvent.preventDefault(); // <- previne comportamento padrão
-                        if (onDeleteClick) onDeleteClick(); 
+                        e.originalEvent.preventDefault();
+                        if (onAddSubTask) onAddSubTask(); // ← AGORA ESTÁ DEFINIDO
                       }, 
                   },
                   { 
-                    label: t("buttons.addSubtask"),
+                    label: t("buttons.deleteTask"),
                     command: (e) => {
-                        e.originalEvent.preventDefault(); // <- previne comportamento padrão
-                        if (onAddSubTask) onAddSubTask(); 
+                        e.originalEvent.preventDefault();
+                        if (onDeleteClick) onDeleteClick(); 
                       }, 
                   },
                 ]}

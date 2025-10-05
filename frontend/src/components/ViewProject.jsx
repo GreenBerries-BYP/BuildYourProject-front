@@ -24,9 +24,10 @@ const ViewProject = ({
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [assignModalOpen, setAssignModalOpen] = useState(false);
     const [analiseModalOpen, setAnaliseModalOpen] = useState(false);
-
+    const [addSubtaskModalOpen, setAddSubtaskModalOpen] = useState(false);
     const [selectedTasktId, setSelectedTasktId] = useState(null);
     const [selectedTaskIdForAssign, setSelectedTaskIdForAssign] = useState(null);
+    const [selectedTaskIdForSubtask, setSelectedTaskIdForSubtask] = useState(null);
     const [tarefasProjetoState, setTarefasProjetoState] = useState(tarefasProjeto || []);
     const [showSchedule, setShowSchedule] = useState(false);
 
@@ -40,6 +41,12 @@ const ViewProject = ({
         setSelectedTaskIdForAssign(taskId);
         setAssignModalOpen(true);
     };
+
+     const handleAddSubtaskClick = (taskId) => {
+        setSelectedTaskIdForSubtask(taskId);
+        setAddSubtaskModalOpen(true);
+    };
+
 
     const handleCreateTask = (novaSubtarefa) => {
         setTarefasProjetoState((prevGrupos) => {
@@ -69,6 +76,22 @@ const ViewProject = ({
             }
         });
         setModalAberto(false);
+    };
+
+    const handleCreateSubtask = (novaSubtarefa) => {
+        setTarefasProjetoState((prevGrupos) => {
+            return prevGrupos.map((grupo) => {
+                if (grupo.id === selectedTaskIdForSubtask) {
+                    return {
+                        ...grupo,
+                        subTarefas: [...grupo.subTarefas, novaSubtarefa]
+                    };
+                }
+                return grupo;
+            });
+        });
+        setAddSubtaskModalOpen(false);
+        setSelectedTaskIdForSubtask(null);
     };
 
     const toggleSection = (section) => {
@@ -151,6 +174,7 @@ const ViewProject = ({
                                 onToggle={() => toggleSection(tarefa.nomeTarefa)}
                                 onDeleteClick={() => handleDeleteTaskClick(tarefa.id)}
                                 onAssignClick={() => handleAssignTaskClick(tarefa.id)}
+                                onAddSubTask={() => handleAddSubtaskClick(tarefa.id)}
                             />
                         ))}
                     </div>
@@ -158,12 +182,17 @@ const ViewProject = ({
 
             </div>
             <ModalNewTask 
-                isOpen={modalAberto} 
-                onClose={() => setModalAberto(false)} 
-                projetoId={projetoId} 
-                nomeProjeto={nomeProjeto} 
-                onTaskCreated={handleCreateTask}
+                isOpen={addSubtaskModalOpen}
+                onClose={() => {
+                    setAddSubtaskModalOpen(false);
+                    setSelectedTaskIdForSubtask(null);
+                }}
+                projetoId={projetoId}
+                nomeProjeto={nomeProjeto}
+                onTaskCreated={handleCreateSubtask}
                 collaborators={collaborators}
+                isSubtask={true} // ← para diferenciar se é subtarefa
+                parentTaskId={selectedTaskIdForSubtask}
             />
             <ModalDeleteTask
                 isOpen={deleteModalOpen}

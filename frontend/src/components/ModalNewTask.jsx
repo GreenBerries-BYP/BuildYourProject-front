@@ -5,7 +5,16 @@ import api from "../api/api";
 import { getToken } from "../auth/auth";
 import { createGoogleCalendarEventFromTask } from "../api/api";
 
-const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators: initialCollaborators = [], nomeProjeto = "" }) => {
+const ModalNewTask = ({ 
+  isOpen, 
+  onClose, 
+  projetoId, 
+  onTaskCreated, 
+  collaborators: initialCollaborators = [], 
+  nomeProjeto = "",
+  isSubtask = false, 
+  parentTaskId = null 
+}) => {
   const modalRef = useRef();
   const { t } = useTranslation();
 
@@ -42,21 +51,32 @@ const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators
       projetoId,
     };
 
+    if (isSubtask && parentTaskId) {
+      tarefa.parentTaskId = parentTaskId;
+    }
+
     setLoading(true);
     try {
       const token = getToken();
-      const response = await api.post(`/projetos/${projetoId}/tarefas-novas/`, tarefa, {
+
+      const endpoint = isSubtask && parentTaskId 
+        ? `/projetos/${projetoId}/tarefas/${parentTaskId}/subtasks` // ← ENDPOINT PARA SUBTAREFAS
+        : `/projetos/${projetoId}/tarefas-novas/`; // ← ENDPOINT PARA TAREFAS PRINCIPAIS
+
+      const response = await api.post(endpoint, tarefa, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      try {
-        setCreatingCalendarEvent(true);
-        await createGoogleCalendarEventFromTask(tarefa, nomeProjeto);
-        console.log(' Evento criado no Google Calendar com sucesso');
-      } catch (calendarError) {
-        console.log(' Evento não criado no Google Calendar (não crítico)');
-      } finally {
-        setCreatingCalendarEvent(false);
+      if (!isSubtask) {
+        try {
+          setCreatingCalendarEvent(true);
+          await createGoogleCalendarEventFromTask(tarefa, nomeProjeto);
+          console.log(' Evento criado no Google Calendar com sucesso');
+        } catch (calendarError) {
+          console.log(' Evento não criado no Google Calendar (não crítico)');
+        } finally {
+          setCreatingCalendarEvent(false);
+        }
       }
 
       if (onTaskCreated) onTaskCreated(response.data);
@@ -100,16 +120,16 @@ const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators
     <div className="modal-overlay">
       <div className="modal-content" ref={modalRef}>
         <div className="modal-header">
-          <h2>{t("titles.newTask")}</h2>
+          <h2>{isSubtask ? t("titles.newSubtask") : t("titles.newTask")}</h2>
           <button className="close-btn" onClick={onClose}>×</button>
         </div>
         <div className="modal-body">
           <form onSubmit={handleSubmit} noValidate>
             <div className="form-grid-2x2">
               <div className="input-group">
-                <label>{t("inputs.taskName")}</label>
+                <label>{isSubtask ? t("inputs.subtaskName") : t("inputs.taskName")}</label>
                 <input
-                  placeholder={t("inputs.taskName")}
+                  placeholder={isSubtask ? t("inputs.subtaskName") : t("inputs.taskName")}
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
                 />
@@ -159,7 +179,7 @@ const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators
                  {loading ? (
                     creatingCalendarEvent ? t("buttons.savingAndCreatingEvent") : t("buttons.saving")
                   ) : (
-                    t("buttons.save")
+                    isSubtask ? t("buttons.addSubtask") : t("buttons.save")
                   )}
               </button>
             </div>

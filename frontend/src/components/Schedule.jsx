@@ -92,49 +92,52 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
     });
   };
 
+  // Schedule.js - MODIFICAR A FUNÇÃO DE CARREGAMENTO
   useEffect(() => {
-    const carregarTarefas = async () => {
+    const carregarTarefasComDatas = async () => {
       try {
-        // Busca o projeto completo com todas as informações incluindo datas
         const projetoCompleto = await fetchProjectWithTasks(projetoId);
+        console.log('Projeto completo com datas:', projetoCompleto);
 
-        console.log('Dados completos do projeto:', projetoCompleto);
+        // Extrair datas do projeto
+        const startDate = new Date(projetoCompleto.start_date || projetoCompleto.startDate);
+        const endDate = new Date(projetoCompleto.end_date || projetoCompleto.endDate);
         
-        // Extrai as tarefas do projeto
+        setProjectDates({ startDate, endDate });
+
+        // ✅ AGORA AS TAREFAS JÁ VÊM COM DATAS CALCULADAS DO BACKEND
         const tarefas = projetoCompleto.tarefasProjeto || [];
-
-        console.log('Tarefas do projeto:', tarefas);
-
-        // Busca as datas do projeto - ajuste conforme a estrutura real da sua API
-        const startDate = projetoCompleto.start_date || projetoCompleto.startDate;
-        const endDate = projetoCompleto.end_date || projetoCompleto.endDate;
-
-        console.log('Datas encontradas:', { startDate, endDate });
-
-        let tarefasComDatas;
         
-        if (startDate && endDate) {
-          const parsedStart = parseBrazilianDate(startDate);
-          const parsedEnd = parseBrazilianDate(endDate);
+        // Formatar as datas para o componente
+        const tarefasFormatadas = tarefas.map(tarefa => {
+          // Tarefa principal já tem datas calculadas
+          const data_inicio = new Date(tarefa.start_date || tarefa.created_at);
+          const data_fim = new Date(tarefa.due_date);
           
-          setProjectDates({
-            startDate: parsedStart,
-            endDate: parsedEnd
-          });
+          // Processar subtarefas (se existirem)
+          const subTarefas = (tarefa.subTarefas || []).map(sub => ({
+            ...sub,
+            data_inicio: new Date(sub.start_date || sub.created_at),
+            data_fim: new Date(sub.due_date)
+          }));
 
-          tarefasComDatas = generateProjectDates(tarefas, parsedStart, parsedEnd);
-        } else {
-          console.log('Usando fallback - datas automáticas');
-          tarefasComDatas = generateFallbackDates(tarefas);
-        }
+          return {
+            ...tarefa,
+            data_inicio,
+            data_fim,
+            subTarefas
+          };
+        });
 
-        setPhases(tarefasComDatas);
-        formatChartData(tarefasComDatas);
+        setPhases(tarefasFormatadas);
+        formatChartData(tarefasFormatadas);
+        
       } catch (err) {
-        console.error("Erro ao buscar tarefas do projeto:", err);
+        console.error("Erro ao carregar tarefas com datas:", err);
       }
     };
-    carregarTarefas();
+    
+    carregarTarefasComDatas();
   }, [projetoId]);
 
   const formatChartData = (tasks) => {

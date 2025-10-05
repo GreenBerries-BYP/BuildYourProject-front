@@ -164,6 +164,7 @@ const pt = {
     confirmDelete: "Confirmar exclusão",
     forgotPassword: "Recuperar Senha",
     assignTask: "Atribuir Tarefa",
+    newSubtask: "Nova Subtarefa",
   },
   messages: {
     welcome: "Bem-vindo ao Build Your Project",
@@ -203,6 +204,7 @@ const pt = {
     enterVerificationCode: "Digite o código de 6 dígitos",
     optional: "Opcional",
     none: "N/A",
+    errorNewSubtask: "Erro ao criar subtarefa",
   },
   modalDeleteProject: {
     typeYesToDelete: "Digite",
@@ -239,6 +241,7 @@ const pt = {
     addSubtask: "Nova SubTarefa",
     savingAndCreatingEvent: "Salvando e criando evento...",
     creatingProjectAndEvents: "Criando projeto e eventos...", 
+    addSubtask: "Adicionar Subtarefa"
   },
   sideBar: {
     home: "Início",
@@ -267,6 +270,7 @@ const pt = {
     academicArticle: "Artigo Acadêmico",
     collaboratorEmail: "Email do Colaborador",
     selectResponsible: "Selecione um responsável",
+    subtaskName: "Nome da Subtarefa",
   },
   placeholders: {
     projectName: "Insira o nome do projeto",
