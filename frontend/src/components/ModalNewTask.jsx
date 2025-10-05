@@ -37,36 +37,21 @@ const ModalNewTask = ({
   };
 
   // Submissão do formulário
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  const errors = validateForm();
-  setFormErrors(errors);
-  if (Object.keys(errors).length > 0) return;
+   const handleSubmit = async (e) => {
+    e.preventDefault();
+    const errors = validateForm();
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
 
-  const tarefa = {
-    nome,
-    descricao,
-    dataEntrega,
-    user: responsavel,
-    projetoId,
-  };
-
-  setLoading(true);
-  try {
-    const token = getToken();
-    const response = await api.post(`/projetos/${projetoId}/tarefas-novas/`, tarefa, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const tarefaParaUI = {
-      id: response.data.id, 
-      nome: nome,
-      status: 'pendente',
-      prazo: dataEntrega,
-      responsavel: responsavel,
+    const tarefa = {
+      nome,
+      descricao,
+      dataEntrega,
+      user: responsavel,
+      projetoId,
     };
 
-<<<<<<< HEAD
+    // Se for subtarefa, adiciona o parentTaskId
     if (isSubtask && parentTaskId) {
       tarefa.parentTaskId = parentTaskId;
     }
@@ -82,17 +67,8 @@ const ModalNewTask = ({
       const response = await api.post(endpoint, tarefa, {
         headers: { Authorization: `Bearer ${token}` },
       });
-=======
-    if (onTaskCreated) onTaskCreated(tarefaParaUI); 
-    onClose();
-  } catch (err) {
-    setFormErrors({ submit: err.message || t("messages.errorNewTask") });
-  } finally {
-    setLoading(false);
-  }
-};
->>>>>>> e10ea44aa8d6f503f8d34e27c748d5de6cb8d820
 
+      // Cria evento no Google Calendar apenas para tarefas principais
       if (!isSubtask) {
         try {
           setCreatingCalendarEvent(true);
@@ -105,10 +81,22 @@ const ModalNewTask = ({
         }
       }
 
-      if (onTaskCreated) onTaskCreated(response.data);
+      // Prepara os dados para a UI
+      const tarefaParaUI = {
+        id: response.data.id, 
+        nome: nome,
+        status: 'pendente',
+        prazo: dataEntrega,
+        responsavel: responsavel,
+        descricao: descricao,
+      };
+
+      if (onTaskCreated) onTaskCreated(tarefaParaUI);
       onClose();
     } catch (err) {
-      setFormErrors({ submit: err.message || t("messages.errorNewTask") });
+      setFormErrors({ 
+        submit: err.message || t(isSubtask ? "messages.errorNewSubtask" : "messages.errorNewTask") 
+      });
     } finally {
       setLoading(false);
     }
