@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import '../styles/ModalAnalise.css';
 import { analisarProjeto, aplicarSugestao } from '../api/api';
 import toastService from '../api/toastService';
+import { useTranslation } from 'react-i18next';
 
 const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida }) => {
+  const { t } = useTranslation();
   const [analise, setAnalise] = useState(null);
   const [carregando, setCarregando] = useState(false);
   const [aplicandoSugestao, setAplicandoSugestao] = useState(null);
@@ -16,7 +18,7 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
       const resultado = await analisarProjeto(projectId);
      
       if (resultado.erro) {
-        toastService.error('Erro na análise', resultado.erro);
+        toastService.error(t('toast.analysisError'), resultado.erro);
         return;
       }
      
@@ -24,8 +26,8 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
      
       if (!resultado.projeto_concluido) {
         toastService.success(
-          'Análise concluída!',
-          `Probabilidade de atraso: ${resultado.probabilidade_atraso}%`
+          t('messages.analysisCompleted'),
+          `${t('messages.probabilityOfDelay')}: ${resultado.probabilidade_atraso}%`
         );
       }
      
@@ -35,8 +37,8 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
      
     } catch (error) {
       toastService.error(
-        'Erro na análise',
-        'Não foi possível analisar o projeto'
+        t('toast.analysisError'),
+        t('toast.analysisFailed')
       );
     } finally {
       setCarregando(false);
@@ -50,7 +52,7 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
      
       if (resultado.sucesso) {
         toastService.success(
-          'Sugestão aplicada!',
+          t('toast.suggestionApplied'),
           resultado.mensagem
         );
        
@@ -60,8 +62,8 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
       }
     } catch (error) {
       toastService.error(
-        'Erro ao aplicar sugestão',
-        'Não foi possível aplicar a sugestão'
+        t('toast.suggestionError'),
+        t('toast.suggestionFailed')
       );
     } finally {
       setAplicandoSugestao(null);
@@ -75,16 +77,16 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
   };
 
   const getTextoRisco = (probabilidade) => {
-    if (probabilidade < 30) return 'BAIXO RISCO';
-    if (probabilidade < 70) return 'MÉDIO RISCO';
-    return 'ALTO RISCO';
+    if (probabilidade < 30) return t('messages.lowRisk');
+    if (probabilidade < 70) return t('messages.mediumRisk');
+    return t('messages.highRisk');
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content modal-analise">
         <div className="modal-header">
-          <h2>Análise Inteligente do Projeto</h2>
+          <h2>{t('messages.projectAnalysis')}</h2>
           <button className="close-btn" onClick={onClose}>×</button>
         </div>
 
@@ -92,36 +94,36 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
           {!analise ? (
             <div className="analise-inicial">
               <img className="icone-analise" src="/imgs/decor-landing/icons-ferramentas/bot.svg" />
-              <h3>Analisar Saúde do Projeto</h3>
-              <p>Nosso sistema irá analisar o andamento do projeto e sugerir melhorias automáticas.</p>
+              <h3>{t('messages.analyzeProjectHealth')}</h3>
+              <p>{t('messages.analysisDescription')}</p>
              
               <button
                 className="btn-analisar"
                 onClick={handleAnalisar}
                 disabled={carregando}
               >
-                {carregando ? 'Analisando...' : 'Iniciar Análise'}
+                {carregando ? t('messages.analyzing') : t('messages.startAnalysis')}
               </button>
             </div>
           ) : analise.projeto_concluido ? (
             <div className="projeto-concluido">
               <div className="conclusao-mensagem">
-                <h3>Projeto Concluído!</h3>
+                <h3>{t('messages.projectCompleted')}</h3>
                 <p>{analise.explicacao}</p>
               </div>
               <div className="conclusao-detalhes">
-                <p>Todas as tarefas foram finalizadas com sucesso.</p>
+                <p>{t('messages.allTasksCompleted')}</p>
               </div>
              
               <div className="metricas-simples">
                 <div className="metrica-item">
                   <div className="metrica-valor">{analise.dias_restantes}</div>
-                  <div className="metrica-label">Dias de Antecedência</div>
+                  <div className="metrica-label">{t('messages.daysAhead')}</div>
                 </div>
                
                 <div className="metrica-item">
                   <div className="metrica-valor">{analise.taxa_conclusao}%</div>
-                  <div className="metrica-label">Concluído</div>
+                  <div className="metrica-label">{t('messages.completed')}</div>
                 </div>
               </div>
             </div>
@@ -134,7 +136,7 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                 <div className="texto-risco">
                   {getTextoRisco(analise.probabilidade_atraso)}
                 </div>
-                <div className="label-risco">Probabilidade de Atraso</div>
+                <div className="label-risco">{t('messages.probabilityOfDelay')}</div>
               </div>
 
               <div className={`status-projeto ${analise.cor}`}>
@@ -145,35 +147,35 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
               <div className="metricas-simples">
                 <div className="metrica-item">
                   <div className="metrica-valor">{analise.tarefas_atrasadas}</div>
-                  <div className="metrica-label">Tarefas Atrasadas</div>
+                  <div className="metrica-label">{t('messages.delayedTasks')}</div>
                 </div>
                
                 <div className="metrica-item">
                   <div className="metrica-valor">{analise.dias_restantes}</div>
-                  <div className="metrica-label">Dias Restantes</div>
+                  <div className="metrica-label">{t('messages.remainingDays')}</div>
                 </div>
                
                 <div className="metrica-item">
                   <div className="metrica-valor">{analise.tarefas_pendentes}</div>
-                  <div className="metrica-label">Tarefas Pendentes</div>
+                  <div className="metrica-label">{t('messages.pendingTasks')}</div>
                 </div>
                
                 <div className="metrica-item">
                   <div className="metrica-valor">{analise.taxa_conclusao}%</div>
-                  <div className="metrica-label">Concluído</div>
+                  <div className="metrica-label">{t('messages.completed')}</div>
                 </div>
                
                 {analise.dias_atraso > 0 && (
                   <div className="metrica-item atraso">
                     <div className="metrica-valor">{analise.dias_atraso}</div>
-                    <div className="metrica-label">Dias de Atraso</div>
+                    <div className="metrica-label">{t('messages.daysDelayed')}</div>
                   </div>
                 )}
               </div>
 
               {analise.sugestoes && analise.sugestoes.length > 0 ? (
                 <div className="sugestoes-lista">
-                  <h4>Sugestões Recomendadas</h4>
+                  <h4>{t('messages.recommendedSuggestions')}</h4>
                  
                   {analise.sugestoes.map((sugestao, index) => (
                     <div key={index} className="sugestao-item">
@@ -191,14 +193,14 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                         onClick={() => handleAplicarSugestao(sugestao)}
                         disabled={aplicandoSugestao === sugestao.id}
                       >
-                        {aplicandoSugestao === sugestao.id ? 'Aplicando...' : 'Aplicar Sugestão'}
+                        {aplicandoSugestao === sugestao.id ? t('messages.applying') : t('messages.applySuggestion')}
                       </button>
                     </div>
                   ))}
                 </div>
               ) : (
                 <div className="sem-sugestoes">
-                  <p>Ótimo! O projeto está saudável e não requer ajustes no momento.</p>
+                  <p>{t('messages.noSuggestions')}</p>
                 </div>
               )}
 
@@ -209,7 +211,7 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                   disabled={carregando}
                 >
                   <img className="icone-reanalisar" src="/imgs/decor-landing/icons-ferramentas/Redo.svg" />
-                  &nbsp;Reanalisar Projeto
+                  &nbsp;{t('messages.reanalyzeProject')}
                 </button>
               </div>
             </div>
