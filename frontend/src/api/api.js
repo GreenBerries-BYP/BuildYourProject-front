@@ -201,6 +201,30 @@ export const assignTaskToUser = async (taskId, userId) => {
   }
 };
 
+<<<<<<< HEAD
+=======
+export const getCollaboratorsForProject = async (projectId) => {
+  try {
+    const response = await api.get(`/projects/${projectId}/assign-task/`);
+    return response.data.collaborators;
+  } catch (error) {
+    console.error("Erro ao buscar colaboradores:", error);
+    throw error;
+  }
+};
+
+
+export const fetchProjectCollaborators = async (projectId) => {
+  try {
+    const response = await api.get(`/projects/${projectId}/collaborators/`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar colaboradores:', error);
+    throw error;
+  }
+};
+
+>>>>>>> e10ea44aa8d6f503f8d34e27c748d5de6cb8d820
 export const createGoogleCalendarEvent = async (evento) => {
   try {
     const googleToken = localStorage.getItem('google_access_token');
