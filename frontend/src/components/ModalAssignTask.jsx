@@ -2,17 +2,29 @@ import { useState, useRef, useEffect } from "react";
 import "../styles/ModalNewProject.css";
 import { useTranslation } from "react-i18next";
 import toastService from "../api/toastService";
-import { assignTaskToUser } from "../api/api"; // Importe a função da API
-
+import { assignTaskToUser, getCollaboratorsForProject } from "../api/api"; 
 const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) => {
   const { t } = useTranslation();
   const modalRef = useRef();
   const [selectedCollaborator, setSelectedCollaborator] = useState("");
   const [collaboratorError, setCollaboratorError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [collaborators, setCollaborators] = useState([]); // 🔥 Agora vem da API
 
-  // Extrai os colaboradores do projeto
-  const collaborators = project?.collaborators || [];
+  // 🔥 Buscar colaboradores quando o modal abrir
+  useEffect(() => {
+    if (isOpen && project?.id) {
+      const fetchCollaborators = async () => {
+        try {
+          const data = await getCollaboratorsForProject(project.id);
+          setCollaborators(data);
+        } catch (error) {
+          toastService.error("Erro", "Não foi possível carregar os colaboradores");
+        }
+      };
+      fetchCollaborators();
+    }
+  }, [isOpen, project?.id]);
 
   // Resetar estados quando o modal abrir
   useEffect(() => {
@@ -43,9 +55,8 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
       return;
     }
 
-    // Encontrar o colaborador selecionado
     const selectedCollaboratorData = collaborators.find(
-      collab => collab.id.toString() === selectedCollaborator
+      collab => collab.id?.toString() === selectedCollaborator
     );
 
     if (!selectedCollaboratorData) {
@@ -55,7 +66,6 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
 
     setLoading(true);
     try {
-      // 🔥 AGORA USA A API REAL
       const response = await assignTaskToUser(taskId, selectedCollaboratorData.id);
       
       toastService.success(
@@ -63,7 +73,6 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
         t("toast.assignTaskSuccessDetail")
       );
 
-      // Passa os dados completos do colaborador para atualizar a UI
       onAssignSuccess(selectedCollaboratorData);
       setSelectedCollaborator("");
       onClose();
@@ -89,7 +98,6 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
         </div>
 
         <div className="modal-body">
-          {/* Seletor de colaboradores */}
           <div className="input-group">
             <label htmlFor="collaboratorSelect">
               {t("inputs.selectCollaborator") || "Selecionar colaborador"}
@@ -104,16 +112,19 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, project, onAssignSuccess }) 
               <option value="">
                 {t("placeholders.selectCollaborator") || "-- Selecione um colaborador --"}
               </option>
-              {collaborators.map((collaborator) => (
-                <option 
-                  key={collaborator.id} 
-                  value={collaborator.id.toString()}
-                >
-                  {collaborator.full_name || collaborator.name} 
-                  {collaborator.email && ` (${collaborator.email})`}
-                </option>
-              ))}
+
+              {Array.isArray(collaborators) &&
+                collaborators.map((collaborator) => (
+                  <option 
+                    key={collaborator.id} 
+                    value={collaborator.id.toString()}
+                  >
+                    {collaborator.full_name} 
+                    {collaborator.email && ` (${collaborator.email})`}
+                  </option>
+                ))}
             </select>
+
             {collaboratorError && <p className="input-error">{collaboratorError}</p>}
           </div>
 
