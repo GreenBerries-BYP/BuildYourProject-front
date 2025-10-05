@@ -22,10 +22,12 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
      
       setAnalise(resultado);
      
-      toastService.success(
-        'Análise concluída!',
-        `Probabilidade de atraso: ${resultado.probabilidade_atraso}%`
-      );
+      if (!resultado.projeto_concluido) {
+        toastService.success(
+          'Análise concluída!',
+          `Probabilidade de atraso: ${resultado.probabilidade_atraso}%`
+        );
+      }
      
       if (onAnaliseConcluida) {
         onAnaliseConcluida(resultado);
@@ -101,6 +103,28 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                 {carregando ? 'Analisando...' : 'Iniciar Análise'}
               </button>
             </div>
+          ) : analise.projeto_concluido ? (
+            <div className="projeto-concluido">
+              <div className="conclusao-mensagem">
+                <h3>Projeto Concluído!</h3>
+                <p>{analise.explicacao}</p>
+              </div>
+              <div className="conclusao-detalhes">
+                <p>Todas as tarefas foram finalizadas com sucesso.</p>
+              </div>
+             
+              <div className="metricas-simples">
+                <div className="metrica-item">
+                  <div className="metrica-valor">{analise.dias_restantes}</div>
+                  <div className="metrica-label">Dias de Antecedência</div>
+                </div>
+               
+                <div className="metrica-item">
+                  <div className="metrica-valor">{analise.taxa_conclusao}%</div>
+                  <div className="metrica-label">Concluído</div>
+                </div>
+              </div>
+            </div>
           ) : (
             <div className="resultados-analise">
               <div className={`indicador-risco ${getClasseRisco(analise.probabilidade_atraso)}`}>
@@ -116,6 +140,35 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
               <div className={`status-projeto ${analise.cor}`}>
                 <h4>{analise.status}</h4>
                 <p>{analise.explicacao}</p>
+              </div>
+
+              <div className="metricas-simples">
+                <div className="metrica-item">
+                  <div className="metrica-valor">{analise.tarefas_atrasadas}</div>
+                  <div className="metrica-label">Tarefas Atrasadas</div>
+                </div>
+               
+                <div className="metrica-item">
+                  <div className="metrica-valor">{analise.dias_restantes}</div>
+                  <div className="metrica-label">Dias Restantes</div>
+                </div>
+               
+                <div className="metrica-item">
+                  <div className="metrica-valor">{analise.tarefas_pendentes}</div>
+                  <div className="metrica-label">Tarefas Pendentes</div>
+                </div>
+               
+                <div className="metrica-item">
+                  <div className="metrica-valor">{analise.taxa_conclusao}%</div>
+                  <div className="metrica-label">Concluído</div>
+                </div>
+               
+                {analise.dias_atraso > 0 && (
+                  <div className="metrica-item atraso">
+                    <div className="metrica-valor">{analise.dias_atraso}</div>
+                    <div className="metrica-label">Dias de Atraso</div>
+                  </div>
+                )}
               </div>
 
               {analise.sugestoes && analise.sugestoes.length > 0 ? (
