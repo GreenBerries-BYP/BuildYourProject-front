@@ -218,6 +218,16 @@ export const assignTaskToUser = async (taskId, userId) => {
   }
 };
 
+export const getCollaboratorsForProject = async (projectId) => {
+  try {
+    const response = await api.get(`/projects/${projectId}/assign-task/`);
+    return response.data.collaborators;
+  } catch (error) {
+    console.error("Erro ao buscar colaboradores:", error);
+    throw error;
+  }
+};
+
 
 export const fetchProjectCollaborators = async (projectId) => {
   try {
