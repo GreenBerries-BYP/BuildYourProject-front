@@ -141,6 +141,9 @@ const en = {
     taskHeaderStatus: "Status",
     taskHeaderDueDate: "Due Date",
     collaboratorsTitle: "Collaborators",
+    startDate:"Start date",
+    endDate:"End date",
+    
   },
   header: {
     title: "Build Your Project",

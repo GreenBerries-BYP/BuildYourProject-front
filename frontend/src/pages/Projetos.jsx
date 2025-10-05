@@ -111,6 +111,9 @@ function Projetos() {
             collaborators={projetoSelecionado.collaborators || []}
             tarefasProjeto={projetoSelecionado.tarefasProjeto || []}
             onVoltar={handleVoltar}
+            dataInicio={projetoSelecionado.data_inicio}   
+            dataFim={projetoSelecionado.data_inicio}  
+            
           />
         </div>) : (
         <div className="projects-area">

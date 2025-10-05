@@ -28,15 +28,16 @@ function Compartilhados() {
       });
   }, []);
 
-const handleAbrirProjeto = async (projeto) => {
-  try {
-    const projetoCompleto = await fetchSharedWithMe(projeto.id);
-    setProjetoSelecionado(projetoCompleto);
-    setSelectedProjectId(projeto.id);
-  } catch (error) {
-    console.error("Erro ao carregar projeto completo:", error);
-  }
-};
+  const handleAbrirProjeto = async (projeto) => {
+    try {
+      // Use a mesma função que funciona em Projetos
+      const projetoCompleto = await fetchProjectWithTasks(projeto.id);
+      setProjetoSelecionado(projetoCompleto);
+      setSelectedProjectId(projeto.id);
+    } catch (error) {
+      console.error("Erro ao carregar projeto completo:", error);
+    }
+  };  
 
   const handleVoltar = () => {
     setProjetoSelecionado(null);
@@ -61,8 +62,7 @@ const handleAbrirProjeto = async (projeto) => {
   }, []);
 
   const handleDeleteProjectClick = (projectId) => {
-    setSelectedProjectId(projectId);
-    setDeleteModalOpen(true);
+    alert('Você não pode deletar um projeto que não é seu!');
   };
 
   return (
@@ -77,32 +77,35 @@ const handleAbrirProjeto = async (projeto) => {
               collaborators={projetoSelecionado.collaborators || []}
               tarefasProjeto={projetoSelecionado.tarefasProjeto || []}
               onVoltar={handleVoltar}
+              dataInicio={projetoSelecionado.data_inicio}   
+              dataFim={projetoSelecionado.data_inicio} 
             />
           </div>
         ) : (
           <div className="projects-area">
 
-        {projetos.map((projeto, index) => {
-          // garante que exista tasks, mesmo que não venha do backend
-          const tarefas = projeto.tasks || projeto.tarefasProjeto || [];
+            {projetos.map((projeto, index) => {
+              const totalTasks = projeto.tasks?.length || 0;
+              const completedTasks = projeto.tasks?.filter((t) => t.is_completed).length || 0;
+              const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+              console.log(projeto.tasks);
+              
 
-          const totalTasks = tarefas.length;
-          const completedTasks = tarefas.filter((t) => t.is_completed).length;
-          const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-          return (
-            <ProjectCard
-              key={index}
-              nomeProjeto={projeto.name}
-              progressoProjeto={progressoProjeto}
-              progressoIndividual={progressoProjeto} // igualzinho à Home
-              tarefasProjeto={tarefas.slice(0, 4)} // pega só as 4 primeiras
-              estaAtrasado={false} // se quiser depois adiciona lógica real
-              onClick={() => handleAbrirProjeto(projeto)}
-              onDeleteClick={handleDeleteProjectClick} 
-            />
-          );
-        })}
+              return (
+                <ProjectCard
+                 
+                  key={projeto.id}            
+                  projetoId={projeto.id}  
+                  nomeProjeto={projeto.name}
+                  progressoProjeto={progressoProjeto}
+                  progressoIndividual={progressoProjeto} // por enquanto igual
+                  tarefasProjeto={projeto.tasks?.slice(0, 4) || []}
+                  estaAtrasado={false} // se quiser calcular depois, pode colocar lógica
+                  onClick={() => handleAbrirProjeto(projeto)}
+                  onDeleteClick={handleDeleteProjectClick}
+                />
+              );
+            })}
           </div>
         )}
 

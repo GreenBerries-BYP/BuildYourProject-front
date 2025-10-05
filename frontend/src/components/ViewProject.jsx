@@ -15,7 +15,9 @@ const ViewProject = ({
     numIntegrantes,
     collaborators,
     tarefasProjeto,
-    onVoltar
+    onVoltar,
+    dataInicio,  
+    dataFim
 }) => {
     const { t } = useTranslation();
     const [expandedSections, setExpandedSections] = useState({});
@@ -30,7 +32,14 @@ const ViewProject = ({
     const [tarefasProjetoState, setTarefasProjetoState] = useState(tarefasProjeto || []);
     const [showSchedule, setShowSchedule] = useState(false);
 
-    // Remove o estado isSubtask - vamos controlar pelos modais separados
+   
+    const formatarData = (dataString) => {
+        if (!dataString) return '-';
+        const data = new Date(dataString);
+        return data.toLocaleDateString('pt-BR');
+    };
+
+
 
     const handleDeleteTaskClick = (taskId) => {
         setSelectedTasktId(taskId);
@@ -109,6 +118,15 @@ const ViewProject = ({
             <div className="row project-header">
                 <div className="col-12 col-lg-6 order-2 order-lg-1 project-data">
                     <h1>{nomeProjeto}</h1>
+                    <div className="project-dates">
+                        <p>
+                            {t("viewProject.startDate")}: {formatarData(dataInicio)}
+                        </p>
+                        <p>
+                            {t("viewProject.endDate")}: {formatarData(dataFim)}
+                        </p>
+                    </div>
+
                     <p>{t("viewProject.createdBy", { adm: admProjeto })}</p>
                     <p>{t("viewProject.membersCount", { count: numIntegrantes })}</p>
 

@@ -120,6 +120,8 @@ function HomeDefault() {
             collaborators={projetoSelecionado.collaborators || []}
             tarefasProjeto={projetoSelecionado.tarefasProjeto || []}
             onVoltar={handleVoltar}
+            dataInicio={projetoSelecionado.data_inicio}   
+            dataFim={projetoSelecionado.data_inicio} 
           />
         </div>
       ) : (

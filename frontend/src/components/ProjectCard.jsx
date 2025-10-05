@@ -77,7 +77,7 @@ const ProjectCard = ({
               className="me-2"
             />
             <label className="mt-2" htmlFor={`task-${idx}`}>
-              {tarefa.title}
+              {tarefa.nomeTarefa || tarefa.title}
             </label>
           </div>
         ))}
