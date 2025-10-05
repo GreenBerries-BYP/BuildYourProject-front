@@ -1,95 +1,73 @@
 import { useEffect, useRef, useState } from "react";
-import "../styles/ModalNewTask.css";
+import "../styles/ModalAssignTask.css";
 import { useTranslation } from "react-i18next";
 import api from "../api/api";
 import { getToken } from "../auth/auth";
-import { createGoogleCalendarEventFromTask } from "../api/api";
+import { assignTaskToUser } from "../api/api";
 
-const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators: initialCollaborators = [], nomeProjeto = "" }) => {
+const ModalAssignTask = ({ isOpen, onClose, taskId, projectId, onAssigned }) => {
   const modalRef = useRef();
   const { t } = useTranslation();
 
-  const [nome, setNome] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [responsavel, setResponsavel] = useState(null);
-  const [dataEntrega, setDataEntrega] = useState("");
-  const [collaborators, setCollaborators] = useState(initialCollaborators);
-  const [formErrors, setFormErrors] = useState({});
+  const [collaborators, setCollaborators] = useState([]);
+  const [selectedUser, setSelectedUser] = useState("");
   const [loading, setLoading] = useState(false);
-  const [creatingCalendarEvent, setCreatingCalendarEvent] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
 
-  // Validação do formulário
-  const validateForm = () => {
-    const errors = {};
-    if (!nome.trim()) errors.nome = t("messages.taskNameRequired");
-    if (!descricao.trim()) errors.descricao = t("messages.taskDescriptionRequired");
-    if (!dataEntrega) errors.dataEntrega = t("messages.dueDateRequired");
-    return errors;
-  };
+  // ✅ Buscar colaboradores ao abrir o modal
+  useEffect(() => {
+    if (isOpen && projectId) {
+      const fetchCollaborators = async () => {
+        try {
+          const token = getToken();
+          const response = await api.get(`/projetos/${projectId}/assign/`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setCollaborators(response.data.collaborators || []);
+        } catch (err) {
+          console.error("Erro ao carregar colaboradores:", err);
+          setCollaborators([]);
+        }
+      };
+      fetchCollaborators();
+    }
+  }, [isOpen, projectId]);
 
-  // Submissão do formulário
-  const handleSubmit = async (e) => {
+  // ✅ Submissão
+  const handleAssign = async (e) => {
     e.preventDefault();
-    const errors = validateForm();
-    setFormErrors(errors);
-    if (Object.keys(errors).length > 0) return;
-
-    const tarefa = {
-      nome,
-      descricao,
-      dataEntrega,
-      user: responsavel, // string ou null
-      projetoId,
-    };
+    if (!selectedUser) {
+      setFormErrors({ user: t("messages.selectCollaborator") });
+      return;
+    }
 
     setLoading(true);
     try {
-      const token = getToken();
-      const response = await api.post(`/projetos/${projetoId}/tarefas-novas/`, tarefa, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      try {
-        setCreatingCalendarEvent(true);
-        await createGoogleCalendarEventFromTask(tarefa, nomeProjeto);
-        console.log(' Evento criado no Google Calendar com sucesso');
-      } catch (calendarError) {
-        console.log(' Evento não criado no Google Calendar (não crítico)');
-      } finally {
-        setCreatingCalendarEvent(false);
-      }
-
-      if (onTaskCreated) onTaskCreated(response.data);
+      await assignTaskToUser(taskId, selectedUser);
+      if (onAssigned) onAssigned();
       onClose();
     } catch (err) {
-      setFormErrors({ submit: err.message || t("messages.errorNewTask") });
+      console.error("Erro ao atribuir tarefa:", err);
+      setFormErrors({ submit: err.message || t("messages.errorAssignTask") });
     } finally {
       setLoading(false);
     }
   };
 
-  // Resetar campos e atualizar colaboradores ao abrir/fechar modal
-  useEffect(() => {
-    if (!isOpen) {
-      setNome("");
-      setDescricao("");
-      setResponsavel(null);
-      setDataEntrega("");
-      setFormErrors({});
-    }
-    setCollaborators(initialCollaborators);
-  }, [isOpen, initialCollaborators]);
-
   // Fechar modal com ESC
   useEffect(() => {
-    const handleEsc = (e) => { if (e.key === "Escape") onClose(); };
+    const handleEsc = (e) => {
+      if (e.key === "Escape") onClose();
+    };
     document.addEventListener("keydown", handleEsc);
     return () => document.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
-  // Fechar modal clicando fora
+  // Fechar clicando fora
   useEffect(() => {
-    const handleClickOutside = (e) => { if (modalRef.current && !modalRef.current.contains(e.target)) onClose(); };
+    const handleClickOutside = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) onClose();
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
@@ -100,67 +78,38 @@ const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators
     <div className="modal-overlay">
       <div className="modal-content" ref={modalRef}>
         <div className="modal-header">
-          <h2>{t("titles.newTask")}</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <h2>{t("titles.assignTask")}</h2>
+          <button className="close-btn" onClick={onClose}>
+            ×
+          </button>
         </div>
         <div className="modal-body">
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="form-grid-2x2">
-              <div className="input-group">
-                <label>{t("inputs.taskName")}</label>
-                <input
-                  placeholder={t("inputs.taskName")}
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                />
-                {formErrors.nome && <p className="input-error">{formErrors.nome}</p>}
-              </div>
-
-              <div className="input-group">
-                <label>{t("inputs.endDate")}</label>
-                <input
-                  type="date"
-                  value={dataEntrega}
-                  onChange={(e) => setDataEntrega(e.target.value)}
-                />
-                {formErrors.dataEntrega && <p className="input-error">{formErrors.dataEntrega}</p>}
-              </div>
-
-              <div className="input-group">
-                <label>{t("inputs.taskDescription")}</label>
-                <textarea
-                  placeholder={t("inputs.taskDescription")}
-                  value={descricao}
-                  onChange={(e) => setDescricao(e.target.value)}
-                />
-                {formErrors.descricao && <p className="input-error">{formErrors.descricao}</p>}
-              </div>
-
-              <div className="input-group">
-                <label>{t("inputs.selectResponsible")} ({t("messages.optional")})</label>
-                <select
-                  value={responsavel || ""}
-                  onChange={(e) => setResponsavel(e.target.value || null)}
-                >
-                  <option value="">{t("messages.none")}</option>
-                  {collaborators.map((collab, index) => (
-                    <option key={index} value={collab}>
-                      {collab}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          <form onSubmit={handleAssign}>
+            <div className="input-group">
+              <label>{t("inputs.selectCollaborator")}</label>
+              <select
+                value={selectedUser}
+                onChange={(e) => setSelectedUser(e.target.value)}
+              >
+                <option value="">{t("messages.selectOption")}</option>
+                {collaborators.map((collab) => (
+                  <option key={collab.id} value={collab.id}>
+                    {collab.full_name} ({collab.email})
+                  </option>
+                ))}
+              </select>
+              {formErrors.user && (
+                <p className="input-error">{formErrors.user}</p>
+              )}
             </div>
 
-            {formErrors.submit && <p className="input-error center">{formErrors.submit}</p>}
+            {formErrors.submit && (
+              <p className="input-error center">{formErrors.submit}</p>
+            )}
 
             <div className="save-wrapper">
-              <button type="submit" className="save-btn" disabled={loading|| creatingCalendarEvent}>
-                 {loading ? (
-                    creatingCalendarEvent ? t("buttons.savingAndCreatingEvent") : t("buttons.saving")
-                  ) : (
-                    t("buttons.save")
-                  )}
+              <button type="submit" className="save-btn" disabled={loading}>
+                {loading ? t("buttons.saving") : t("buttons.save")}
               </button>
             </div>
           </form>
@@ -170,4 +119,4 @@ const ModalNewTask = ({ isOpen, onClose, projetoId, onTaskCreated, collaborators
   );
 };
 
-export default ModalNewTask;
+export default ModalAssignTask;
