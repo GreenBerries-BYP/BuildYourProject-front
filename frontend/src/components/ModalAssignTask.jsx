@@ -5,11 +5,18 @@ import api from "../api/api";
 import { getToken } from "../auth/auth";
 import { assignTaskToUser } from "../api/api";
 
-const ModalAssignTask = ({ isOpen, onClose, taskId, projectId, onAssigned }) => {
+const ModalAssignTask = ({ 
+  isOpen, 
+  onClose, 
+  taskId, 
+  projectId, 
+  onAssigned, 
+  collaborators: initialCollaborators = [] 
+}) => {
   const modalRef = useRef();
   const { t } = useTranslation();
 
-  const [collaborators, setCollaborators] = useState([]);
+  const [collaborators, setCollaborators] = useState(initialCollaborators);
   const [selectedUser, setSelectedUser] = useState("");
   const [loading, setLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
@@ -22,22 +29,31 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, projectId, onAssigned }) => 
       return;
     }
 
-    if (projectId) {
-      const fetchCollaborators = async () => {
+    // Se não foram passados colaboradores via prop, busca do projeto
+    if (initialCollaborators.length === 0 && projectId) {
+      const fetchProjectCollaborators = async () => {
         try {
           const token = getToken();
-          const response = await api.get(`/projetos/${projectId}/assign/`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setCollaborators(response.data.collaborators || []);
+          const response = await api.get(`/projetos/${projectId}/`);
+          const projectData = response.data;
+          
+          // Extrai colaboradores do projeto (ajuste conforme a estrutura da sua API)
+          const projectCollaborators = projectData.colaboradores || 
+                                     projectData.collaborators || 
+                                     projectData.members || [];
+          
+          setCollaborators(projectCollaborators);
         } catch (err) {
-          console.error("Erro ao carregar colaboradores:", err);
+          console.error("Erro ao carregar colaboradores do projeto:", err);
           setCollaborators([]);
         }
       };
-      fetchCollaborators();
+      fetchProjectCollaborators();
+    } else {
+      // Usa os colaboradores passados via prop
+      setCollaborators(initialCollaborators);
     }
-  }, [isOpen, projectId]);
+  }, [isOpen, projectId, initialCollaborators]);
 
   // Submissão
   const handleAssign = async (e) => {
@@ -98,11 +114,24 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, projectId, onAssigned }) => 
                 onChange={(e) => setSelectedUser(e.target.value)}
               >
                 <option value="">{t("messages.selectOption")}</option>
-                {collaborators.map((collab) => (
-                  <option key={collab.id} value={collab.id}>
-                    {collab.full_name} ({collab.email})
-                  </option>
-                ))}
+                {collaborators.map((collab, index) => {
+                  // Verifica se é um objeto com propriedades ou apenas uma string
+                  if (typeof collab === 'object') {
+                    return (
+                      <option key={collab.id || index} value={collab.id || collab.email}>
+                        {collab.full_name || collab.name || collab.email} 
+                        {collab.email ? ` (${collab.email})` : ''}
+                      </option>
+                    );
+                  } else {
+                    // Se for apenas uma string (como no ModalNewTask)
+                    return (
+                      <option key={index} value={collab}>
+                        {collab}
+                      </option>
+                    );
+                  }
+                })}
               </select>
               {formErrors.user && (
                 <p className="input-error">{formErrors.user}</p>
@@ -115,7 +144,7 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, projectId, onAssigned }) => 
 
             <div className="save-wrapper">
               <button type="submit" className="save-btn" disabled={loading}>
-                {loading ? t("buttons.saving") : t("buttons.save")}
+                {loading ? t("buttons.saving") : t("buttons.assign")}
               </button>
             </div>
           </form>
