@@ -1,4 +1,4 @@
-p {
+.info-page-container p {
   font-size: 1.4rem;
   color: var(--black-color);
 }

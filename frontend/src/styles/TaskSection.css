@@ -196,6 +196,10 @@
     font-weight: 600;
 }
 
+.p-menu-list {
+    padding-left: 0;
+}
+
 .btn-menu-task {
     background-color: var(--white-color);
     font-size: 1.5rem;
@@ -206,6 +210,13 @@
 .p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text{
     color: var(--black-color); 
     transition: all 500ms ease-in-out;
+    text-align: center;
+
+    
+}
+
+.p-menu .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content:hover {
+    background: transparent !important;
 }
 
 .p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text:hover{

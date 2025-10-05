@@ -160,29 +160,36 @@ label {
   font-size: 1.5rem;
 }
 
-.btn-google-custom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 10px 24px;
-  background-color: var(--white-color);
-  color: var(--black-color);
-  border: 1px solid var(--black-color);
-  border-radius: 30px;
-  font-size: 1.5rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+.google-login > div > div> div >div{
+  font-size: 1.8rem;
+  height: 5rem !important;
+  border-radius: 30rem;
+  padding-inline: 3rem;
 }
 
-.btn-google-custom:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transform: scale(1.05);
+.google-login svg {
+  /* Mobile First - padrão para mobile */
+  padding: .5rem;
 }
 
-.btn-google-custom .google-icon {
-  font-size: 2rem;
-  margin-right: 12px;
+/* Tablet - 768px pra cima */
+@media (min-width: 768px) {
+  .google-login svg {
+    padding: .3rem; /* Mediano para tablet */
+  }
+}
+
+/* Desktop - 1024px pra cima */
+@media (min-width: 1024px) {
+  .google-login svg {
+    padding: .1rem; /* Mínimo para desktop */
+  }
+}
+
+/* Desktop grande - 1440px pra cima (opcional) */
+@media (min-width: 1440px) {
+  .google-login svg {
+    padding: 0; /* Nenhum padding em telas muito grandes */
+  }
 }

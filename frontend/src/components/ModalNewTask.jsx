@@ -113,6 +113,7 @@ const ModalNewTask = ({
     }
     setCollaborators(initialCollaborators);
   }, [isOpen, initialCollaborators]);
+  
 
   // Fechar modal com ESC
   useEffect(() => {

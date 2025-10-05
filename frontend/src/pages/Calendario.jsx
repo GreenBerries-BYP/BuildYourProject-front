@@ -224,7 +224,7 @@ const Calendario = () => {
             </div>
           ) : events.length === 0 ? (
             <div className="alert w-100 alert-warning text-center">
-              <h5>{t("calendar.noEventsTitle")}</h5>
+              <h4>{t("calendar.noEventsTitle")}</h4>
               <p>{t("calendar.noEventsMessage")}</p>
               <small className="info-small">
                 {t("calendar.noEventsHint")}

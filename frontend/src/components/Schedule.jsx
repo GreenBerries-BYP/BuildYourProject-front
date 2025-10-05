@@ -11,38 +11,50 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
   const [editing, setEditing] = useState(false);
   const [projectDates, setProjectDates] = useState({ startDate: null, endDate: null });
 
-  const parseBrazilianDate = (dateString) => {
-    if (!dateString) return null;
+  // Função segura para converter datas
+  const safeDateConversion = (dateValue, fallback = new Date()) => {
+    if (!dateValue) return fallback;
     
-    if (dateString instanceof Date) return dateString;
-    
-    if (dateString.includes('-')) {
-      return new Date(dateString);
+    try {
+      // Tenta converter data no formato brasileiro (DD/MM/YYYY)
+      if (typeof dateValue === 'string' && dateValue.includes('/')) {
+        const [day, month, year] = dateValue.split('/');
+        const date = new Date(year, month - 1, day);
+        return isNaN(date.getTime()) ? fallback : date;
+      }
+      
+      // Tenta converter como data ISO
+      const date = new Date(dateValue);
+      return isNaN(date.getTime()) ? fallback : date;
+    } catch (error) {
+      console.warn('Data inválida encontrada:', dateValue, 'usando fallback');
+      return fallback;
     }
-    
-    if (dateString.includes('/')) {
-      const [day, month, year] = dateString.split('/');
-      return new Date(year, month - 1, day);
-    }
-    
-    return new Date(dateString);
   };
 
-  const generateProjectDates = (tarefas, projectStart, projectEnd) => {
-    if (!tarefas || tarefas.length === 0) return [];
+  // Função para formatar data para input type="date"
+  const formatDateForInput = (date) => {
+    if (!date || isNaN(date.getTime())) {
+      return new Date().toISOString().split("T")[0];
+    }
+    return date.toISOString().split("T")[0];
+  };
 
-    const totalDuration = projectEnd.getTime() - projectStart.getTime();
-    const taskCount = tarefas.length;
-    const durationPerTask = totalDuration / taskCount;
+  // Gerar datas automaticamente baseado no índice
+  const generateAutomaticDates = (tasks, startDate = new Date()) => {
+    return tasks.map((task, index) => {
+      const taskStart = new Date(startDate);
+      taskStart.setDate(startDate.getDate() + (index * 7)); // Cada fase começa 1 semana após a anterior
+      
+      const taskEnd = new Date(taskStart);
+      taskEnd.setDate(taskStart.getDate() + 5); // Duração de 5 dias para cada fase
 
-    return tarefas.map((fase, index) => {
-      const taskStart = new Date(projectStart.getTime() + (index * durationPerTask));
-      const taskEnd = new Date(taskStart.getTime() + durationPerTask);
-
-      const subTarefas = (fase.subTarefas || []).map((sub, subIndex) => {
-        const subDuration = durationPerTask / (fase.subTarefas?.length || 1);
-        const subStart = new Date(taskStart.getTime() + (subIndex * subDuration));
-        const subEnd = new Date(subStart.getTime() + subDuration);
+      const subTarefas = (task.subTarefas || []).map((sub, subIndex) => {
+        const subStart = new Date(taskStart);
+        subStart.setDate(taskStart.getDate() + subIndex); // Cada subtarefa no dia seguinte
+        
+        const subEnd = new Date(subStart);
+        subEnd.setDate(subStart.getDate() + 1); // Duração de 1 dia para subtarefas
 
         return {
           ...sub,
@@ -52,7 +64,7 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
       });
 
       return {
-        ...fase,
+        ...task,
         data_inicio: taskStart,
         data_fim: taskEnd,
         subTarefas,
@@ -60,80 +72,56 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
     });
   };
 
-  const generateFallbackDates = (tarefas) => {
-    return tarefas.map((fase, fIdx) => {
-      const today = new Date();
-      const faseInicio = new Date(today);
-      faseInicio.setDate(today.getDate() + fIdx * 7);
-      
-      const faseFim = new Date(faseInicio);
-      faseFim.setDate(faseInicio.getDate() + 5);
-
-      const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
-        const subInicio = new Date(faseInicio);
-        subInicio.setDate(faseInicio.getDate() + sIdx);
-        
-        const subFim = new Date(subInicio);
-        subFim.setDate(subInicio.getDate() + 1);
-        
-        return {
-          ...sub,
-          data_inicio: subInicio,
-          data_fim: subFim,
-        };
-      });
-
-      return {
-        ...fase,
-        data_inicio: faseInicio,
-        data_fim: faseFim,
-        subTarefas,
-      };
-    });
-  };
-
-  // Schedule.js - MODIFICAR A FUNÇÃO DE CARREGAMENTO
   useEffect(() => {
     const carregarTarefasComDatas = async () => {
       try {
         const projetoCompleto = await fetchProjectWithTasks(projetoId);
-        console.log('Projeto completo com datas:', projetoCompleto);
+        console.log('Projeto completo:', projetoCompleto);
 
-        // Extrair datas do projeto
-        const startDate = new Date(projetoCompleto.start_date || projetoCompleto.startDate);
-        const endDate = new Date(projetoCompleto.end_date || projetoCompleto.endDate);
+        // Verificar se temos datas do projeto
+        let startDate = safeDateConversion(projetoCompleto.start_date || projetoCompleto.startDate);
+        let endDate = safeDateConversion(projetoCompleto.end_date || projetoCompleto.endDate);
+        
+        // Se não temos datas válidas do projeto, usar datas padrão
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+          startDate = new Date();
+          endDate = new Date();
+          endDate.setMonth(endDate.getMonth() + 1); // +1 mês
+        }
         
         setProjectDates({ startDate, endDate });
 
-        // ✅ AGORA AS TAREFAS JÁ VÊM COM DATAS CALCULADAS DO BACKEND
         const tarefas = projetoCompleto.tarefasProjeto || [];
+        console.log('Tarefas recebidas:', tarefas);
+
+        // Verificar se as tarefas já têm datas
+        let tarefasComDatas;
         
-        // Formatar as datas para o componente
-        const tarefasFormatadas = tarefas.map(tarefa => {
-          // Tarefa principal já tem datas calculadas
-          const data_inicio = new Date(tarefa.start_date || tarefa.created_at);
-          const data_fim = new Date(tarefa.due_date);
-          
-          // Processar subtarefas (se existirem)
-          const subTarefas = (tarefa.subTarefas || []).map(sub => ({
-            ...sub,
-            data_inicio: new Date(sub.start_date || sub.created_at),
-            data_fim: new Date(sub.due_date)
-          }));
-
-          return {
+        if (tarefas.length > 0 && tarefas[0].data_inicio) {
+          // Se já têm datas, usar as existentes
+          tarefasComDatas = tarefas.map(tarefa => ({
             ...tarefa,
-            data_inicio,
-            data_fim,
-            subTarefas
-          };
-        });
+            data_inicio: safeDateConversion(tarefa.data_inicio, startDate),
+            data_fim: safeDateConversion(tarefa.data_fim, endDate),
+            subTarefas: (tarefa.subTarefas || []).map(sub => ({
+              ...sub,
+              data_inicio: safeDateConversion(sub.data_inicio),
+              data_fim: safeDateConversion(sub.data_fim),
+            }))
+          }));
+        } else {
+          // Gerar datas automaticamente
+          tarefasComDatas = generateAutomaticDates(tarefas, startDate);
+        }
 
-        setPhases(tarefasFormatadas);
-        formatChartData(tarefasFormatadas);
+        console.log('Tarefas com datas:', tarefasComDatas);
+        setPhases(tarefasComDatas);
+        formatChartData(tarefasComDatas);
         
       } catch (err) {
         console.error("Erro ao carregar tarefas com datas:", err);
+        setPhases([]);
+        setChartSeries([]);
       }
     };
     
@@ -141,6 +129,11 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
   }, [projetoId]);
 
   const formatChartData = (tasks) => {
+    if (!tasks || tasks.length === 0) {
+      setChartSeries([]);
+      return;
+    }
+
     const cores = [
       "#7852b8", "#4ea562", "#8c9399", "#008FFB", "#FEB019",
       "#FF4560", "#775DD0", "#3F51B5", "#546E7A", "#D4526E"
@@ -149,33 +142,58 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
     const series = tasks.map((fase, fIdx) => {
       const baseColor = cores[fIdx % cores.length];
 
+      // Dados da fase principal
+      const faseStart = fase.data_inicio.getTime();
+      const faseEnd = fase.data_fim.getTime();
+
       const dataFase = [
         {
           x: fase.nomeTarefa || `Fase ${fIdx + 1}`,
-          y: [fase.data_inicio.getTime(), fase.data_fim.getTime()],
+          y: [faseStart, faseEnd],
           fillColor: baseColor,
         },
       ];
 
-      const subData = (fase.subTarefas || []).map((sub) => ({
-        x: sub.title || "Subtarefa",
-        y: [sub.data_inicio.getTime(), sub.data_fim.getTime()],
-        fillColor: baseColor,
-      }));
+      // Dados das subtarefas
+      const subData = (fase.subTarefas || []).map((sub, sIdx) => {
+        const subStart = sub.data_inicio.getTime();
+        const subEnd = sub.data_fim.getTime();
 
-      return { name: fase.nomeTarefa || `Fase ${fIdx + 1}`, data: [...dataFase, ...subData] };
+        return {
+          x: sub.title || `Subtarefa ${sIdx + 1}`,
+          y: [subStart, subEnd],
+          fillColor: baseColor,
+        };
+      });
+
+      return { 
+        name: fase.nomeTarefa || `Fase ${fIdx + 1}`, 
+        data: [...dataFase, ...subData] 
+      };
     });
 
+    console.log('Séries do gráfico:', series);
     setChartSeries(series);
   };
 
   const handleDateChange = (faseIdx, subIdx, field, value) => {
     const novasPhases = [...phases];
-    const date = new Date(value);
+    const date = safeDateConversion(value);
     
     if (subIdx === null) {
+      // Alterando data da fase principal
       novasPhases[faseIdx][field] = date;
+      
+      // Ajustar subtarefas se necessário
+      if (field === 'data_inicio') {
+        const diff = date.getTime() - novasPhases[faseIdx].data_inicio.getTime();
+        novasPhases[faseIdx].subTarefas.forEach(sub => {
+          sub.data_inicio = new Date(sub.data_inicio.getTime() + diff);
+          sub.data_fim = new Date(sub.data_fim.getTime() + diff);
+        });
+      }
     } else {
+      // Alterando data da subtarefa
       novasPhases[faseIdx].subTarefas[subIdx][field] = date;
     }
     
@@ -186,16 +204,20 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
   const handleSalvar = async () => {
     try {
       for (let fase of phases) {
-        await updateTask(projetoId, fase.id, {
-          data_inicio: fase.data_inicio.toISOString(),
-          data_fim: fase.data_fim.toISOString(),
-        });
+        if (fase.id) {
+          await updateTask(projetoId, fase.id, {
+            data_inicio: fase.data_inicio.toISOString(),
+            data_fim: fase.data_fim.toISOString(),
+          });
+        }
 
         for (let sub of fase.subTarefas || []) {
-          await updateSubtask(projetoId, sub.id, {
-            data_inicio: sub.data_inicio.toISOString(),
-            data_fim: sub.data_fim.toISOString(),
-          });
+          if (sub.id) {
+            await updateSubtask(projetoId, sub.id, {
+              data_inicio: sub.data_inicio.toISOString(),
+              data_fim: sub.data_fim.toISOString(),
+            });
+          }
         }
       }
       alert("Datas atualizadas com sucesso!");
@@ -207,17 +229,42 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
   };
 
   const chartOptions = {
-    chart: { type: "rangeBar", height: 350 },
-    plotOptions: {
-      bar: { horizontal: true, barHeight: "50%", rangeBarGroupRows: true },
+    chart: { 
+      type: "rangeBar", 
+      height: 350,
+      toolbar: {
+        show: true
+      }
     },
-    xaxis: { type: "datetime" },
+    plotOptions: {
+      bar: { 
+        horizontal: true, 
+        barHeight: "30%", 
+        rangeBarGroupRows: true 
+      },
+    },
+    xaxis: { 
+      type: "datetime",
+      labels: {
+        format: 'dd/MM/yyyy'
+      }
+    },
+    yaxis: {
+      labels: {
+        style: {
+          fontSize: '12px'
+        }
+      }
+    },
     fill: { type: "solid" },
-    legend: { position: "right" },
+    legend: { 
+      position: "right",
+      fontSize: '14px'
+    },
     tooltip: {
       custom: function (opts) {
-        const from = new Date(opts.y1).toLocaleDateString();
-        const to = new Date(opts.y2).toLocaleDateString();
+        const from = new Date(opts.y1).toLocaleDateString('pt-BR');
+        const to = new Date(opts.y2).toLocaleDateString('pt-BR');
         const w = opts.ctx.w;
         const label = w.config.series[opts.seriesIndex].data[opts.dataPointIndex]?.x || "";
         const serie = w.config.series[opts.seriesIndex]?.name || "";
@@ -233,7 +280,7 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
   return (
     <div className="schedule-container">
       <div className="schedule-header">
-        <h2>{nomeProjeto}</h2>
+        <h2>{nomeProjeto} - Cronograma</h2>
         <div className="btns-right">
           {editing ? (
             <button className="salvar-btn" onClick={handleSalvar}>
@@ -251,75 +298,85 @@ const Schedule = ({ projetoId, nomeProjeto, onVoltar }) => {
       </div>
 
       <div id="chart">
-        {chartSeries.length > 0 && (
+        {chartSeries.length > 0 ? (
           <ReactApexChart
             options={chartOptions}
             series={chartSeries}
             type="rangeBar"
-            height={350}
+            height={400}
           />
+        ) : (
+          <div className="no-data-message">
+            <p>Nenhum dado de cronograma disponível</p>
+            <p>Adicione tarefas ao projeto para ver o cronograma</p>
+          </div>
         )}
       </div>
 
-      <div className="phase-list">
-        {phases.map((fase, fIdx) => (
-          <div key={fIdx} className="phase-item">
-            <h4>{fase.nomeTarefa}</h4>
-            <label>
-              {t("inputs.startDate", "Início")}{": "}
-              <input
-                type="date"
-                value={fase.data_inicio.toISOString().split("T")[0]}
-                onChange={(e) =>
-                  handleDateChange(fIdx, null, "data_inicio", e.target.value)
-                }
-                disabled={!editing}
-              />
-            </label>
-            <label>
-              {t("inputs.endDate", "Fim")}{": "}
-              <input
-                type="date"
-                value={fase.data_fim.toISOString().split("T")[0]}
-                onChange={(e) =>
-                  handleDateChange(fIdx, null, "data_fim", e.target.value)
-                }
-                disabled={!editing}
-              />
-            </label>
-
-            {(fase.subTarefas || []).map((sub, sIdx) => (
-              <div key={sIdx} className="subtask-item">
-                <span>{sub.title}</span>
-                <div className="date-container">
-                  <label>
-                    {t("inputs.startDate", "Início")}{": "}
-                    <input
-                      type="date"
-                      value={sub.data_inicio.toISOString().split("T")[0]}
-                      onChange={(e) =>
-                        handleDateChange(fIdx, sIdx, "data_inicio", e.target.value)
-                      }
-                      disabled={!editing}
-                    />
-                  </label>
-                  <label>
-                    {t("inputs.endDate", "Fim")}{": "}
-                    <input
-                      type="date"
-                      value={sub.data_fim.toISOString().split("T")[0]}
-                      onChange={(e) =>
-                        handleDateChange(fIdx, sIdx, "data_fim", e.target.value)
-                      }
-                      disabled={!editing}
-                    />
-                  </label>
-                </div>
+      {phases.length > 0 && (
+        <div className="phase-list">
+          <h3>Editar Datas</h3>
+          {phases.map((fase, fIdx) => (
+            <div key={fIdx} className="phase-item">
+              <h4>{fase.nomeTarefa}</h4>
+              <div className="date-inputs">
+                <label>
+                  {t("inputs.startDate", "Início")}{": "}
+                  <input
+                    type="date"
+                    value={formatDateForInput(fase.data_inicio)}
+                    onChange={(e) =>
+                      handleDateChange(fIdx, null, "data_inicio", e.target.value)
+                    }
+                    disabled={!editing}
+                  />
+                </label>
+                <label>
+                  {t("inputs.endDate", "Fim")}{": "}
+                  <input
+                    type="date"
+                    value={formatDateForInput(fase.data_fim)}
+                    onChange={(e) =>
+                      handleDateChange(fIdx, null, "data_fim", e.target.value)
+                    }
+                    disabled={!editing}
+                  />
+                </label>
               </div>
-            ))}
-          </div>
-        ))}
-      </div>
+
+              {(fase.subTarefas || []).map((sub, sIdx) => (
+                <div key={sIdx} className="subtask-item">
+                  <span className="subtask-title">{sub.title}</span>
+                  <div className="date-container">
+                    <label>
+                      {t("inputs.startDate", "Início")}{": "}
+                      <input
+                        type="date"
+                        value={formatDateForInput(sub.data_inicio)}
+                        onChange={(e) =>
+                          handleDateChange(fIdx, sIdx, "data_inicio", e.target.value)
+                        }
+                        disabled={!editing}
+                      />
+                    </label>
+                    <label>
+                      {t("inputs.endDate", "Fim")}{": "}
+                      <input
+                        type="date"
+                        value={formatDateForInput(sub.data_fim)}
+                        onChange={(e) =>
+                          handleDateChange(fIdx, sIdx, "data_fim", e.target.value)
+                        }
+                        disabled={!editing}
+                      />
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

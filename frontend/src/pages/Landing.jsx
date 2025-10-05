@@ -361,7 +361,7 @@ const Landing = () => {
             <p>{t("landing.about.subtitle", "Conheça nosso colaboradores")}</p>
           </div>
           <div className="row sobre-content">
-            <div className="col-12 col-lg-4 quem-somos">
+            <div className=" p-5 col-11 col-lg-4 quem-somos">
               <h2 className="text-center">
                 {t("landing.about.whoWeAreTitle", "Quem somos?")}
               </h2>

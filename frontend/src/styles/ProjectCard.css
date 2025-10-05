@@ -88,28 +88,41 @@
     flex-grow: 1;
 }
 
+.p-menu-list {
+    padding: 0;
+}
+
 .btn-menu-project {
     padding: 1rem;
     background-color: var(--white-color);
     font-size: 1.5rem;
     border-radius: 8px;
     border: 1px var(--gray-color) solid;
+
 }
 
 .p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text{
     color: var(--black-color); 
     transition: all 500ms ease-in-out;
+    text-align: center;
+
+}
+
+.p-menu .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content:hover {
+    background: transparent !important;
 }
 
 .p-menu .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text:hover{
     color: var(--gray-color); 
     transform: scale(0.98);
+
 }
 
 .btn-menu-project a{
     background-color: var(--white-color);
     text-decoration: none !important;
     transition: all 500ms ease-in-out;
+    
 }
 
 .p-checkbox-box{

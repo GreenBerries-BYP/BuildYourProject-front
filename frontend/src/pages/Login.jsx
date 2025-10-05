@@ -195,7 +195,7 @@ const Login = () => {
                 <b>{t("login.or", "ou")}</b>
               </Divider>
 
-              <div className="d-flex justify-content-center w-100 position-relative">
+              <div className="d-flex google-login justify-content-center w-100 position-relative">
                 <GoogleLogin
                   onSuccess={googleLogin}
                   onError={() => {
@@ -205,7 +205,6 @@ const Login = () => {
                   render={({ onClick }) => (
                     <button
                       type="button"
-                      className="btn-google-custom"
                       disabled={isGoogleLoading}
                       onClick={onClick}
                     >

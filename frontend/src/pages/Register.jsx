@@ -318,31 +318,30 @@ const Register = () => {
             <b>{t("login.or", "ou")}</b>
           </Divider>
 
-          <div className="d-flex justify-content-center w-100 position-relative">
+          <div className="d-flex justify-content-center google-login position-relative">
             <GoogleLogin
-                  onSuccess={googleLogin}
-                  onError={() => {
-                    toastService.error("Erro no Google", "Não foi possível autenticar.");
-                  }}
-                  useOneTap={false}
-                  render={({ onClick }) => (
-                    <button
-                      type="button"
-                      className="btn-google-custom"
-                      disabled={isGoogleLoading}
-                      onClick={onClick}
-                    >
-                      {isGoogleLoading ? (
-                        <div className="spinner-border spinner-border-sm" role="status"></div>
-                      ) : (
-                        <>
-                          <FcGoogle className="google-icon" />
-                          <span>{t("login.google")}</span>
-                        </>
-                      )}
-                    </button>
-                  )}
-                />
+                onSuccess={googleLogin}
+                onError={() => {
+                  toastService.error("Erro no Google", "Não foi possível autenticar.");
+                }}
+                useOneTap={false}
+                render={({ onClick }) => (
+                  <button
+                    type="button"
+                    disabled={isGoogleLoading}
+                    onClick={onClick}
+                  >
+                    {isGoogleLoading ? (
+                      <div className="spinner-border spinner-border-sm" role="status"></div>
+                    ) : (
+                      <>
+                        <FcGoogle className="google-icon" />
+                        <span>{t("login.google")}</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              />
             
           </div>
         </form>

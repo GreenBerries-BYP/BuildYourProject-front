@@ -41,6 +41,7 @@ const ProjectCard = ({
             command: (e) => {
                 e.originalEvent.preventDefault(); // <- previne comportamento padrão
                 onDeleteClick(projetoId);
+                
               }, 
           }]}
           popup
