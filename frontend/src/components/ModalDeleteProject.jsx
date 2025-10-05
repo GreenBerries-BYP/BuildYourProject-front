@@ -20,7 +20,7 @@ const ModalDeleteProject = ({
 
   // Função para deletar o projeto
   const handleDelete = async () => {
-    if (input.trim().toUpperCase() !== "SIM") {
+    if (input.trim().toUpperCase() !== ("SIM" || "YES")) {
       setError(
         t(
           "modalDeleteProject.errorTypeYes",

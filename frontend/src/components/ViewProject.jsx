@@ -8,7 +8,6 @@ import ModalAssignTask from "../components/ModalAssignTask";
 import ModalAnaliseProjeto from "../components/ModalAnaliseProjeto";
 import Schedule from '../components/Schedule';
 
-
 const ViewProject = ({
     projetoId,
     nomeProjeto,
@@ -20,7 +19,7 @@ const ViewProject = ({
 }) => {
     const { t } = useTranslation();
     const [expandedSections, setExpandedSections] = useState({});
-    const [modalAberto, setModalAberto] = useState(false);
+    const [modalTarefaAberto, setModalTarefaAberto] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [assignModalOpen, setAssignModalOpen] = useState(false);
     const [analiseModalOpen, setAnaliseModalOpen] = useState(false);
@@ -31,6 +30,7 @@ const ViewProject = ({
     const [tarefasProjetoState, setTarefasProjetoState] = useState(tarefasProjeto || []);
     const [showSchedule, setShowSchedule] = useState(false);
 
+    // Remove o estado isSubtask - vamos controlar pelos modais separados
 
     const handleDeleteTaskClick = (taskId) => {
         setSelectedTasktId(taskId);
@@ -42,15 +42,14 @@ const ViewProject = ({
         setAssignModalOpen(true);
     };
 
-     const handleAddSubtaskClick = (taskId) => {
+    const handleAddSubtaskClick = (taskId) => {
         setSelectedTaskIdForSubtask(taskId);
         setAddSubtaskModalOpen(true);
     };
 
-
-    const handleCreateTask = (novaSubtarefa) => {
+    const handleCreateTask = (novaTarefa) => {
         setTarefasProjetoState((prevGrupos) => {
-            const nomeDoGrupo = novaSubtarefa.nome;
+            const nomeDoGrupo = novaTarefa.nome;
             const grupoExistenteIndex = prevGrupos.findIndex(
                 (grupo) => grupo.nomeTarefa === nomeDoGrupo
             );
@@ -61,7 +60,7 @@ const ViewProject = ({
                     ...novosGrupos[grupoExistenteIndex],
                     subTarefas: [
                         ...novosGrupos[grupoExistenteIndex].subTarefas,
-                        novaSubtarefa,
+                        novaTarefa,
                     ],
                 };
                 novosGrupos[grupoExistenteIndex] = grupoAtualizado;
@@ -69,13 +68,13 @@ const ViewProject = ({
             } else {
                 const novoGrupo = {
                     nomeTarefa: nomeDoGrupo,
-                    subTarefas: [novaSubtarefa],
-                    id: novaSubtarefa.id,
+                    subTarefas: [novaTarefa],
+                    id: novaTarefa.id,
                 };
                 return [...prevGrupos, novoGrupo];
             }
         });
-        setModalAberto(false);
+        setModalTarefaAberto(false);
     };
 
     const handleCreateSubtask = (novaSubtarefa) => {
@@ -144,12 +143,10 @@ const ViewProject = ({
                             <button className='fechar-btn' onClick={onVoltar}><img src="/imgs/icons-project/Close.svg" alt={t("altText.closeView")} /></button>
                         </div>
 
-                        <button className='criar-tarefa-btn mt-lg-5 col-5 order-1 order-lg-2 w-50' onClick={() => setModalAberto(true)}>
+                        <button className='criar-tarefa-btn mt-lg-5 col-5 order-1 order-lg-2 w-50' onClick={() => setModalTarefaAberto(true)}>
                             <span>{t('buttons.newTask')}</span>
                             <img src="/imgs/icons-project/add.svg" />
                         </button>
-
-
                     </div>
                 </div>
             </div>
@@ -179,8 +176,20 @@ const ViewProject = ({
                         ))}
                     </div>
                 )}
-
             </div>
+
+            {/* MODAL PARA TAREFAS PRINCIPAIS */}
+            <ModalNewTask 
+                isOpen={modalTarefaAberto}
+                onClose={() => setModalTarefaAberto(false)}
+                projetoId={projetoId}
+                nomeProjeto={nomeProjeto}
+                onTaskCreated={handleCreateTask}
+                collaborators={collaborators}
+                isSubtask={false} // ← Tarefa principal
+            />
+
+            {/* MODAL PARA SUBTAREFAS */}
             <ModalNewTask 
                 isOpen={addSubtaskModalOpen}
                 onClose={() => {
@@ -191,9 +200,10 @@ const ViewProject = ({
                 nomeProjeto={nomeProjeto}
                 onTaskCreated={handleCreateSubtask}
                 collaborators={collaborators}
-                isSubtask={true} // ← para diferenciar se é subtarefa
+                isSubtask={true} // ← Subtarefa
                 parentTaskId={selectedTaskIdForSubtask}
             />
+
             <ModalDeleteTask
                 isOpen={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
@@ -210,10 +220,9 @@ const ViewProject = ({
                 project={{
                     id: projetoId,
                     name: nomeProjeto,
-                    collaborators: collaborators || [], // ← Agora passa os colaboradores corretamente
+                    collaborators: collaborators || [],
                 }}
                 onAssignSuccess={(collaborator) => {
-                    // Atualiza a UI com os dados do colaborador
                     setTarefasProjetoState((prev) =>
                         prev.map((t) =>
                             t.id === selectedTaskIdForAssign
@@ -238,6 +247,5 @@ const ViewProject = ({
         </div>
     );
 };
-
 
 export default ViewProject;

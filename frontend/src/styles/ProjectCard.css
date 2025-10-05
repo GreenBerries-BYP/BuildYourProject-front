@@ -108,6 +108,7 @@
 
 .btn-menu-project a{
     background-color: var(--white-color);
+    text-decoration: none !important;
     transition: all 500ms ease-in-out;
 }
 
