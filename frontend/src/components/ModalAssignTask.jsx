@@ -14,9 +14,15 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, projectId, onAssigned }) => 
   const [loading, setLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
 
-  // ✅ Buscar colaboradores ao abrir o modal
+  // Resetar campos e atualizar colaboradores ao abrir/fechar modal
   useEffect(() => {
-    if (isOpen && projectId) {
+    if (!isOpen) {
+      setSelectedUser("");
+      setFormErrors({});
+      return;
+    }
+
+    if (projectId) {
       const fetchCollaborators = async () => {
         try {
           const token = getToken();
@@ -33,7 +39,7 @@ const ModalAssignTask = ({ isOpen, onClose, taskId, projectId, onAssigned }) => 
     }
   }, [isOpen, projectId]);
 
-  // ✅ Submissão
+  // Submissão
   const handleAssign = async (e) => {
     e.preventDefault();
     if (!selectedUser) {
