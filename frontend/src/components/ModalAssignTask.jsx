@@ -21,39 +21,7 @@ const ModalAssignTask = ({
   const [loading, setLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
 
-  // Resetar campos e atualizar colaboradores ao abrir/fechar modal
-  useEffect(() => {
-    if (!isOpen) {
-      setSelectedUser("");
-      setFormErrors({});
-      return;
-    }
 
-    // Se não foram passados colaboradores via prop, busca do projeto
-    if (initialCollaborators.length === 0 && projectId) {
-      const fetchProjectCollaborators = async () => {
-        try {
-          const token = getToken();
-          const response = await api.get(`/projetos/${projectId}/`);
-          const projectData = response.data;
-          
-          // Extrai colaboradores do projeto (ajuste conforme a estrutura da sua API)
-          const projectCollaborators = projectData.colaboradores || 
-                                     projectData.collaborators || 
-                                     projectData.members || [];
-          
-          setCollaborators(projectCollaborators);
-        } catch (err) {
-          console.error("Erro ao carregar colaboradores do projeto:", err);
-          setCollaborators([]);
-        }
-      };
-      fetchProjectCollaborators();
-    } else {
-      // Usa os colaboradores passados via prop
-      setCollaborators(initialCollaborators);
-    }
-  }, [isOpen, projectId, initialCollaborators]);
 
   // Submissão
   const handleAssign = async (e) => {

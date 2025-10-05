@@ -115,16 +115,21 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                 <p>{t('messages.allTasksCompleted')}</p>
               </div>
              
-              <div className="metricas-simples">
-                <div className="metrica-item">
-                  <div className="metrica-valor">{analise.dias_restantes}</div>
-                  <div className="metrica-label">{t('messages.daysAhead')}</div>
-                </div>
-               
-                <div className="metrica-item">
-                  <div className="metrica-valor">{analise.taxa_conclusao}%</div>
-                  <div className="metrica-label">{t('messages.completed')}</div>
-                </div>
+              <div className="metricas-tabela">
+                <table className="tabela-metricas">
+                  <tbody>
+                    <tr>
+                      <td className="metrica-item">
+                        <div className="metrica-valor">{analise.dias_restantes}</div>
+                        <div className="metrica-label">{t('messages.remainingDays')}</div>
+                      </td>
+                      <td className="metrica-item">
+                        <div className="metrica-valor">{analise.taxa_conclusao}%</div>
+                        <div className="metrica-label">{t('messages.completed')}</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           ) : (
@@ -144,35 +149,40 @@ const ModalAnaliseProjeto = ({ isOpen, onClose, projectId, onAnaliseConcluida })
                 <p>{analise.explicacao}</p>
               </div>
 
-              <div className="metricas-simples">
-                <div className="metrica-item">
-                  <div className="metrica-valor">{analise.tarefas_atrasadas}</div>
-                  <div className="metrica-label">{t('messages.delayedTasks')}</div>
-                </div>
-               
-                <div className="metrica-item">
-                  <div className="metrica-valor">{analise.dias_restantes}</div>
-                  <div className="metrica-label">{t('messages.remainingDays')}</div>
-                </div>
-               
-                <div className="metrica-item">
-                  <div className="metrica-valor">{analise.tarefas_pendentes}</div>
-                  <div className="metrica-label">{t('messages.pendingTasks')}</div>
-                </div>
-               
-                <div className="metrica-item">
-                  <div className="metrica-valor">{analise.taxa_conclusao}%</div>
-                  <div className="metrica-label">{t('messages.completed')}</div>
-                </div>
-               
-                {analise.dias_atraso > 0 && (
-                  <div className="metrica-item atraso">
-                    <div className="metrica-valor">{analise.dias_atraso}</div>
-                    <div className="metrica-label">{t('messages.daysDelayed')}</div>
-                  </div>
-                )}
+              <div className="metricas-tabela">
+                <table className="tabela-metricas">
+                  <tbody>
+                    <tr>
+                      <td className="metrica-item">
+                        <div className="metrica-valor">{analise.tarefas_atrasadas}</div>
+                        <div className="metrica-label">{t('messages.delayedTasks')}</div>
+                      </td>
+                      <td className="metrica-item">
+                        <div className="metrica-valor">{analise.dias_restantes}</div>
+                        <div className="metrica-label">{t('messages.remainingDays')}</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="metrica-item">
+                        <div className="metrica-valor">{analise.tarefas_pendentes}</div>
+                        <div className="metrica-label">{t('messages.pendingTasks')}</div>
+                      </td>
+                      <td className="metrica-item">
+                        <div className="metrica-valor">{analise.taxa_conclusao}%</div>
+                        <div className="metrica-label">{t('messages.completed')}</div>
+                      </td>
+                    </tr>
+                    {analise.dias_atraso > 0 && (
+                      <tr>
+                        <td className="metrica-item atraso" colSpan="2">
+                          <div className="metrica-valor">{analise.dias_atraso}</div>
+                          <div className="metrica-label">{t('messages.daysDelayed')}</div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
-
               {analise.sugestoes && analise.sugestoes.length > 0 ? (
                 <div className="sugestoes-lista">
                   <h4>{t('messages.recommendedSuggestions')}</h4>
