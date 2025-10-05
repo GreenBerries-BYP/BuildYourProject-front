@@ -121,7 +121,7 @@ function HomeDefault() {
             tarefasProjeto={projetoSelecionado.tarefasProjeto || []}
             onVoltar={handleVoltar}
             dataInicio={projetoSelecionado.data_inicio}   
-            dataFim={projetoSelecionado.data_inicio} 
+            dataFim={projetoSelecionado.data_fim} 
           />
         </div>
       ) : (

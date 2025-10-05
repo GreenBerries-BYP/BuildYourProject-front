@@ -74,67 +74,67 @@ export const useAuth = () => {
   };
 
   const googleLogin = async (credentialResponse) => {
-  setIsGoogleLoading(true);
-  try {
-    const idToken = credentialResponse.credential;
-    
-    if (!idToken) {
-      toastService.error("Erro no login", "ID Token não recebido do Google.");
-      return;
-    }
-    
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api${API_ENDPOINTS.GOOGLE_LOGIN}`,
-      {
-        access_token: idToken, 
-      }
-    );
-
-    console.log("Resposta do backend:", response.data);
-    const token = response.data.access;
-    
-    if (!token) {
-      toastService.error("Erro no login", "Token não recebido do servidor.");
-      return;
-    }
-
-    saveToken(token, false, response.data.refresh);
-    setGoogleLoginStatus(true); 
-
-    localStorage.setItem('google_access_token', idToken);
-    localStorage.setItem('google_calendar_authenticated', 'true');
-
-    const userData = jwtDecode(token);
-    setUser(userData);
-
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
-    toastService.success("Bem-vindo!", "Login com Google realizado com sucesso.");
-    navigate("/home");
-  } catch (error) {
-    console.error("Erro completo no login com Google:", error);
-    console.error("Detalhes do erro:", error.response?.data);
-    //debug
-    if (error.config?.data) {
-      console.log("📤 Payload enviado:", error.config.data);
-    }
-    
-    // Adicione tratamento de erro mais específico
-    if (error.response?.status === 400) {
-      const errorDetails = error.response.data;
-      console.error("Detalhes do erro 400:", errorDetails);
+    setIsGoogleLoading(true);
+    try {
+      const idToken = credentialResponse.credential;
       
-      const errorMessage = errorDetails?.error || 
-                          errorDetails?.details || 
-                          "Token do Google inválido ou expirado.";
-      toastService.error("Falha no login", errorMessage);
-    } else {
-      toastService.error("Erro no servidor", "Tente novamente mais tarde.");
+      if (!idToken) {
+        toastService.error("Erro no login", "ID Token não recebido do Google.");
+        return;
+      }
+      
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api${API_ENDPOINTS.GOOGLE_LOGIN}`,
+        {
+          access_token: idToken, 
+        }
+      );
+
+      console.log("Resposta do backend:", response.data);
+      const token = response.data.access;
+      
+      if (!token) {
+        toastService.error("Erro no login", "Token não recebido do servidor.");
+        return;
+      }
+
+      saveToken(token, false, response.data.refresh);
+      setGoogleLoginStatus(true); 
+
+      localStorage.setItem('google_access_token', idToken);
+      localStorage.setItem('google_calendar_authenticated', 'true');
+
+      const userData = jwtDecode(token);
+      setUser(userData);
+
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      toastService.success("Bem-vindo!", "Login com Google realizado com sucesso.");
+      navigate("/home");
+    } catch (error) {
+      console.error("Erro completo no login com Google:", error);
+      console.error("Detalhes do erro:", error.response?.data);
+      //debug
+      if (error.config?.data) {
+        console.log("📤 Payload enviado:", error.config.data);
+      }
+      
+      // Adicione tratamento de erro mais específico
+      if (error.response?.status === 400) {
+        const errorDetails = error.response.data;
+        console.error("Detalhes do erro 400:", errorDetails);
+        
+        const errorMessage = errorDetails?.error || 
+                            errorDetails?.details || 
+                            "Token do Google inválido ou expirado.";
+        toastService.error("Falha no login", errorMessage);
+      } else {
+        toastService.error("Erro no servidor", "Tente novamente mais tarde.");
+      }
+    } finally {
+      setIsGoogleLoading(false);
     }
-  } finally {
-    setIsGoogleLoading(false);
-  }
-};
+  };
 
   return { isLoading, isGoogleLoading, login, register, googleLogin };
 };

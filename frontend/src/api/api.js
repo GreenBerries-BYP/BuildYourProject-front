@@ -191,12 +191,33 @@ export const aplicarSugestao = async (projectId, sugestaoId, acao) => {
 // atribuição de tarefas
 export const assignTaskToUser = async (taskId, userId) => {
   try {
-    const response = await api.post(`/tasks/${taskId}/assign/`, {
-      user_id: userId
+    console.log('Debug - Dados enviados para assign:', { 
+      taskId, 
+      userId
     });
+    
+    // Garantir que userId é numérico
+    const numericUserId = parseInt(userId);
+    
+    if (isNaN(numericUserId)) {
+      throw new Error('ID de usuário inválido');
+    }
+                                     
+    const response = await api.post(`/tasks/${taskId}/assign/`, {
+      user_id: numericUserId
+    });
+
+    console.log('Resposta do assign:', response.data);
     return response.data;
+
   } catch (error) {
     console.error('Erro ao atribuir tarefa:', error);
+    
+    if (error.response) {
+      console.error('Status:', error.response.status);
+      console.error('Data:', error.response.data);
+    }
+    
     throw error;
   }
 };
@@ -209,7 +230,7 @@ export const createGoogleCalendarEvent = async (evento) => {
       throw new Error("Token do Google não disponível");
     }
 
-    console.log('📅 Criando evento:', evento);
+    console.log('Criando evento:', evento);
 
     const response = await axios.post(
       'https://www.googleapis.com/calendar/v3/calendars/primary/events',

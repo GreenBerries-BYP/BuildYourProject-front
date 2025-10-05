@@ -206,6 +206,7 @@ const ViewProject = ({
                 collaborators={collaborators}
                 isSubtask={false} // ← Tarefa principal
             />
+            
 
             {/* MODAL PARA SUBTAREFAS */}
             <ModalNewTask 
@@ -231,15 +232,14 @@ const ViewProject = ({
                     setSelectedTasktId(null);
                 }}
             />
+            
             <ModalAssignTask
                 isOpen={assignModalOpen}
                 onClose={() => setAssignModalOpen(false)}
                 taskId={selectedTaskIdForAssign}
-                project={{
-                    id: projetoId,
-                    name: nomeProjeto,
-                    collaborators: collaborators || [],
-                }}
+                projectId={projetoId}
+                projectName={nomeProjeto}
+                collaborators={collaborators}
                 onAssignSuccess={(collaborator) => {
                     setTarefasProjetoState((prev) =>
                         prev.map((t) =>
@@ -256,6 +256,7 @@ const ViewProject = ({
                     setSelectedTaskIdForAssign(null);
                 }}
             />
+            
             <ModalAnaliseProjeto
                 isOpen={analiseModalOpen}
                 onClose={() => setAnaliseModalOpen(false)}

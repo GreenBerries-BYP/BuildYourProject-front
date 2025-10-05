@@ -11,34 +11,66 @@ const ModalAssignTask = ({
   taskId, 
   projectId, 
   onAssigned, 
+  projectName,
   collaborators: initialCollaborators = [] 
 }) => {
   const modalRef = useRef();
   const { t } = useTranslation();
 
+
   const [collaborators, setCollaborators] = useState(initialCollaborators);
-  const [selectedUser, setSelectedUser] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState(""); // ← Mudei para selectedUserId
   const [loading, setLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
 
-
-
-  // Submissão
+  // Resetar campos ao abrir/fechar modal
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedUserId("");
+      setFormErrors({});
+    }
+    setCollaborators(initialCollaborators);
+  }, [isOpen, initialCollaborators]);
+ 
+  // Submissão - CORRIGIDA
   const handleAssign = async (e) => {
     e.preventDefault();
-    if (!selectedUser) {
+    if (!selectedUserId) {
       setFormErrors({ user: t("messages.selectCollaborator") });
       return;
     }
 
     setLoading(true);
+    setFormErrors({});
+
     try {
-      await assignTaskToUser(taskId, selectedUser);
-      if (onAssigned) onAssigned();
+      console.log("Debug - Atribuindo tarefa:", {
+        taskId,
+        selectedUserId, // ← Agora é o ID
+        selectedUserIdType: typeof selectedUserId, // ← Verifica o tipo
+        projectId
+      });
+
+      const result = await assignTaskToUser(taskId, selectedUserId);
+      
+      console.log("✅ Tarefa atribuída com sucesso:", result);
+      
+      if (onAssigned) onAssigned(result);
       onClose();
     } catch (err) {
-      console.error("Erro ao atribuir tarefa:", err);
-      setFormErrors({ submit: err.message || t("messages.errorAssignTask") });
+      console.error("Erro detalhado ao atribuir tarefa:", err);
+      
+      let errorMessage = t("messages.errorAssignTask");
+      
+      if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err.response?.data?.detail) {
+        errorMessage = err.response.data.detail;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setFormErrors({ submit: errorMessage });
     } finally {
       setLoading(false);
     }
@@ -78,23 +110,31 @@ const ModalAssignTask = ({
             <div className="input-group">
               <label>{t("inputs.selectCollaborator")}</label>
               <select
-                value={selectedUser}
-                onChange={(e) => setSelectedUser(e.target.value)}
+                value={selectedUserId} // ← Agora usa selectedUserId
+                onChange={(e) => setSelectedUserId(e.target.value)}
               >
                 <option value="">{t("messages.selectOption")}</option>
                 {collaborators.map((collab, index) => {
-                  // Verifica se é um objeto com propriedades ou apenas uma string
-                  if (typeof collab === 'object') {
+                  // Para objetos User do Django - GARANTIR que usa ID
+                  if (typeof collab === 'object' && collab.id) {
                     return (
-                      <option key={collab.id || index} value={collab.id || collab.email}>
+                      <option key={collab.id} value={collab.id}> {/* ← VALUE é o ID */}
                         {collab.full_name || collab.name || collab.email} 
                         {collab.email ? ` (${collab.email})` : ''}
                       </option>
                     );
-                  } else {
-                    // Se for apenas uma string (como no ModalNewTask)
+                  } else if (typeof collab === 'object' && !collab.id) {
+                    // Se for objeto mas não tem ID, usar índice como fallback
+                    console.warn('Colaborador sem ID:', collab);
                     return (
-                      <option key={index} value={collab}>
+                      <option key={index} value={index}>
+                        {collab.full_name || collab.name || collab.email || 'Usuário sem nome'}
+                      </option>
+                    );
+                  } else {
+                    // Se for string (formato antigo) - converter para ID se possível
+                    return (
+                      <option key={index} value={index}> {/* ← Usa índice como ID temporário */}
                         {collab}
                       </option>
                     );
