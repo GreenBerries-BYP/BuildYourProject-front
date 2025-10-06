@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import "../styles/ModalForgotPasswordDeleteProject.css";
 import { useTranslation } from "react-i18next";
 import api from "../api/api";
+import { Password } from "primereact/password";
+import { Divider } from "primereact/divider";
 
 const ModalForgotPassword = ({ isOpen, onClose }) => {
   const { t } = useTranslation();
@@ -16,6 +18,32 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isPasswordStrong, setIsPasswordStrong] = useState(false);
+
+  // Valida a força da senha
+  useEffect(() => {
+    const isStrong =
+      newPassword.length >= 8 &&
+      /[a-z]/.test(newPassword) &&
+      /[A-Z]/.test(newPassword) &&
+      /[0-9]/.test(newPassword) &&
+      /[^a-zA-Z0-9]/.test(newPassword);
+    setIsPasswordStrong(isStrong);
+  }, [newPassword]);
+
+  // Footer com as sugestões de senha forte
+  const passwordFooter = (
+    <>
+      <Divider />
+      <p className="mt-2 fw-bold">{t("login.suggestions", "Sugestões:")}</p>
+      <ul className="pl-2 ml-2 mt-0" style={{ fontSize: '1.2rem' }}>
+        <li>{t("login.lowercase", "Ao menos uma letra minúscula")}</li>
+        <li>{t("login.uppercase", "Ao menos uma letra maiúscula")}</li>
+        <li>{t("login.number", "Ao menos um número")}</li>
+        <li>{t("login.specialCharacter", "Ao menos um caractere especial")}</li>
+      </ul>
+    </>
+  );
 
   const handleSubmitEmail = async (e) => {
     e.preventDefault();
@@ -82,13 +110,13 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
 
     setLoading(true);
     setError("");
-   
+
     try {
-      const response = await api.post("/auth/verify-reset-code/", {
+      await api.post("/auth/verify-reset-code/", {
         email: email,
         code: verificationCode
       });
-     
+
       setSuccess("Código verificado com sucesso!");
       setStep("newPassword");
     } catch (err) {
@@ -103,26 +131,42 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
   };
 
   const handleResetPassword = async () => {
+    // Validações de senha
+    if (newPassword.length < 8) {
+      setError("A senha deve ter pelo menos 8 caracteres.");
+      return;
+    }
+    if (!/[a-z]/.test(newPassword)) {
+      setError("A senha deve conter ao menos uma letra minúscula.");
+      return;
+    }
+    if (!/[A-Z]/.test(newPassword)) {
+      setError("A senha deve conter ao menos uma letra maiúscula.");
+      return;
+    }
+    if (!/[0-9]/.test(newPassword)) {
+      setError("A senha deve conter ao menos um número.");
+      return;
+    }
+    if (!/[^a-zA-Z0-9]/.test(newPassword)) {
+      setError("A senha deve conter ao menos um caractere especial.");
+      return;
+    }
     if (newPassword !== confirmPassword) {
       setError("As senhas não coincidem.");
       return;
     }
 
-    if (newPassword.length < 8) {
-      setError("A senha deve ter pelo menos 8 caracteres.");
-      return;
-    }
-
     setLoading(true);
     setError("");
-   
+
     try {
       await api.post("/auth/reset-password/", {
         email: email,
         code: code.join(""),
         new_password: newPassword
       });
-     
+
       setSuccess("Senha redefinida com sucesso!");
       setTimeout(() => {
         onClose();
@@ -135,7 +179,7 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
         setError("");
         setSuccess("");
       }, 2000);
-     
+
     } catch (err) {
       console.error("Erro ao redefinir senha:", err.response?.data);
       setError(
@@ -183,7 +227,7 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
             ×
           </button>
         </div>
-       
+
         <div className="modal-body">
           {step === "email" && (
             <form onSubmit={handleSubmitEmail}>
@@ -205,7 +249,7 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
               </div>
             </form>
           )}
-         
+
           {step === "code" && (
             <div className="code-inputs">
               <p>{t("messages.enterVerificationCode", "Digite o código de 6 dígitos enviado para")} <strong>{email}</strong></p>
@@ -227,7 +271,7 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
               {success && <p className="input-success">{success}</p>}
               <div className="navigation-buttons">
                 <button onClick={handleVerifyCode} className="save-btn" disabled={loading}>
-                  {loading ? t("buttons.verifying", "Verificando...") : t("buttons.verifyCode", "Verificar Código")}
+                  {loading ? t("buttons.verifying", "Verificando...") : "Verificar Código"}
                 </button>
                 <button
                   type="button"
@@ -240,36 +284,39 @@ const ModalForgotPassword = ({ isOpen, onClose }) => {
               </div>
             </div>
           )}
-         
+
           {step === "newPassword" && (
             <div className="new-password-step">
               <p>Digite sua nova senha</p>
-             
+
               <div className="form-group">
                 <label>Nova Senha</label>
-                <input
-                  type="password"
+                <Password
+                  key={isPasswordStrong ? 'strong' : 'weak'}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Mínimo 8 caracteres"
                   disabled={loading}
+                  toggleMask
+                  footer={!isPasswordStrong && passwordFooter}
                 />
               </div>
-             
+
               <div className="form-group">
                 <label>Confirmar Senha</label>
-                <input
-                  type="password"
+                <Password
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Digite novamente a senha"
                   disabled={loading}
+                  toggleMask
+                  feedback={false}
                 />
               </div>
-             
+
               {error && <p className="input-error">{error}</p>}
               {success && <p className="input-success">{success}</p>}
-             
+
               <div className="navigation-buttons">
                 <button onClick={handleResetPassword} className="save-btn" disabled={loading}>
                   {loading ? "Redefinindo..." : "Redefinir Senha"}

@@ -1,6 +1,6 @@
 // src/components/Register.jsx
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -20,6 +20,8 @@ import "../styles/LoginCadastro.css";
 const Register = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [isPasswordStrong, setIsPasswordStrong] = useState(false);
+
 
   const { googleLogin, register, isLoading, isGoogleLoading } = useAuth();
 
@@ -51,6 +53,19 @@ const Register = () => {
       );
     },
   });
+
+  const password = watch("password");
+
+  useEffect(() => {
+    const isStrong =
+      password.length >= 8 &&
+      /[a-z]/.test(password) &&
+      /[A-Z]/.test(password) &&
+      /[0-9]/.test(password) &&
+      /[^a-zA-Z0-9]/.test(password);
+    setIsPasswordStrong(isStrong);
+  }, [password]);
+
 
   const passwordFooter = (
     <>
@@ -99,9 +114,8 @@ const Register = () => {
                   <InputText
                     id="fullName"
                     {...field}
-                    className={`byp-input-field ${
-                      errors.fullName ? "p-invalid" : ""
-                    }`}
+                    className={`byp-input-field ${errors.fullName ? "p-invalid" : ""
+                      }`}
                   />
                 )}
               />
@@ -130,9 +144,8 @@ const Register = () => {
                   <InputText
                     id="username"
                     {...field}
-                    className={`byp-input-field ${
-                      errors.username ? "p-invalid" : ""
-                    }`}
+                    className={`byp-input-field ${errors.username ? "p-invalid" : ""
+                      }`}
                   />
                 )}
               />
@@ -165,9 +178,8 @@ const Register = () => {
                   <InputText
                     id="email"
                     {...field}
-                    className={`byp-input-field ${
-                      errors.email ? "p-invalid" : ""
-                    }`}
+                    className={`byp-input-field ${errors.email ? "p-invalid" : ""
+                      }`}
                   />
                 )}
               />
@@ -198,13 +210,14 @@ const Register = () => {
                 }}
                 render={({ field }) => (
                   <Password
+                    key={isPasswordStrong ? 'strong' : 'weak'}
                     inputId="password"
                     {...field}
                     toggleMask
-                    footer={passwordFooter}
-                    inputClassName={`byp-password-field ${
-                      errors.password ? "p-invalid" : ""
-                    }`}
+                    feedback={!isPasswordStrong}
+                    footer={!isPasswordStrong && passwordFooter}
+                    inputClassName={`byp-password-field ${errors.password ? "p-invalid" : ""
+                      }`}
                   />
                 )}
               />
@@ -241,9 +254,8 @@ const Register = () => {
                     {...field}
                     toggleMask
                     feedback={false}
-                    inputClassName={`byp-password-field ${
-                      errors.confirmPassword ? "p-invalid" : ""
-                    }`}
+                    inputClassName={`byp-password-field ${errors.confirmPassword ? "p-invalid" : ""
+                      }`}
                   />
                 )}
               />
@@ -320,29 +332,29 @@ const Register = () => {
 
           <div className="d-flex justify-content-center google-login position-relative">
             <GoogleLogin
-                onSuccess={googleLogin}
-                onError={() => {
-                  toastService.error("Erro no Google", "Não foi possível autenticar.");
-                }}
-                useOneTap={false}
-                render={({ onClick }) => (
-                  <button
-                    type="button"
-                    disabled={isGoogleLoading}
-                    onClick={onClick}
-                  >
-                    {isGoogleLoading ? (
-                      <div className="spinner-border spinner-border-sm" role="status"></div>
-                    ) : (
-                      <>
-                        <FcGoogle className="google-icon" />
-                        <span>{t("login.google")}</span>
-                      </>
-                    )}
-                  </button>
-                )}
-              />
-            
+              onSuccess={googleLogin}
+              onError={() => {
+                toastService.error("Erro no Google", "Não foi possível autenticar.");
+              }}
+              useOneTap={false}
+              render={({ onClick }) => (
+                <button
+                  type="button"
+                  disabled={isGoogleLoading}
+                  onClick={onClick}
+                >
+                  {isGoogleLoading ? (
+                    <div className="spinner-border spinner-border-sm" role="status"></div>
+                  ) : (
+                    <>
+                      <FcGoogle className="google-icon" />
+                      <span>{t("login.google")}</span>
+                    </>
+                  )}
+                </button>
+              )}
+            />
+
           </div>
         </form>
 
