@@ -84,22 +84,20 @@ const ModalNewTask = ({
       let endpoint;
 
       if (isSubtask && parentTaskId) {
-        // ESTRUTURA PARA SUBTASK
         endpoint = `/projetos/${projetoId}/tarefas/${parentTaskId}/subtasks`;
         requestData = {
           nome: nome,
           descricao: descricao,
           dataEntrega: dataEntrega,
-          user: responsavel, // Email do responsável
+          user: responsavel,
         };
       } else {
-        // ESTRUTURA PARA TAREFA PRINCIPAL
         endpoint = `/projetos/${projetoId}/tarefas-novas/`;
         requestData = {
           nome: nome,
           descricao: descricao,
           dataEntrega: dataEntrega,
-          user: responsavel, // Email do responsável
+          user: responsavel,
           projetoId: projetoId,
         };
       }

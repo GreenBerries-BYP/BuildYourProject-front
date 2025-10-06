@@ -35,11 +35,13 @@ const TaskSection = ({
     setSubtasks(subTarefas || []);
   }, [subTarefas]);
 
-  const subtasksWithResponsible = subtasks.map((sub) => ({
-    ...sub,
-    responsavel: sub.responsavel || '-',
-    nome: nomeTarefa,
-  }));
+  const subtasksWithResponsible = useMemo(() => {
+    return subtasks.map((sub) => ({
+      ...sub,
+      responsavel: sub.responsavel || responsavel || '-', // ← Prioriza responsável da subtarefa, depois da tarefa principal
+      nome: sub.nome || nomeTarefa, // ← Mantém o nome da subtarefa se existir
+    }));
+  }, [subtasks, responsavel, nomeTarefa]);
   
 
   // recalcula o progresso sempre que subtasks mudar
@@ -76,12 +78,24 @@ const TaskSection = ({
   };
 
   const colaboradores = useMemo(() => {
-    if (!Array.isArray(subTarefas)) return [];
-
-    return Array.from(
-      new Set(subTarefas.map((t) => t.responsavel).filter(Boolean))
-    );
-  }, [subTarefas]);
+    const allResponsibles = [];
+    
+    // Adiciona responsável da tarefa principal se existir
+    if (responsavel) {
+      allResponsibles.push(responsavel);
+    }
+    
+    // Adiciona responsáveis das subtarefas
+    if (Array.isArray(subTarefas)) {
+      subTarefas.forEach((t) => {
+        if (t.responsavel && !allResponsibles.includes(t.responsavel)) {
+          allResponsibles.push(t.responsavel);
+        }
+      });
+    }
+    
+    return allResponsibles;
+  }, [subTarefas, responsavel]);
 
   const statusTemplate = (rowData) => {
     const isFinished = rowData.status === "concluído";
@@ -100,6 +114,14 @@ const TaskSection = ({
       onChange={(e) => handleStatusChange(rowData, e.checked)}
     />
   );
+
+  const responsibleTemplate = (rowData) => {
+    return (
+      <span className="responsible-cell">
+        {rowData.responsavel || '-'}
+      </span>
+    );
+  };
 
   const renderColaboradores = () => {
     return (
@@ -125,6 +147,12 @@ const TaskSection = ({
             {isCompleted && <MdCheck size={"1.8rem"} color="white" />}
           </div>
           <span className="task-title">{nomeTarefa}</span>
+          {responsavel && (
+            <span className="task-responsible-badge">
+              {responsavel}
+            </span>
+          )}
+        
         </div>
 
         <div className="task-header-middle">

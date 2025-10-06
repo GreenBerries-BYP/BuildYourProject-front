@@ -187,6 +187,7 @@ const ViewProject = ({
                                 nomeTarefa={tarefa.nomeTarefa}
                                 progresso={tarefa.progresso}
                                 subTarefas={tarefa.subTarefas}
+                                responsavel={tarefa.responsavel || tarefa.user}
                                 expanded={expandedSections[tarefa.nomeTarefa]}
                                 onToggle={() => toggleSection(tarefa.nomeTarefa)}
                                 onDeleteClick={() => handleDeleteTaskClick(tarefa.id)}
