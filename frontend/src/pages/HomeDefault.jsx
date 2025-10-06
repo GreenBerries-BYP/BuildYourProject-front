@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { fetchProjects } from "../api/api";
 import { fetchProjectWithTasks } from "../api/api";
 import { useSearch } from "../context/SearchContext";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 import ProjectCard from "../components/ProjectCard";
 import CreateProjectCard from "../components/CreateProjectCard";
@@ -21,6 +22,8 @@ function HomeDefault() {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [projetos, setProjetos] = useState([]);
   const [projetosFiltrados, setProjetosFiltrados] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingProject, setLoadingProject] = useState(false);
   const { searchTerm } = useSearch();
 
   useEffect(() => {
@@ -33,7 +36,6 @@ function HomeDefault() {
         console.error("Erro ao buscar dados do usuário:", error);
       });
   }, []);
-
 
   useEffect(() => {
     if (modalAberto) {
@@ -49,7 +51,7 @@ function HomeDefault() {
   // Filtra os projetos sempre que o termo de busca ou a lista original mudar
   useEffect(() => {
     const lowercasedFilter = searchTerm.toLowerCase();
-    const filteredData = projetos.filter(item => {
+    const filteredData = projetos.filter((item) => {
       return item.name.toLowerCase().includes(lowercasedFilter);
     });
     setProjetosFiltrados(filteredData);
@@ -60,12 +62,15 @@ function HomeDefault() {
   };
 
   const handleAbrirProjeto = async (projeto) => {
+    setLoadingProject(true);
     try {
       const projetoCompleto = await fetchProjectWithTasks(projeto.id);
       setProjetoSelecionado(projetoCompleto);
       setSelectedProjectId(projeto.id);
     } catch (error) {
       console.error("Erro ao carregar projeto completo:", error);
+    } finally {
+      setLoadingProject(false);
     }
   };
 
@@ -76,11 +81,14 @@ function HomeDefault() {
   };
 
   const carregarProjetos = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await fetchProjects();
       setProjetos(data);
     } catch (error) {
       console.error("Erro ao carregar projetos:", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -120,9 +128,21 @@ function HomeDefault() {
     setDeleteModalOpen(true);
   };
 
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center w-100 h-100">
+        <ProgressSpinner />
+      </div>
+    );
+  }
+
   return (
     <>
-      {projetoSelecionado ? (
+      {loadingProject ? (
+        <div className="d-flex justify-content-center align-items-center w-100 h-100">
+          <ProgressSpinner />
+        </div>
+      ) : projetoSelecionado ? (
         <div className="d-flex w-100 justify-content-center align-items-center">
           <ViewProject
             projetoId={selectedProjectId}

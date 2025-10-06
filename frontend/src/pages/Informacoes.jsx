@@ -68,13 +68,13 @@ function InfoPage() {
               label={t("infoPage.linksTerms")}
               icon="pi pi-file"
               className="p-button-text fs-4"
-              onClick={() => navigate("/use_terms")}
-            />
+               onClick={() => window.open("/use_terms", "_blank")}
+               />
             <Button
               label={t("infoPage.linksPrivacyPolicy")}
               icon="pi pi-shield"
               className="p-button-text fs-4"
-              onClick={() => navigate("/privacy_policy")}
+              onClick={() => window.open("/privacy_policy", "_blank")}
             />
           </div>
         </div>
