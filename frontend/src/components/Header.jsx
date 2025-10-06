@@ -6,11 +6,14 @@ import { FiSearch } from "react-icons/fi";
 import "../styles/Header.css";
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
+import { useSearch } from "../context/SearchContext";
 
 const I18N_STORAGE_KEY = "i18nextLng";
 
 const Header = () => {
   const { t, i18n } = useTranslation();
+  const { searchTerm, setSearchTerm } = useSearch();
+  const [localSearch, setLocalSearch] = useState(searchTerm);
   const [language, setLanguage] = useState(
     localStorage.getItem(I18N_STORAGE_KEY)
   );
@@ -30,7 +33,24 @@ const Header = () => {
     localStorage.setItem("theme", isDark ? "dark" : "light");
   }, [isDark]);
 
-  //inicia o idioma com o valor do localStorage ou padrão para "pt-BR"
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchTerm(localSearch);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [localSearch, setSearchTerm]);
+
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      setLocalSearch('');
+    }
+  }, [searchTerm]);
+
   const toggleLanguage = () => {
     setLanguage((prev) => (prev === "pt-BR" ? "en-US" : "pt-BR"));
     localStorage.setItem(
@@ -51,15 +71,7 @@ const Header = () => {
 
   const handleSearchFocus = () => setIsSearchFocused(true);
   const handleSearchBlur = () => {
-    setTimeout(() => {
-      if (
-        !searchInputRef.current ||
-        !searchInputRef.current.contains(document.activeElement)
-      ) {
-        setIsSearchFocused(false);
-        searchInputRef.current.value = ""; 
-      }
-    }, 0);
+    setIsSearchFocused(false);
   };
 
   return (
@@ -70,14 +82,15 @@ const Header = () => {
       </div>
       <div className="header-right d-flex align-items-center">
         <div
-          className={`search ${
-            isSearchFocused ? "focused" : ""
-          } d-flex align-items-center`}
+          className={`search ${isSearchFocused ? "focused" : ""
+            } d-flex align-items-center`}
         >
           <input
             type="text"
             placeholder={t("messages.searchPlaceholder", "Search...")}
             className="search-input"
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
             onFocus={handleSearchFocus}
             onBlur={handleSearchBlur}
             ref={searchInputRef}
@@ -86,7 +99,7 @@ const Header = () => {
         </div>
         <TbBellRingingFilled className="header-icon" aria-label={t("header.notifications", "Notifications")} />
         <button className="header-icon" onClick={toggleDarkMode} aria-label={isDark ? t("header.switchToLightMode", "Switch to Light Mode") : t("header.switchToDarkMode", "Switch to Dark Mode")}>
-          {isDark ?  <MdOutlineWbSunny /> : <MdDarkMode />}
+          {isDark ? <MdOutlineWbSunny /> : <MdDarkMode />}
         </button>
 
         <button onClick={toggleLanguage} className="header-icon" aria-label={t("header.changeLanguage")}>
@@ -95,7 +108,7 @@ const Header = () => {
 
         <Link to="/home/dados_usuario">
           <FaRegUserCircle className="header-icon" aria-label={t("header.userProfile", "User Profile")} />
-        
+
         </Link>
       </div>
     </header>
@@ -103,3 +116,4 @@ const Header = () => {
 };
 
 export default Header;
+

@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
+import { SearchProvider } from './context/SearchContext';
 import { AuthProvider } from './auth/authContext';
 
 import App from './App';
@@ -15,15 +16,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './styles/Main.css';
 
-console.log('ID_CLIENTE:',import.meta.env.VITE_GOOGLE_OAUTH2_CLIENT_ID )
+console.log('ID_CLIENTE:', import.meta.env.VITE_GOOGLE_OAUTH2_CLIENT_ID)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH2_CLIENT_ID}>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
+      <SearchProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </SearchProvider>
     </GoogleOAuthProvider>
   </React.StrictMode>
 );

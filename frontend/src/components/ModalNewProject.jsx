@@ -6,7 +6,6 @@ import toastService from "../api/toastService";
 
 import { getToken } from "../auth/auth";
 import { abntTemplates } from "../mocks/abntMock";
-import { useNavigate } from "react-router-dom";
 import { createGoogleCalendarEventsForProjectTasks, fetchProjectWithTasks } from "../api/api";
 
 const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
@@ -32,121 +31,80 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
   const [newPhase, setNewPhase] = useState("");
   const [customPhases, setCustomPhases] = useState([]);
 
-  // definição de data para, pelo menos por agora, limitar
-  // a data de início do projeto
   const today = new Date();
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(today.getMonth() - 1);
 
   const formatDate = (date) => date.toISOString().split("T")[0];
 
+  useEffect(() => {
+    const allPhases = abntTemplates.map(t => t.value);
+    const abntRequiredPhases = ['capa', 'folha_de_rosto', 'resumo', 'abstract', 'sumario', 'introducao', 'desenvolvimento', 'conclusao', 'referencias'];
+    const articlePhases = ['introducao', 'desenvolvimento', 'conclusao', 'referencias'];
+
+    let newPhases = [];
+    if (formData.type === 'TCC') {
+      newPhases = allPhases;
+    } else if (formData.type === 'ABNT') {
+      newPhases = abntRequiredPhases;
+    } else if (formData.type === t('inputs.academicArticle')) {
+      newPhases = articlePhases;
+    }
+
+    // Evita loop infinito, atualizando o estado apenas se as fases forem diferentes
+    if (JSON.stringify(formData.phases) !== JSON.stringify(newPhases)) {
+      setFormData(prev => ({ ...prev, phases: newPhases }));
+    }
+  }, [formData.type, t, formData.phases]);
+
   const waitForTasksAndCreateEvents = async (projetoId, nomeProjeto, projetoStartDate, projetoEndDate, maxAttempts = 10) => {
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       try {
         console.log(`Verificando tarefas do projeto (tentativa ${attempt + 1})...`);
         const projetoComTarefas = await fetchProjectWithTasks(projetoId);
-        
-        // Verifica se existem tarefas (mesmo sem datas)
+
         if (projetoComTarefas.tarefasProjeto && projetoComTarefas.tarefasProjeto.length > 0) {
           console.log(`Encontradas ${projetoComTarefas.tarefasProjeto.length} tarefas`);
-          
-          // Gera as datas respeitando o prazo do projeto
           const tarefasComDatasGeradas = generateProjectDates(
-            projetoComTarefas.tarefasProjeto, 
-            projetoStartDate, 
+            projetoComTarefas.tarefasProjeto,
+            projetoStartDate,
             projetoEndDate
           );
-
           console.log(`Datas geradas para ${tarefasComDatasGeradas.length} tarefas respeitando o prazo do projeto`);
           await createGoogleCalendarEventsForProjectTasks(projetoId, nomeProjeto, tarefasComDatasGeradas);
           return true;
         }
-
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (error) {
         console.error(`Erro na tentativa ${attempt + 1}:`, error);
       }
     }
-    
     console.log("Timeout: tarefas não foram geradas a tempo");
     return false;
   };
-  // Função que gera datas respeitando o prazo do projeto
-  // Função que gera datas respeitando o prazo do projeto - VERSÃO CORRIGIDA
+
   const generateProjectDates = (tarefas, projetoStartDate, projetoEndDate) => {
     const start = new Date(projetoStartDate);
     const end = new Date(projetoEndDate);
-    
-    // Ajusta horários para início e fim do dia
     start.setHours(0, 0, 0, 0);
     end.setHours(23, 59, 59, 999);
-    
     const totalProjectMs = end - start;
-    const totalProjectDays = Math.ceil(totalProjectMs / (1000 * 60 * 60 * 24));
-    
-    console.log(`Prazo do projeto: ${totalProjectDays} dias (${start.toLocaleDateString('pt-BR')} até ${end.toLocaleDateString('pt-BR')})`);
-
     if (tarefas.length === 0) return [];
-
-    // Calcula duração por tarefa em milissegundos (sem subtrair 1)
     const durationPerTask = Math.floor(totalProjectMs / tarefas.length);
-    
-    console.log(`Duração por tarefa: ${Math.ceil(durationPerTask / (1000 * 60 * 60 * 24))} dias`);
-    
+
     return tarefas.map((fase, fIdx) => {
-      // Calcula datas para a tarefa principal (sem -1)
       const taskStart = new Date(start.getTime() + fIdx * durationPerTask);
-      let taskEnd = new Date(taskStart.getTime() + durationPerTask); // SEM -1
-      
-      // Ajusta a última tarefa para terminar exatamente no fim do projeto
+      let taskEnd = new Date(taskStart.getTime() + durationPerTask);
       if (fIdx === tarefas.length - 1) {
         taskEnd = new Date(end.getTime());
       }
-
-      // Garante que não ultrapasse o fim do projeto
       if (taskEnd > end) {
         taskEnd = new Date(end.getTime());
       }
-
-      // Calcula datas para subtarefas
-      const subTarefas = (fase.subTarefas || []).map((sub, sIdx) => {
-        const subTaskCount = fase.subTarefas.length;
-        if (subTaskCount === 0) return sub;
-        
-        // Divide o período da tarefa principal entre as subtarefas
-        const taskDurationMs = taskEnd - taskStart;
-        const subDuration = Math.floor(taskDurationMs / subTaskCount);
-        
-        const subStart = new Date(taskStart.getTime() + sIdx * subDuration);
-        const subEnd = new Date(subStart.getTime() + subDuration); // SEM -1
-        
-        // Ajusta a última subtarefa para terminar com a tarefa principal
-        if (sIdx === subTaskCount - 1) {
-          subEnd.setTime(taskEnd.getTime());
-        }
-
-        // Garante que não ultrapasse o fim da tarefa principal
-        if (subEnd > taskEnd) {
-          subEnd.setTime(taskEnd.getTime());
-        }
-
-        return {
-          ...sub,
-          data_inicio: subStart,
-          data_fim: subEnd,
-        };
-      });
-
-      console.log(`Tarefa ${fIdx + 1}: ${taskStart.toLocaleDateString('pt-BR')} - ${taskEnd.toLocaleDateString('pt-BR')}`);
-      
-      return {
-        ...fase,
-        data_inicio: taskStart,
-        data_fim: taskEnd,
-        subTarefas,
-      };
+      return { ...fase, data_inicio: taskStart, data_fim: taskEnd };
     });
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -169,15 +127,9 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
     setFormData((prevData) => {
       const currentphasess = prevData.phases;
       if (currentphasess.includes(selectedphasesValue)) {
-        return {
-          ...prevData,
-          phases: currentphasess.filter((tmpl) => tmpl !== selectedphasesValue),
-        };
+        return { ...prevData, phases: currentphasess.filter((tmpl) => tmpl !== selectedphasesValue) };
       } else {
-        return {
-          ...prevData,
-          phases: [...currentphasess, selectedphasesValue],
-        };
+        return { ...prevData, phases: [...currentphasess, selectedphasesValue] };
       }
     });
   };
@@ -191,17 +143,14 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
       setEmailError(t("messages.emailCantBeEmpty"));
       return;
     }
-
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput)) {
       setEmailError(t("messages.invalidEmailFormat"));
       return;
     }
-
     if (formData.collaborators.includes(emailInput)) {
       setEmailError(t("messages.emailAlreadyAdded"));
       return;
     }
-
     handleCollaboratorChange([...formData.collaborators, emailInput]);
     setEmailInput("");
     setEmailError("");
@@ -223,18 +172,11 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
   const validateForm = () => {
     const errors = {};
     if (!formData.name.trim()) errors.name = t("messages.projectNameRequired");
-    if (!formData.description.trim())
-      errors.description = t("messages.projectDescriptionRequired");
-
-    if (!formData.startDate) {
-      errors.startDate = t("messages.startDateRequired");
-    }
-    if (!formData.endDate) {
-      errors.endDate = t("messages.endDateRequired");
-    } else if (formData.startDate && formData.endDate) {
-      const start = new Date(formData.startDate);
-      const end = new Date(formData.endDate);
-      if (end < start) {
+    if (!formData.description.trim()) errors.description = t("messages.projectDescriptionRequired");
+    if (!formData.startDate) errors.startDate = t("messages.startDateRequired");
+    if (!formData.endDate) errors.endDate = t("messages.endDateRequired");
+    else if (formData.startDate && formData.endDate) {
+      if (new Date(formData.endDate) < new Date(formData.startDate)) {
         errors.endDate = t("messages.endDateAfterStartDate");
       }
     }
@@ -244,242 +186,105 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
   const nextStep = () => {
     let currentStepErrors = {};
     const allErrors = validateForm();
-
     if (currentStep === 1) {
       if (allErrors.name) currentStepErrors.name = allErrors.name;
-      if (allErrors.description)
-        currentStepErrors.description = allErrors.description;
+      if (allErrors.description) currentStepErrors.description = allErrors.description;
     } else if (currentStep === 2) {
-      if (allErrors.startDate)
-        currentStepErrors.startDate = allErrors.startDate;
+      if (allErrors.startDate) currentStepErrors.startDate = allErrors.startDate;
       if (allErrors.endDate) currentStepErrors.endDate = allErrors.endDate;
     }
-
     if (Object.keys(currentStepErrors).length > 0) {
       setFormErrors((prevErrors) => ({ ...prevErrors, ...currentStepErrors }));
       return;
     }
-
-    let relevantErrorKeys = [];
-    if (currentStep === 1) relevantErrorKeys = ["name", "description"];
-    if (currentStep === 2) relevantErrorKeys = ["startDate", "endDate"];
-
-    const newErrors = { ...formErrors };
-
-    relevantErrorKeys.forEach((key) => {
-      if (newErrors[key] && !currentStepErrors[key]) {
-        delete newErrors[key];
-      }
-    });
-    if (Object.keys(currentStepErrors).length === 0) {
-      relevantErrorKeys.forEach((key) => delete newErrors[key]);
-    }
-
-    setFormErrors(newErrors);
     setCurrentStep((prev) => prev + 1);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (currentStep === 3) {
-      const allErrors = validateForm();
-      if (Object.keys(allErrors).length > 0) {
-        setFormErrors(allErrors);
-        if (allErrors.name || allErrors.description) {
-          setCurrentStep(1);
-        } else if (allErrors.startDate || allErrors.endDate) {
-          setCurrentStep(2);
-        }
-        return;
-      }
-      setFormErrors({});
-      setLoading(true);
-      try {
-        const token = getToken();
-        const submissionData = {
-          name: formData.name,
-          description: formData.description,
-          type: formData.type,
-          collaborators: formData.collaborators,
-          phases: formData.phases,
-          startDate: formData.startDate,
-          endDate: formData.endDate,
-        };
-        // TODO: Ensure backend endpoint /api/projetos/ is fully implemented and handles auth correctly.
-        const response = await api.post("/projetos/", submissionData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          handleErrorLocally: true, // Add this flag
-        });
-
-        if (
-          response.status &&
-          response.status >= 200 &&
-          response.status < 300
-        ) {
-          const novoProjeto = response.data;
-
-          toastService.success(
-            t("toast.createProjectSuccessTitle"),
-            t("toast.createProjectSuccessDetail")
-          );
-            
-            waitForTasksAndCreateEvents(
-              novoProjeto.id, 
-              novoProjeto.name, 
-              formData.startDate, 
-              formData.endDate
-            )
-              .then(success => {
-                if (success) {
-                  console.log("Eventos do Google Calendar criados com sucesso!");
-                  toastService.success(
-                    "Eventos criados!",
-                    "Os eventos foram adicionados ao Google Calendar"
-                  );
-                }
-              })
-              .catch(err => {
-                console.error("Erro ao criar eventos:", err);
-              });
-
-          // Successful creation
-          onClose();
-          onProjectCreated();
-          setFormData({
-            name: "",
-            description: "",
-            type: "TCC",
-            phases: [],
-            collaborators: [],
-            startDate: "",
-            endDate: "",
-          });
-          setCurrentStep(1);
-          setEmailInput("");
-          setFormErrors({});
-          setIsDescriptionExpanded(false);
-        } else {
-          // This block might not be strictly necessary if Axios throws on non-2xx by default
-          // For safety, keeping a generic error if it somehow reaches here
-          const errorData = response.data;
-
-          throw new Error(errorData.detail || t("messages.errorNewProject"));
-        }
-      } catch (err) {
-        if (err.response?.status === 401) {
-          setFormErrors({
-            submit: t("messages.errorNewProjectBackendNotReady"),
-          });
-        } else if (err.response) {
-          // Other HTTP errors (400, 500, etc.)
-          toastService.error(
-            t("toast.createProjectErrorTitle"),
-            err.response?.data?.detail ||
-              err.message ||
-              t("toast.createProjectErrorDetail")
-          );
-
-          const errorData = err.response.data;
-          let detailedMessage = "";
-          if (typeof errorData === "object" && errorData !== null) {
-            // Try to extract messages if backend sends structured errors like DRF
-            detailedMessage = Object.values(errorData).flat().join(" ");
-          }
-          setFormErrors({
-            submit: `${t("messages.errorNewProject")} ${
-              detailedMessage || err.message
-            }`.trim(),
-          });
-        } else {
-          // Network errors or other issues
-          setFormErrors({
-            submit: err.message || t("messages.errorNewProject"),
-          });
-        }
-      } finally {
-        setLoading(false);
-      }
-    } else {
+    if (currentStep !== 3) {
       nextStep();
+      return;
+    }
+
+    const allErrors = validateForm();
+    if (Object.keys(allErrors).length > 0) {
+      setFormErrors(allErrors);
+      if (allErrors.name || allErrors.description) setCurrentStep(1);
+      else if (allErrors.startDate || allErrors.endDate) setCurrentStep(2);
+      return;
+    }
+
+    setFormErrors({});
+    setLoading(true);
+    try {
+      const token = getToken();
+      const submissionData = { ...formData };
+      const response = await api.post("/projetos/", submissionData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.status >= 200 && response.status < 300) {
+        const novoProjeto = response.data;
+        toastService.success(t("toast.createProjectSuccessTitle"), t("toast.createProjectSuccessDetail"));
+        waitForTasksAndCreateEvents(novoProjeto.id, novoProjeto.name, formData.startDate, formData.endDate)
+          .then(success => {
+            if (success) {
+              toastService.success("Eventos criados!", "Os eventos foram adicionados ao Google Calendar");
+            }
+          });
+        if (onProjectCreated) onProjectCreated();
+        onClose();
+      } else {
+        throw new Error(response.data.detail || t("messages.errorNewProject"));
+      }
+    } catch (err) {
+      toastService.error(t("toast.createProjectErrorTitle"), err.message || t("toast.createProjectErrorDetail"));
+    } finally {
+      setLoading(false);
     }
   };
 
   const autoResizeTextarea = (element) => {
     if (element) {
       element.style.height = "auto";
-      const computedStyle = getComputedStyle(element);
-      const maxHeight = parseInt(computedStyle.maxHeight, 10);
-
-      if (!isNaN(maxHeight) && element.scrollHeight > maxHeight) {
-        element.style.height = `${maxHeight}px`;
-        element.style.overflowY = "auto";
-      } else {
-        element.style.height = `${element.scrollHeight}px`;
-        element.style.overflowY = "hidden";
-      }
+      element.style.height = `${element.scrollHeight}px`;
     }
   };
 
   useEffect(() => {
-    if (currentStep === 1 && descriptionTextareaRef.current) {
-      autoResizeTextarea(descriptionTextareaRef.current);
+    if (isOpen) {
+      // Reset form when modal opens
+      setFormData({
+        name: "", description: "", type: "TCC", phases: abntTemplates.map(t => t.value),
+        collaborators: [], startDate: "", endDate: "",
+      });
+      setCurrentStep(1);
+      setFormErrors({});
     }
-  }, [formData.description, currentStep]);
-
-  useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", handleEsc);
-    return () => document.removeEventListener("keydown", handleEsc);
-  }, [onClose]);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (modalRef.current && !modalRef.current.contains(e.target)) {
-        onClose();
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const projectTypes = ["TCC", t("inputs.academicArticle"), "ABNT"];
+  const projectTypes = ["TCC", t("inputs.academicArticle"), "ABNT", t("inputs.other")];
 
   return (
     <div className="modal-overlay">
       <div className="modal-content" ref={modalRef}>
         <div className="modal-header">
           <h2>{t("titles.newProject")}</h2>
-          <button className="close-btn" onClick={onClose}>
-            ×
-          </button>
+          <button className="close-btn" onClick={onClose}>×</button>
         </div>
         <div className="modal-body">
           <div className="step-indicator">
-            <div
-              className={`step-item ${currentStep === 1 ? "active" : ""} ${
-                currentStep > 1 ? "completed" : ""
-              }`}
-            >
+            <div className={`step-item ${currentStep === 1 ? "active" : ""} ${currentStep > 1 ? "completed" : ""}`}>
               <span className="step-number">1</span>
               <span className="step-label">{t("steps.basicInfo")}</span>
             </div>
             <div className="step-connector"></div>
-            <div
-              className={`step-item ${currentStep === 2 ? "active" : ""} ${
-                currentStep > 2 ? "completed" : ""
-              }`}
-            >
+            <div className={`step-item ${currentStep === 2 ? "active" : ""} ${currentStep > 2 ? "completed" : ""}`}>
               <span className="step-number">2</span>
-              <span className="step-label">
-                {t("steps.datesAndCollaborators")}
-              </span>
+              <span className="step-label">{t("steps.datesAndCollaborators")}</span>
             </div>
             <div className="step-connector"></div>
             <div className={`step-item ${currentStep === 3 ? "active" : ""}`}>
@@ -495,57 +300,15 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
                   <div className="form-left">
                     <div className="input-group">
                       <label htmlFor="projectName">{t("inputs.name")}</label>
-                      <input
-                        id="projectName"
-                        name="name"
-                        placeholder={t("placeholders.projectName")}
-                        value={formData.name}
-                        onChange={handleChange}
-                      />
-                      {formErrors.name && (
-                        <p className="input-error">{formErrors.name}</p>
-                      )}
+                      <input id="projectName" name="name" placeholder={t("placeholders.projectName")} value={formData.name} onChange={handleChange} />
+                      {formErrors.name && <p className="input-error">{formErrors.name}</p>}
                     </div>
-                    <div
-                      className={`input-group floating-label-group ${
-                        formData.description ? "has-value" : ""
-                      } ${formErrors.description ? "has-error" : ""}`}
-                      onClick={() =>
-                        descriptionTextareaRef.current &&
-                        descriptionTextareaRef.current.focus()
-                      }
-                    >
-                      <textarea
-                        id="projectDescription"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        onFocus={(e) =>
-                          e.target.parentElement.classList.add("focused")
-                        }
-                        onBlur={(e) => {
-                          if (!formData.description) {
-                            e.target.parentElement.classList.remove("focused");
-                          }
-                        }}
-                        ref={descriptionTextareaRef}
-                        rows="4"
-                      />
-                      <label htmlFor="projectDescription">
-                        {t("inputs.description")}
-                      </label>
-                      <div className="char-counter-footer">
-                        <span>{formData.description.length} / 500</span>
-                      </div>
+                    <div className={`input-group floating-label-group ${formData.description ? "has-value" : ""} ${formErrors.description ? "has-error" : ""}`} onClick={() => descriptionTextareaRef.current?.focus()}>
+                      <textarea id="projectDescription" name="description" value={formData.description} onChange={handleChange} ref={descriptionTextareaRef} rows="4" />
+                      <label htmlFor="projectDescription">{t("inputs.description")}</label>
+                      <div className="char-counter-footer"><span>{formData.description.length} / 500</span></div>
                     </div>
-                    {formErrors.description && (
-                      <p
-                        className="input-error"
-                        style={{ marginTop: "-0.5rem" }}
-                      >
-                        {formErrors.description}
-                      </p>
-                    )}
+                    {formErrors.description && <p className="input-error" style={{ marginTop: "-0.5rem" }}>{formErrors.description}</p>}
                   </div>
                   <div className="form-right">
                     <div className="form-options">
@@ -553,71 +316,19 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
                         <label>{t("inputs.projectType")}</label>
                         <div className="options">
                           {projectTypes.map((type) => (
-                            <button
-                              key={type}
-                              type="button"
-                              onClick={() => handleTypeChange(type)}
-                              className={
-                                formData.type === type ? "selected" : ""
-                              }
-                            >
-                              {type}
-                            </button>
+                            <button key={type} type="button" onClick={() => handleTypeChange(type)} className={formData.type === type ? "selected" : ""}>{type}</button>
                           ))}
                         </div>
                       </div>
                       <div className="phases mt-4">
-                        <label htmlFor="projectphases">
-                          {t("inputs.phases")}
-                        </label>
+                        <label htmlFor="projectphases">{t("inputs.phases")}</label>
                         <div className="options">
                           <div className="addOwnPhase">
-                            <input
-                              type="text"
-                              value={newPhase}
-                              onChange={(e) => setNewPhase(e.target.value)}
-                              placeholder={t("inputs.addCustomPhase")}
-                            />
-                            <button
-                              id="addPhaseButton"
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                if (
-                                  newPhase.trim() !== "" &&
-                                  !formData.phases.includes(newPhase)
-                                ) {
-                                  handlephasesChange(newPhase); // já seleciona
-                                  setCustomPhases((prev) => [
-                                    ...prev,
-                                    newPhase,
-                                  ]);
-                                  setNewPhase(""); // limpa o input
-                                }
-                              }}
-                            >
-                              {t("inputs.addPhase")}
-                            </button>
+                            <input type="text" value={newPhase} onChange={(e) => setNewPhase(e.target.value)} placeholder={t("inputs.addCustomPhase")} />
+                            <button id="addPhaseButton" type="button" onClick={(e) => { e.preventDefault(); if (newPhase.trim() !== "" && !formData.phases.includes(newPhase)) { handlephasesChange(newPhase); setCustomPhases((prev) => [...prev, newPhase]); setNewPhase(""); } }}>{t("inputs.addPhase")}</button>
                           </div>
-                          {[
-                            ...abntTemplates,
-                            ...customPhases.map((p) => ({
-                              value: p,
-                              label: p,
-                            })),
-                          ].map((tmpl) => (
-                            <button
-                              key={tmpl.value}
-                              type="button"
-                              onClick={() => handlephasesChange(tmpl?.value)}
-                              className={
-                                formData.phases.includes(tmpl?.value)
-                                  ? "selected"
-                                  : ""
-                              }
-                            >
-                              {t(tmpl?.label)}
-                            </button>
+                          {[...abntTemplates, ...customPhases.map((p) => ({ value: p, label: p }))].map((tmpl) => (
+                            <button key={tmpl.value} type="button" onClick={() => handlephasesChange(tmpl?.value)} className={formData.phases.includes(tmpl?.value) ? "selected" : ""}>{t(tmpl?.label)}</button>
                           ))}
                         </div>
                       </div>
@@ -633,67 +344,24 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
                   <div className="form-left">
                     <div className="input-group">
                       <label htmlFor="startDate">{t("inputs.startDate")}</label>
-                      <input
-                        type="date"
-                        id="startDate"
-                        name="startDate"
-                        value={formData.startDate}
-                        onChange={handleChange}
-                        min={formatDate(oneMonthAgo)}
-                        max={formatDate(today)}
-                      />
-                      {formErrors.startDate && (
-                        <p className="input-error">{formErrors.startDate}</p>
-                      )}
+                      <input type="date" id="startDate" name="startDate" value={formData.startDate} onChange={handleChange} min={formatDate(oneMonthAgo)} max={formatDate(today)} />
+                      {formErrors.startDate && <p className="input-error">{formErrors.startDate}</p>}
                     </div>
                     <div className="input-group">
                       <label htmlFor="endDate">{t("inputs.endDate")}</label>
-                      <input
-                        type="date"
-                        id="endDate"
-                        name="endDate"
-                        value={formData.endDate}
-                        onChange={handleChange}
-                      />
-                      {formErrors.endDate && (
-                        <p className="input-error">{formErrors.endDate}</p>
-                      )}
+                      <input type="date" id="endDate" name="endDate" value={formData.endDate} onChange={handleChange} />
+                      {formErrors.endDate && <p className="input-error">{formErrors.endDate}</p>}
                     </div>
                   </div>
                   <div className="form-right">
                     <h4>{t("titles.collaborators")}</h4>
                     <div className="input-group">
-                      <input
-                        id="collaboratorEmail"
-                        type="email"
-                        placeholder={t("messages.emailMessage")}
-                        value={emailInput}
-                        onChange={(e) => {
-                          setEmailInput(e.target.value);
-                          setEmailError("");
-                        }}
-                        onKeyDown={handleKeyDown}
-                      />
+                      <input id="collaboratorEmail" type="email" placeholder={t("messages.emailMessage")} value={emailInput} onChange={(e) => { setEmailInput(e.target.value); setEmailError(""); }} onKeyDown={handleKeyDown} />
                     </div>
-                    {emailError && (
-                      <p
-                        className="input-error"
-                        style={{ marginTop: "0.5rem" }}
-                      >
-                        {emailError}
-                      </p>
-                    )}
+                    {emailError && <p className="input-error" style={{ marginTop: "0.5rem" }}>{emailError}</p>}
                     <div className="email-list">
                       {formData.collaborators.map((email) => (
-                        <span key={email} className="email-chip">
-                          {email}
-                          <button
-                            type="button"
-                            onClick={() => removerColaborador(email)}
-                          >
-                            ×
-                          </button>
-                        </span>
+                        <span key={email} className="email-chip">{email}<button type="button" onClick={() => removerColaborador(email)}>×</button></span>
                       ))}
                     </div>
                   </div>
@@ -703,115 +371,40 @@ const ModalNewProject = ({ isOpen, onClose, onProjectCreated }) => {
             {currentStep === 3 && (
               <div>
                 <h3>{t("titles.step3Review")}</h3>
-                <p className="review-intro-message">
-                  {t("messages.reviewProjectDetails")}
-                </p>
+                <p className="review-intro-message">{t("messages.reviewProjectDetails")}</p>
                 <div className="review-grid">
                   <div className="review-section">
                     <h4>{t("titles.projectDetails")}</h4>
-                    <p>
-                      <strong>{t("inputs.name")}:</strong>{" "}
-                      {formData.name || t("messages.notSpecified")}
-                    </p>
-
+                    <p><strong>{t("inputs.name")}:</strong> {formData.name || t("messages.notSpecified")}</p>
                     <div className="review-item review-description-wrapper">
-                      <p style={{ marginBottom: "0.5rem" }}>
-                        <strong>{t("inputs.descriptionShort")}:</strong>
-                      </p>
-                      <div
-                        className={`review-description-content ${
-                          isDescriptionExpanded ? "expanded" : "collapsed"
-                        }`}
-                      >
-                        {formData.description || t("messages.notSpecified")}
-                      </div>
-                      {formData.description &&
-                        formData.description.length > 150 && (
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setIsDescriptionExpanded(!isDescriptionExpanded)
-                            }
-                            className="toggle-description-btn"
-                          >
-                            {isDescriptionExpanded
-                              ? t("buttons.readLess")
-                              : t("buttons.readMore")}
-                          </button>
-                        )}
+                      <p style={{ marginBottom: "0.5rem" }}><strong>{t("inputs.descriptionShort")}:</strong></p>
+                      <div className={`review-description-content ${isDescriptionExpanded ? "expanded" : "collapsed"}`}>{formData.description || t("messages.notSpecified")}</div>
+                      {formData.description && formData.description.length > 150 && (<button type="button" onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)} className="toggle-description-btn">{isDescriptionExpanded ? t("buttons.readLess") : t("buttons.readMore")}</button>)}
                     </div>
-
-                    <p>
-                      <strong>{t("inputs.projectType")}:</strong>{" "}
-                      {t(formData.type) || t("messages.notSpecified")}
-                    </p>
-                    <p>
-                      <strong>{t("inputs.phases")}:</strong>{" "}
-                      {formData.phases.length > 0
-                        ? formData.phases
-                            .map((value) => {
-                              const template = abntTemplates.find(
-                                (tmpl) => tmpl?.value === value
-                              );
-                              return template ? t(template.label) : value; // se não tiver no padrão, usa o próprio valor
-                            })
-                            .join(", ")
-                        : t("messages.notSpecified")}
-                    </p>
+                    <p><strong>{t("inputs.projectType")}:</strong> {t(formData.type) || t("messages.notSpecified")}</p>
+                    <p><strong>{t("inputs.phases")}:</strong> {formData.phases.length > 0 ? formData.phases.map((value) => { const template = abntTemplates.find((tmpl) => tmpl?.value === value); return template ? t(template.label) : value; }).join(", ") : t("messages.notSpecified")}</p>
                   </div>
                   <div className="review-section">
                     <h4>{t("titles.datesAndCollaborators")}</h4>
-                    <p>
-                      <strong>{t("inputs.startDate")}:</strong>{" "}
-                      {formData.startDate || t("messages.notSpecified")}
-                    </p>
-                    <p>
-                      <strong>{t("inputs.endDate")}:</strong>{" "}
-                      {formData.endDate || t("messages.notSpecified")}
-                    </p>
-                    <p>
-                      <strong>{t("titles.collaborators")}:</strong>
-                    </p>
-                    {formData.collaborators.length > 0 ? (
-                      <ul className="review-collaborators-list">
-                        {formData.collaborators.map((email) => (
-                          <li key={email}>{email}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p>{t("messages.noCollaborators")}</p>
-                    )}
+                    <p><strong>{t("inputs.startDate")}:</strong> {formData.startDate || t("messages.notSpecified")}</p>
+                    <p><strong>{t("inputs.endDate")}:</strong> {formData.endDate || t("messages.notSpecified")}</p>
+                    <p><strong>{t("titles.collaborators")}:</strong></p>
+                    {formData.collaborators.length > 0 ? (<ul className="review-collaborators-list">{formData.collaborators.map((email) => (<li key={email}>{email}</li>))}</ul>) : (<p>{t("messages.noCollaborators")}</p>)}
                   </div>
                 </div>
               </div>
             )}
-
             <div className="navigation-buttons">
-              {currentStep > 1 && (
-                <button type="button" className="prev-btn" onClick={prevStep}>
-                  {t("buttons.previous")}
-                </button>
-              )}
-              {currentStep < 3 && (
-                <button type="button" className="next-btn" onClick={nextStep}>
-                  {t("buttons.next")}
-                </button>
-              )}
-              {currentStep === 3 && (
-                <button type="submit" className="save-btn" disabled={loading}>
-                  {loading ? t("buttons.saving") : t("buttons.createProject")}
-                </button>
-              )}
+              {currentStep > 1 && (<button type="button" className="prev-btn" onClick={prevStep}>{t("buttons.previous")}</button>)}
+              {currentStep < 3 && (<button type="button" className="next-btn" onClick={nextStep}>{t("buttons.next")}</button>)}
+              {currentStep === 3 && (<button type="submit" className="save-btn" disabled={loading}>{loading ? t("buttons.saving") : t("buttons.createProject")}</button>)}
             </div>
-            {formErrors.submit && (
-              <p className="input-error center" style={{ marginTop: "10px" }}>
-                {formErrors.submit}
-              </p>
-            )}
+            {formErrors.submit && <p className="input-error center" style={{ marginTop: "10px" }}>{formErrors.submit}</p>}
           </form>
         </div>
       </div>
     </div>
   );
 };
+
 export default ModalNewProject;
