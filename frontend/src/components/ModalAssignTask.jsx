@@ -10,33 +10,18 @@ const ModalAssignTask = ({
   onClose, 
   taskId, 
   projectId, 
-  onAssigned, 
-  projectName,
+  onAssignSuccess, 
   collaborators: initialCollaborators = [] 
 }) => {
   const modalRef = useRef();
   const { t } = useTranslation();
 
-
   const [collaborators, setCollaborators] = useState(initialCollaborators);
-  const [selectedUserName, setSelectedUserName] = useState(""); // Agora armazena o nome
-  
-  const [selectedUserId, setSelectedUserId] = useState(""); // ← Mudei para selectedUserId
+  const [selectedUserId, setSelectedUserId] = useState(""); // Mudado para selectedUserId
   const [loading, setLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
 
-  const findUserIdByName = (userName) => {
-    const collaborator = collaborators.find(collab => {
-      if (typeof collab === 'object') {
-        const fullName = collab.full_name || collab.name || '';
-        return fullName === userName;
-      }
-      return false;
-    });
-    return collaborator?.id || null;
-  };
-
-
+  // Resetar ao abrir/fechar modal
   useEffect(() => {
     if (!isOpen) {
       setSelectedUserId("");
@@ -44,56 +29,90 @@ const ModalAssignTask = ({
     }
     setCollaborators(initialCollaborators);
   }, [isOpen, initialCollaborators]);
- 
-  // Submissão - CORRIGIDA
+
+  // Função para extrair o ID do colaborador
+  const getCollaboratorId = (collab) => {
+    if (typeof collab === 'object') {
+      return collab.id; // SEMPRE use o ID numérico
+    }
+    return collab;
+  };
+
+  // Função para extrair o nome para exibição
+  const getCollaboratorDisplayName = (collab) => {
+    if (typeof collab === 'object') {
+      return collab.full_name || collab.name || collab.email || 'Unknown';
+    }
+    return collab;
+  };
+
+  // Função para extrair email
+  const getCollaboratorEmail = (collab) => {
+    if (typeof collab === 'object') {
+      return collab.email;
+    }
+    return null;
+  };
+
+  // Submissão corrigida
   const handleAssign = async (e) => {
-  e.preventDefault();
-  
-  // VERIFIQUE SE O USER_ID É VÁLIDO
-  if (!selectedUserId || selectedUserId === "0") {
-    setFormErrors({ user: t("messages.selectCollaborator") });
-    return;
-  }
-
-  setLoading(true);
-  setFormErrors({});
-
-  try {
-    console.log("Debug - Atribuindo tarefa:", {
-      taskId,
-      selectedUserId,
-      selectedUserIdType: typeof selectedUserId,
-      projectId
-    });
-
-    // VERIFIQUE SE O USER_ID É UM ID VÁLIDO (MAIOR QUE 0)
-    const userIdNum = parseInt(selectedUserId);
-    if (userIdNum <= 0) {
-      throw new Error("ID de usuário inválido");
+    e.preventDefault();
+    
+    // Validação
+    if (!selectedUserId) {
+      setFormErrors({ user: t("messages.selectCollaborator") });
+      return;
     }
 
-    const result = await assignTaskToUser(taskId, selectedUserId);
-    
-    console.log("Tarefa atribuída com sucesso:", result);
-    
-    if (onAssigned) onAssigned(result);
-    onClose();
-  } catch (err) {
-    console.error("Erro detalhado ao atribuir tarefa:", err);
-    
-    let errorMessage = t("messages.errorAssignTask");
-    
-    if (err.response?.data?.error) {
-      errorMessage = err.response.data.error;
-    } else if (err.message) {
-      errorMessage = err.message;
+    setLoading(true);
+    setFormErrors({});
+
+    try {
+      console.log("Atribuindo tarefa:", { 
+        taskId, 
+        selectedUserId,
+        collaborators: collaborators.map(c => ({ id: c.id, name: c.full_name, email: c.email }))
+      });
+      
+      // Chama a função de atribuição
+      const response = await assignTaskToUser(taskId, selectedUserId);
+      
+      console.log("Resposta da API:", response);
+      
+      // Encontra o colaborador selecionado para passar os dados completos
+      const selectedCollaborator = collaborators.find(collab => 
+        getCollaboratorId(collab) === parseInt(selectedUserId) || 
+        getCollaboratorId(collab) === selectedUserId
+      );
+      
+      console.log("Colaborador encontrado:", selectedCollaborator);
+      
+      // Chama o callback de sucesso
+      if (onAssignSuccess) {
+        onAssignSuccess(selectedCollaborator || { 
+          id: selectedUserId,
+          full_name: 'Unknown',
+          email: 'unknown@email.com'
+        });
+      }
+      
+      // Fecha o modal
+      onClose();
+      
+    } catch (err) {
+      console.error("Erro detalhado ao atribuir tarefa:", err);
+      console.error("Response data:", err.response?.data);
+      
+      const errorMessage = err.response?.data?.error 
+        || err.response?.data?.message 
+        || err.message 
+        || t("messages.errorAssignTask");
+      
+      setFormErrors({ submit: errorMessage });
+    } finally {
+      setLoading(false);
     }
-    
-    setFormErrors({ submit: errorMessage });
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   // Fechar modal com ESC
   useEffect(() => {
@@ -129,35 +148,24 @@ const ModalAssignTask = ({
             <div className="input-group">
               <label>{t("inputs.selectCollaborator")}</label>
               <select
-                value={selectedUserId} // ← Agora usa selectedUserId
-                onChange={(e) => setSelectedUserId(e.target.value)}
+                value={selectedUserId}
+                onChange={(e) => {
+                  setSelectedUserId(e.target.value);
+                  setFormErrors({});
+                }}
               >
                 <option value="">{t("messages.selectOption")}</option>
                 {collaborators.map((collab, index) => {
-                  // Para objetos User do Django - GARANTIR que usa ID
-                  if (typeof collab === 'object' && collab.id) {
-                    return (
-                      <option key={collab.id} value={collab.id}> 
-                        {collab.full_name || collab.name || collab.email} 
-                        {collab.email ? ` (${collab.email})` : ''}
-                      </option>
-                    );
-                  } else if (typeof collab === 'object' && !collab.id) {
-                    // Se for objeto mas não tem ID, usar índice como fallback
-                    console.warn('Colaborador sem ID:', collab);
-                    return (
-                      <option key={index} value={index}>
-                        {collab.full_name || collab.name || collab.email || 'Usuário sem nome'}
-                      </option>
-                    );
-                  } else {
-                    // Se for string (formato antigo) - converter para ID se possível
-                    return (
-                      <option key={index} value={index}> 
-                        {collab}
-                      </option>
-                    );
-                  }
+                  const collabId = getCollaboratorId(collab);
+                  const displayName = getCollaboratorDisplayName(collab);
+                  const email = getCollaboratorEmail(collab);
+                  
+                  return (
+                    <option key={collabId || index} value={collabId}>
+                      {displayName}
+                      {email ? ` (${email})` : ''}
+                    </option>
+                  );
                 })}
               </select>
               {formErrors.user && (

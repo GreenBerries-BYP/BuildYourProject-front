@@ -20,6 +20,7 @@ const TaskSection = ({
   projetoId,
   nomeTarefa, 
   subTarefas, 
+  responsavel,
   expanded, 
   onToggle, 
   onDeleteClick, 
@@ -39,6 +40,7 @@ const TaskSection = ({
     responsavel: sub.responsavel || '-',
     nome: nomeTarefa,
   }));
+  
 
   // recalcula o progresso sempre que subtasks mudar
   const progresso = useMemo(() => {

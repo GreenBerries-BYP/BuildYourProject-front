@@ -234,6 +234,8 @@ const en = {
     lowRisk: "LOW RISK",
     mediumRisk: "MEDIUM RISK", 
     highRisk: "HIGH RISK",
+    taskNameExists: "A task with that name already exists",
+    validationError: "Error at data validation",
   },
   modalDeleteProject: {
     typeYesToDelete: "Type",

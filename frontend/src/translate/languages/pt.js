@@ -233,6 +233,8 @@ const pt = {
     lowRisk: "BAIXO RISCO",
     mediumRisk: "MÉDIO RISCO",
     highRisk: "ALTO RISCO",
+    taskNameExists: "Já existe uma tarefa com este nome",
+    validationError: "Erro na validação dos dados",
   },
   modalDeleteProject: {
     typeYesToDelete: "Digite",

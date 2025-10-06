@@ -188,38 +188,29 @@ export const aplicarSugestao = async (projectId, sugestaoId, acao) => {
   }
 };
 
-// atribuição de tarefas
+// api/api.js
 export const assignTaskToUser = async (taskId, userId) => {
-  try {
-    console.log('Debug - Dados enviados para assign:', { 
-      taskId, 
-      userId
-    });
-    
-    // Garantir que userId é numérico
-    const numericUserId = parseInt(userId);
-    
-    if (isNaN(numericUserId)) {
-      throw new Error('ID de usuário inválido');
-    }
-                                     
-    const response = await api.post(`/tasks/${taskId}/assign/`, {
-      user_id: numericUserId
-    });
+  const token = getToken();
+  
+  // DEBUG: Log para verificar os dados
+  console.log("Enviando para API:", { taskId, userId });
+  
+  const response = await api.post(`/tasks/${taskId}/assign/`, {
+    userId: userId
+  }, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  
+  return response.data;
+};
 
-    console.log('Resposta do assign:', response.data);
-    return response.data;
-
-  } catch (error) {
-    console.error('Erro ao atribuir tarefa:', error);
-    
-    if (error.response) {
-      console.error('Status:', error.response.status);
-      console.error('Data:', error.response.data);
-    }
-    
-    throw error;
-  }
+// api/api.js
+export const getProjectCollaborators = async (projectId) => {
+  const token = getToken();
+  const response = await api.get(`/projetos/${projectId}/collaborators/`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
 };
 
 export const createGoogleCalendarEvent = async (evento) => {

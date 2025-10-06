@@ -135,7 +135,9 @@ const ViewProject = ({
                             <h4>{t("viewProject.collaboratorsTitle", "Collaborators")}:</h4>
                             <ul>
                                 {collaborators.map((collab, idx) => (
-                                    <li key={idx}>{collab}</li>
+                                    <li key={collab.id || idx}>
+                                        {collab.full_name}
+                                    </li>
                                 ))}
                             </ul>
                         </div>
@@ -232,7 +234,6 @@ const ViewProject = ({
                     setSelectedTasktId(null);
                 }}
             />
-            
             <ModalAssignTask
                 isOpen={assignModalOpen}
                 onClose={() => setAssignModalOpen(false)}
@@ -256,6 +257,9 @@ const ViewProject = ({
                     setSelectedTaskIdForAssign(null);
                 }}
             />
+
+            {console.log(collaborators)}
+            
             
             <ModalAnaliseProjeto
                 isOpen={analiseModalOpen}

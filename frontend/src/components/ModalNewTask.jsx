@@ -27,44 +27,86 @@ const ModalNewTask = ({
   const [loading, setLoading] = useState(false);
   const [creatingCalendarEvent, setCreatingCalendarEvent] = useState(false);
 
-  // Validação do formulário
-  const validateForm = () => {
+    // Adicionar esta função de validação
+  const validateUniqueName = async (taskName) => {
+    if (!taskName.trim() || isSubtask) return true; // Não valida subtarefas
+    
+    try {
+      const token = getToken();
+      const response = await api.get(`/projetos/${projetoId}/tarefas`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      const existingTasks = response.data;
+      return !existingTasks.some(task => task.nome.toLowerCase() === taskName.toLowerCase());
+    } catch (error) {
+      console.error("Erro ao verificar tarefas existentes:", error);
+      return true; // Em caso de erro, permite a criação
+    }
+  };
+
+  // Atualizar a validação do formulário
+  const validateForm = async () => {
     const errors = {};
     if (!nome.trim()) errors.nome = t("messages.taskNameRequired");
     if (!descricao.trim()) errors.descricao = t("messages.taskDescriptionRequired");
     if (!dataEntrega) errors.dataEntrega = t("messages.dueDateRequired");
+    
+    // Validação de nome único apenas para tarefas principais
+    if (nome.trim() && !isSubtask) {
+      const isUnique = await validateUniqueName(nome);
+      if (!isUnique) {
+        errors.nome = t("messages.taskNameExists");
+      }
+    }
+    
     return errors;
   };
 
   // Submissão do formulário
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
-    const errors = validateForm();
-    setFormErrors(errors);
-    if (Object.keys(errors).length > 0) return;
-
-    const tarefa = {
-      nome,
-      descricao,
-      dataEntrega,
-      user: responsavel,
-      projetoId,
-    };
-
-    // Se for subtarefa, adiciona o parentTaskId
-    if (isSubtask && parentTaskId) {
-      tarefa.parentTaskId = parentTaskId;
-    }
 
     setLoading(true);
     try {
+
+      const errors = await validateForm(); // Agora é async
+      setFormErrors(errors);
+      
+      if (Object.keys(errors).length > 0) {
+        setLoading(false);
+        return;
+      }
       const token = getToken();
 
-      const endpoint = isSubtask && parentTaskId 
-        ? `/projetos/${projetoId}/tarefas/${parentTaskId}/subtasks` // ← ENDPOINT PARA SUBTAREFAS
-        : `/projetos/${projetoId}/tarefas-novas/`; // ← ENDPOINT PARA TAREFAS PRINCIPAIS
+      let requestData;
+      let endpoint;
 
-      const response = await api.post(endpoint, tarefa, {
+      if (isSubtask && parentTaskId) {
+        // ESTRUTURA PARA SUBTASK
+        endpoint = `/projetos/${projetoId}/tarefas/${parentTaskId}/subtasks`;
+        requestData = {
+          nome: nome,
+          descricao: descricao,
+          dataEntrega: dataEntrega,
+          user: responsavel, // Email do responsável
+        };
+      } else {
+        // ESTRUTURA PARA TAREFA PRINCIPAL
+        endpoint = `/projetos/${projetoId}/tarefas-novas/`;
+        requestData = {
+          nome: nome,
+          descricao: descricao,
+          dataEntrega: dataEntrega,
+          user: responsavel, // Email do responsável
+          projetoId: projetoId,
+        };
+      }
+
+      console.log("Enviando dados:", requestData); // Para debug
+
+      const response = await api.post(endpoint, requestData, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -72,30 +114,44 @@ const ModalNewTask = ({
       if (!isSubtask) {
         try {
           setCreatingCalendarEvent(true);
-          await createGoogleCalendarEventFromTask(tarefa, nomeProjeto);
-          console.log(' Evento criado no Google Calendar com sucesso');
+          
+          // Criar objeto tarefa completo para o calendário
+          const tarefaParaCalendario = {
+            id: response.data.id || response.data.task_id,
+            nome: nome,
+            descricao: descricao,
+            dataEntrega: dataEntrega,
+            responsavel: responsavel,
+          };
+          
+          await createGoogleCalendarEventFromTask(tarefaParaCalendario, nomeProjeto);
+          console.log('Evento criado no Google Calendar com sucesso');
         } catch (calendarError) {
-          console.log(' Evento não criado no Google Calendar (não crítico)');
+          console.log('Evento não criado no Google Calendar (não crítico)', calendarError);
         } finally {
           setCreatingCalendarEvent(false);
         }
       }
 
-      // Prepara os dados para a UI
+      // Preparar dados para UI
+      const selectedCollaborator = collaborators.find(collab => collab.email === responsavel);
+
       const tarefaParaUI = {
-        id: response.data.id, 
+        id: response.data.id || response.data.task_id,
         nome: nome,
         status: 'pendente',
         prazo: dataEntrega,
-        responsavel: responsavel,
+        responsavel: selectedCollaborator ? selectedCollaborator.full_name : responsavel, // Nome ou email
         descricao: descricao,
+        user: responsavel, // Garantir que o email também seja salvo
       };
 
       if (onTaskCreated) onTaskCreated(tarefaParaUI);
       onClose();
     } catch (err) {
+      console.error("Erro ao criar tarefa:", err);
       setFormErrors({ 
-        submit: err.message || t(isSubtask ? "messages.errorNewSubtask" : "messages.errorNewTask") 
+        submit: err.response?.data?.message || err.message || t(isSubtask ? "messages.errorNewSubtask" : "messages.errorNewTask") 
       });
     } finally {
       setLoading(false);
@@ -178,9 +234,9 @@ const ModalNewTask = ({
                   onChange={(e) => setResponsavel(e.target.value || null)}
                 >
                   <option value="">{t("messages.none")}</option>
-                  {collaborators.map((collab, index) => (
-                    <option key={index} value={collab}>
-                      {collab}
+                  {collaborators.map((collab) => (
+                    <option key={collab.id} value={collab.email}> {/* ← Usar email como value */}
+                      {collab.full_name} ({collab.email}) {/* ← Mostrar nome e email */}
                     </option>
                   ))}
                 </select>
