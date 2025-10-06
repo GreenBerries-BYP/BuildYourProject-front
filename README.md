@@ -23,7 +23,7 @@
 - [Equipe](#-equipe)
 
 ### Acessar o Projeto
-  Nosso projeto está hospedado no [render](https://render.com) e para acessá-lo, basta acessar este link: https://buildyourproject-front.onrender.com/ ou [clicar aqui!](https://buildyourproject-front.onrender.com/)
+  Nosso projeto está hospedado no [render](https://render.com) e para acessá-lo, basta acessar este link: https://buildyourproject-front-obrg.onrender.com/ ou [clicar aqui!](https://buildyourproject-front-obrg.onrender.com/)
 
 ## 👥 Equipe
 
