@@ -62,6 +62,7 @@ const PrivacyPolicy = () => {
         </div>
       </header>
 
+    <main className="termos-content">
       <section>
         <h2>{t("privacy.dataCollection.title", "1. Coleta de Dados")}</h2>
         <p>{t(
@@ -106,6 +107,7 @@ const PrivacyPolicy = () => {
           "Você pode acessar, corrigir ou excluir suas informações pessoais a qualquer momento. Entre em contato conosco para exercer esses direitos."
         )}</p>
       </section>
+    </main>
 
       <footer>
         <p>{t(

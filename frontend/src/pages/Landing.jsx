@@ -1,4 +1,3 @@
-// Removed useState and api imports as they are not used
 import "../styles/Landing.css";
 import { MdMenu } from 'react-icons/md';
 
@@ -462,10 +461,10 @@ const Landing = () => {
               )}
             </p>
             <div className="links">
-              <a href="/use_terms">
+              <a href="/use_terms" target="_blank">
                 {t("landing.footer.termsLink", "Termos e condições")}
               </a>
-              <a href="/privacy_policy ">
+              <a href="/privacy_policy" target="_blank">
                 {t("landing.footer.privacyLink", "Política de privacidade")}
               </a>
             </div>

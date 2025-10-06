@@ -3,6 +3,10 @@
   color: var(--black-color);
 }
 
+.info-page-container h2 {
+  color: var(--white-color);
+}
+
 .btn-back {
     border-radius: 8px;
     border: 2px solid var(--white-color);
