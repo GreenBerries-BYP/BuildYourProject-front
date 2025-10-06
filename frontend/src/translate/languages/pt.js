@@ -288,6 +288,7 @@ const pt = {
     descriptionShort: "Descrição",
     email: "E-mail",
     projectType: "Tipo de Projeto",
+    other: "Outro",
     phases: "Etapas",
     addPhase: "Adicionar etapa",
     addCustomPhase: "Adicione sua própria etapa",

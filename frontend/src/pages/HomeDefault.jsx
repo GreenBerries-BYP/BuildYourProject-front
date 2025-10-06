@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { fetchProjects } from "../api/api";
 import { fetchProjectWithTasks } from "../api/api";
+import { useSearch } from "../context/SearchContext";
 
 import ProjectCard from "../components/ProjectCard";
 import CreateProjectCard from "../components/CreateProjectCard";
@@ -18,6 +19,9 @@ function HomeDefault() {
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [projetos, setProjetos] = useState([]);
+  const [projetosFiltrados, setProjetosFiltrados] = useState([]);
+  const { searchTerm } = useSearch();
 
   useEffect(() => {
     fetchUserData()
@@ -30,6 +34,7 @@ function HomeDefault() {
       });
   }, []);
 
+
   useEffect(() => {
     if (modalAberto) {
       document.body.classList.add("no-scroll");
@@ -40,6 +45,15 @@ function HomeDefault() {
       document.body.classList.remove("no-scroll");
     };
   }, [modalAberto, projetoSelecionado]);
+
+  // Filtra os projetos sempre que o termo de busca ou a lista original mudar
+  useEffect(() => {
+    const lowercasedFilter = searchTerm.toLowerCase();
+    const filteredData = projetos.filter(item => {
+      return item.name.toLowerCase().includes(lowercasedFilter);
+    });
+    setProjetosFiltrados(filteredData);
+  }, [searchTerm, projetos]);
 
   const handleCreateProject = () => {
     setModalAberto(true);
@@ -60,8 +74,6 @@ function HomeDefault() {
     console.log(projetoSelecionado);
     console.log(selectedProjectId);
   };
-
-  const [projetos, setProjetos] = useState([]);
 
   const carregarProjetos = useCallback(async () => {
     try {
@@ -120,15 +132,15 @@ function HomeDefault() {
             collaborators={projetoSelecionado.collaborators || []}
             tarefasProjeto={projetoSelecionado.tarefasProjeto || []}
             onVoltar={handleVoltar}
-            dataInicio={projetoSelecionado.data_inicio}   
-            dataFim={projetoSelecionado.data_fim} 
+            dataInicio={projetoSelecionado.data_inicio}
+            dataFim={projetoSelecionado.data_fim}
           />
         </div>
       ) : (
         <div className="projects-area">
           <CreateProjectCard onClick={handleCreateProject} />
 
-          {projetos.map((projeto, index) => {
+          {projetosFiltrados.map((projeto, index) => {
             const totalTasks = projeto.tasks.length;
             const completedTasks = projeto.tasks.filter(
               (t) => t.is_completed

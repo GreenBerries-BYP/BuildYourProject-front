@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PiCirclesThreeFill } from "react-icons/pi";
 import { MdHome, MdLogout, MdInfo, MdOutlineCalendarMonth, MdShare, MdOutlineTaskAlt } from "react-icons/md";
+import { useSearch } from '../context/SearchContext';
 import '../styles/Sidebar.css';
 import { NavLink } from 'react-router-dom';
 import { i18n } from "../translate/i18n";
@@ -8,6 +9,7 @@ import { i18n } from "../translate/i18n";
 
 const Sidebar = ({ onToggle }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { setSearchTerm } = useSearch();
 
   const handleMouseEnter = () => {
     setIsExpanded(true);
@@ -18,6 +20,9 @@ const Sidebar = ({ onToggle }) => {
     onToggle(false);
   };
 
+  const handleNavClick = () => {
+    setSearchTerm('');
+  };
 
   const topItems = [
     { icon: <MdHome />, label: i18n.t('sideBar.home'), path: '/home' },
@@ -61,6 +66,7 @@ const Sidebar = ({ onToggle }) => {
               className={({ isActive }) =>
                 `sidebar-item ${isActive ? 'on-page' : ''}`
               }
+              onClick={handleNavClick}
             >
               <span className="sidebar-icon">{item.icon}</span>
               {isExpanded && (
@@ -84,6 +90,7 @@ const Sidebar = ({ onToggle }) => {
             className={({ isActive }) =>
               `sidebar-item ${isActive ? 'on-page' : ''}`
             }
+            onClick={handleNavClick}
           >
             <span className="sidebar-icon">{item.icon}</span>
             {isExpanded && <span className="sidebar-label">{item.label}</span>}
@@ -91,7 +98,7 @@ const Sidebar = ({ onToggle }) => {
 
         ))}
       </div>
-    </div>
+    </div >
   );
 };
 

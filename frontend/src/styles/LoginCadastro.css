@@ -145,6 +145,7 @@ label {
   top: -1rem;
   font-size: 1.4rem;
   color: var(--purple-saturated-color);
+  margin-bottom: 0.5rem;
 }
 
 .required-asterisk {

@@ -288,6 +288,7 @@ const en = {
     descriptionShort: "Description",
     email: "Email",
     projectType: "Project Type",
+    other: "Other",
     phases: "Steps",
     addPhase: "Add step",
     addCustomPhase: "Add your own phase",

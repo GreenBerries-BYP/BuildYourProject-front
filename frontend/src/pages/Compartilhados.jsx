@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchProjects, fetchSharedWithMe, fetchProjectWithTasks } from '../api/api';
+import { useSearch } from '../context/SearchContext';
 
 import ProjectCard from "../components/ProjectCard";
 import ViewProject from "../components/ViewProject";
@@ -13,9 +14,12 @@ import { fetchUserData } from '../api/userService';
 function Compartilhados() {
   const [modalAberto, setModalAberto] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [projetos, setProjetos] = useState([]);
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [projetosFiltrados, setProjetosFiltrados] = useState([]);
+  const { searchTerm } = useSearch();
 
   useEffect(() => {
     fetchUserData()
@@ -28,6 +32,14 @@ function Compartilhados() {
       });
   }, []);
 
+    useEffect(() => {
+    const lowercasedFilter = searchTerm.toLowerCase();
+    const filteredData = projetos.filter(item => {
+      return item.name.toLowerCase().includes(lowercasedFilter);
+    });
+    setProjetosFiltrados(filteredData);
+  }, [searchTerm, projetos]);
+
   const handleAbrirProjeto = async (projeto) => {
     try {
       // Use a mesma função que funciona em Projetos
@@ -37,21 +49,20 @@ function Compartilhados() {
     } catch (error) {
       console.error("Erro ao carregar projeto completo:", error);
     }
-  };  
+  };
 
   const handleVoltar = () => {
     setProjetoSelecionado(null);
     console.log(projetoSelecionado)
   };
 
-  const [projetos, setProjetos] = useState([]);
 
 
   useEffect(() => {
     const carregarProjetos = async () => {
       try {
         const data = await fetchSharedWithMe();
-        
+
         setProjetos(data);
       } catch (error) {
         console.error('Erro ao carregar projetos:', error);
@@ -67,47 +78,47 @@ function Compartilhados() {
 
   return (
     <>
-        {projetoSelecionado ? (
-          <div className='d-flex w-100 justify-content-center align-items-center'>
-            <ViewProject
-              projetoId={selectedProjectId}
-              nomeProjeto={projetoSelecionado.name}
-              admProjeto={projetoSelecionado.creator_name}
-              numIntegrantes={projetoSelecionado.collaborator_count}
-              collaborators={projetoSelecionado.collaborators || []}
-              tarefasProjeto={projetoSelecionado.tarefasProjeto || []}
-              onVoltar={handleVoltar}
-              dataInicio={projetoSelecionado.data_inicio}   
-              dataFim={projetoSelecionado.data_fim} 
-            />
-          </div>
-        ) : (
-          <div className="projects-area">
+      {projetoSelecionado ? (
+        <div className='d-flex w-100 justify-content-center align-items-center'>
+          <ViewProject
+            projetoId={selectedProjectId}
+            nomeProjeto={projetoSelecionado.name}
+            admProjeto={projetoSelecionado.creator_name}
+            numIntegrantes={projetoSelecionado.collaborator_count}
+            collaborators={projetoSelecionado.collaborators || []}
+            tarefasProjeto={projetoSelecionado.tarefasProjeto || []}
+            onVoltar={handleVoltar}
+            dataInicio={projetoSelecionado.data_inicio}
+            dataFim={projetoSelecionado.data_fim}
+          />
+        </div>
+      ) : (
+        <div className="projects-area">
 
-            {projetos.map((projeto, index) => {
-              const totalTasks = projeto.tasks?.length || 0;
-              const completedTasks = projeto.tasks?.filter((t) => t.is_completed).length || 0;
-              const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-              console.log(projeto.tasks);
-              
+          {projetosFiltrados.map((projeto, index) => {
+            const totalTasks = projeto.tasks?.length || 0;
+            const completedTasks = projeto.tasks?.filter((t) => t.is_completed).length || 0;
+            const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            console.log(projeto.tasks);
 
-              return (
-                <ProjectCard
-                 
-                  key={projeto.id}            
-                  projetoId={projeto.id}  
-                  nomeProjeto={projeto.name}
-                  progressoProjeto={progressoProjeto}
-                  progressoIndividual={progressoProjeto} // por enquanto igual
-                  tarefasProjeto={projeto.tasks?.slice(0, 4) || []}
-                  estaAtrasado={false} // se quiser calcular depois, pode colocar lógica
-                  onClick={() => handleAbrirProjeto(projeto)}
-                  onDeleteClick={handleDeleteProjectClick}
-                />
-              );
-            })}
-          </div>
-        )}
+
+            return (
+              <ProjectCard
+
+                key={projeto.id}
+                projetoId={projeto.id}
+                nomeProjeto={projeto.name}
+                progressoProjeto={progressoProjeto}
+                progressoIndividual={progressoProjeto} // por enquanto igual
+                tarefasProjeto={projeto.tasks?.slice(0, 4) || []}
+                estaAtrasado={false} // se quiser calcular depois, pode colocar lógica
+                onClick={() => handleAbrirProjeto(projeto)}
+                onDeleteClick={handleDeleteProjectClick}
+              />
+            );
+          })}
+        </div>
+      )}
 
       <ModalNewProject
         isOpen={modalAberto}

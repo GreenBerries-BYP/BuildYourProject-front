@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchProjects } from '../api/api';
 import { fetchProjectWithTasks } from '../api/api';
+import { useSearch } from '../context/SearchContext';
 
 
 import ProjectCard from "../components/ProjectCard";
@@ -32,8 +33,11 @@ function Projetos() {
   const [modalAberto, setModalAberto] = useState(false);
   const [userData, setUserData] = useState(null);
   const [projetoSelecionado, setProjetoSelecionado] = useState(null);
+  const [projetos, setProjetos] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [projetosFiltrados, setProjetosFiltrados] = useState([]);
+  const { searchTerm } = useSearch();
 
   useEffect(() => {
     fetchUserData()
@@ -45,6 +49,14 @@ function Projetos() {
         console.error('Erro ao buscar dados do usuário:', error);
       });
   }, []);
+
+  useEffect(() => {
+    const lowercasedFilter = searchTerm.toLowerCase();
+    const filteredData = projetos.filter(item => {
+      return item.name.toLowerCase().includes(lowercasedFilter);
+    });
+    setProjetosFiltrados(filteredData);
+  }, [searchTerm, projetos]);
 
   useEffect(() => {
     if (modalAberto) {
@@ -66,7 +78,6 @@ function Projetos() {
     console.log(projetoSelecionado)
   };
 
-  const [projetos, setProjetos] = useState([]);
 
 
   useEffect(() => {
@@ -111,23 +122,23 @@ function Projetos() {
             collaborators={projetoSelecionado.collaborators || []}
             tarefasProjeto={projetoSelecionado.tarefasProjeto || []}
             onVoltar={handleVoltar}
-            dataInicio={projetoSelecionado.data_inicio}   
-            dataFim={projetoSelecionado.data_fim}  
-            
+            dataInicio={projetoSelecionado.data_inicio}
+            dataFim={projetoSelecionado.data_fim}
+
           />
         </div>) : (
         <div className="projects-area">
           <CreateProjectCard onClick={handleCreateProject} />
-          
-          {projetos.map((projeto, index) => {
+
+          {projetosFiltrados.map((projeto, index) => {
             const totalTasks = projeto.tasks?.length || 0;
             const completedTasks = projeto.tasks?.filter((t) => t.is_completed).length || 0;
             const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
             return (
               <ProjectCard
-                key={projeto.id}            
-                projetoId={projeto.id}  
+                key={projeto.id}
+                projetoId={projeto.id}
                 nomeProjeto={projeto.name}
                 progressoProjeto={progressoProjeto}
                 progressoIndividual={progressoProjeto} // por enquanto igual
