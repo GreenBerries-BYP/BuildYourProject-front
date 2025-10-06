@@ -1,14 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { fetchProjects, fetchSharedWithMe, fetchProjectWithTasks } from '../api/api';
-import { useSearch } from '../context/SearchContext';
+import React, { useState, useEffect } from "react";
+import {
+  fetchProjects,
+  fetchSharedWithMe,
+  fetchProjectWithTasks,
+} from "../api/api";
+import { useSearch } from "../context/SearchContext";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 import ProjectCard from "../components/ProjectCard";
 import ViewProject from "../components/ViewProject";
 import ModalNewProject from "../components/ModalNewProject";
 import ModalDeleteProject from "../components/ModalDeleteProject";
 
-import '../styles/Home.css';
-import { fetchUserData } from '../api/userService';
+import "../styles/Home.css";
+import { fetchUserData } from "../api/userService";
+import { set } from "react-hook-form";
 
 // aparecem os que foram compartilhados, sem o botão de criar.
 function Compartilhados() {
@@ -19,28 +25,31 @@ function Compartilhados() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [projetosFiltrados, setProjetosFiltrados] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingProject, setLoadingProject] = useState(false);
   const { searchTerm } = useSearch();
 
   useEffect(() => {
     fetchUserData()
-      .then(data => {
+      .then((data) => {
         setUserData(data);
-        console.log('Email do usuário logado:', data.email);
+        console.log("Email do usuário logado:", data.email);
       })
-      .catch(error => {
-        console.error('Erro ao buscar dados do usuário:', error);
+      .catch((error) => {
+        console.error("Erro ao buscar dados do usuário:", error);
       });
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     const lowercasedFilter = searchTerm.toLowerCase();
-    const filteredData = projetos.filter(item => {
+    const filteredData = projetos.filter((item) => {
       return item.name.toLowerCase().includes(lowercasedFilter);
     });
     setProjetosFiltrados(filteredData);
   }, [searchTerm, projetos]);
 
   const handleAbrirProjeto = async (projeto) => {
+    setLoadingProject(true);
     try {
       // Use a mesma função que funciona em Projetos
       const projetoCompleto = await fetchProjectWithTasks(projeto.id);
@@ -48,38 +57,52 @@ function Compartilhados() {
       setSelectedProjectId(projeto.id);
     } catch (error) {
       console.error("Erro ao carregar projeto completo:", error);
+    } finally {
+      setLoadingProject(false);
     }
   };
 
   const handleVoltar = () => {
     setProjetoSelecionado(null);
-    console.log(projetoSelecionado)
+    console.log(projetoSelecionado);
   };
-
-
 
   useEffect(() => {
     const carregarProjetos = async () => {
+      setLoading(true);
       try {
         const data = await fetchSharedWithMe();
 
         setProjetos(data);
       } catch (error) {
-        console.error('Erro ao carregar projetos:', error);
+        console.error("Erro ao carregar projetos:", error);
+      } finally {
+        setLoading(false);
       }
     };
-
     carregarProjetos();
   }, []);
 
   const handleDeleteProjectClick = (projectId) => {
-    alert('Você não pode deletar um projeto que não é seu!');
+    alert("Você não pode deletar um projeto que não é seu!");
   };
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center w-100 h-100">
+        <ProgressSpinner />
+      </div>
+    );
+  }
 
   return (
     <>
-      {projetoSelecionado ? (
-        <div className='d-flex w-100 justify-content-center align-items-center'>
+      {loadingProject ? (
+        <div className="d-flex justify-content-center align-items-center w-100 h-100">
+          <ProgressSpinner />
+        </div>
+      ) : projetoSelecionado ? (
+        <div className="d-flex w-100 justify-content-center align-items-center">
           <ViewProject
             projetoId={selectedProjectId}
             nomeProjeto={projetoSelecionado.name}
@@ -94,17 +117,18 @@ function Compartilhados() {
         </div>
       ) : (
         <div className="projects-area">
-
           {projetosFiltrados.map((projeto, index) => {
             const totalTasks = projeto.tasks?.length || 0;
-            const completedTasks = projeto.tasks?.filter((t) => t.is_completed).length || 0;
-            const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            const completedTasks =
+              projeto.tasks?.filter((t) => t.is_completed).length || 0;
+            const progressoProjeto =
+              totalTasks > 0
+                ? Math.round((completedTasks / totalTasks) * 100)
+                : 0;
             console.log(projeto.tasks);
-
 
             return (
               <ProjectCard
-
                 key={projeto.id}
                 projetoId={projeto.id}
                 nomeProjeto={projeto.name}
@@ -130,7 +154,7 @@ function Compartilhados() {
         onClose={() => setDeleteModalOpen(false)}
         projetoId={selectedProjectId}
         onDeleteSuccess={(id) => {
-          setProjetos(projetos.filter(p => p.id !== id));
+          setProjetos(projetos.filter((p) => p.id !== id));
           selectedProjectId(null);
         }}
       />

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { fetchProjects } from '../api/api';
-import { fetchProjectWithTasks } from '../api/api';
-import { useSearch } from '../context/SearchContext';
-
+import React, { useState, useEffect } from "react";
+import { fetchProjects } from "../api/api";
+import { fetchProjectWithTasks } from "../api/api";
+import { useSearch } from "../context/SearchContext";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 import ProjectCard from "../components/ProjectCard";
 import CreateProjectCard from "../components/CreateProjectCard";
@@ -10,14 +10,16 @@ import ViewProject from "../components/ViewProject";
 import ModalNewProject from "../components/ModalNewProject";
 import ModalDeleteProject from "../components/ModalDeleteProject";
 
-import '../styles/Home.css';
-import { fetchUserData } from '../api/userService';
-
+import "../styles/Home.css";
+import { fetchUserData } from "../api/userService";
+import { set } from "react-hook-form";
 
 const formatProjectForCard = (projeto) => {
   const totalTasks = projeto.tasks?.length || 0;
-  const completedTasks = projeto.tasks?.filter((t) => t.is_completed).length || 0;
-  const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const completedTasks =
+    projeto.tasks?.filter((t) => t.is_completed).length || 0;
+  const progressoProjeto =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return {
     ...projeto,
@@ -26,7 +28,6 @@ const formatProjectForCard = (projeto) => {
     tarefasProjeto: projeto.tasks?.slice(0, 4) || [],
   };
 };
-
 
 // precisa filtrar os projetos de sua autoria
 function Projetos() {
@@ -37,22 +38,24 @@ function Projetos() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [projetosFiltrados, setProjetosFiltrados] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingProject, setLoadingProject] = useState(false);
   const { searchTerm } = useSearch();
 
   useEffect(() => {
     fetchUserData()
-      .then(data => {
+      .then((data) => {
         setUserData(data);
-        console.log('Email do usuário logado:', data.email);
+        console.log("Email do usuário logado:", data.email);
       })
-      .catch(error => {
-        console.error('Erro ao buscar dados do usuário:', error);
+      .catch((error) => {
+        console.error("Erro ao buscar dados do usuário:", error);
       });
   }, []);
 
   useEffect(() => {
     const lowercasedFilter = searchTerm.toLowerCase();
-    const filteredData = projetos.filter(item => {
+    const filteredData = projetos.filter((item) => {
       return item.name.toLowerCase().includes(lowercasedFilter);
     });
     setProjetosFiltrados(filteredData);
@@ -60,12 +63,12 @@ function Projetos() {
 
   useEffect(() => {
     if (modalAberto) {
-      document.body.classList.add('no-scroll');
+      document.body.classList.add("no-scroll");
     } else {
-      document.body.classList.remove('no-scroll');
+      document.body.classList.remove("no-scroll");
     }
     return () => {
-      document.body.classList.remove('no-scroll');
+      document.body.classList.remove("no-scroll");
     };
   }, [modalAberto, projetoSelecionado]);
 
@@ -75,33 +78,36 @@ function Projetos() {
 
   const handleVoltar = () => {
     setProjetoSelecionado(null);
-    console.log(projetoSelecionado)
+    console.log(projetoSelecionado);
   };
-
-
 
   useEffect(() => {
     const carregarProjetos = async () => {
+      setLoading(true);
       //const carregarMeusProjetos = async () => {
       try {
         const data = await fetchProjects();
 
         setProjetos(data);
       } catch (error) {
-        console.error('Erro ao carregar projetos:', error);
+        console.error("Erro ao carregar projetos:", error);
+      } finally {
+        setLoading(false);
       }
     };
-
     carregarProjetos();
   }, []);
 
   const handleAbrirProjeto = async (projeto) => {
+    setLoadingProject(true);
     try {
       const projetoCompleto = await fetchProjectWithTasks(projeto.id);
       setProjetoSelecionado(projetoCompleto);
       setSelectedProjectId(projeto.id);
     } catch (error) {
       console.error("Erro ao carregar projeto completo:", error);
+    } finally {
+      setLoadingProject(false);
     }
   };
 
@@ -110,10 +116,22 @@ function Projetos() {
     setDeleteModalOpen(true);
   };
 
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center w-100 h-100">
+        <ProgressSpinner />
+      </div>
+    );
+  }
+
   return (
     <>
-      {projetoSelecionado ? (
-        <div className='d-flex w-100 justify-content-center align-items-center'>
+      { loadingProject ? (
+        <div className="d-flex justify-content-center align-items-center w-100 h-100">
+          <ProgressSpinner />
+        </div>
+      ) : projetoSelecionado ? (
+        <div className="d-flex w-100 justify-content-center align-items-center">
           <ViewProject
             projetoId={selectedProjectId}
             nomeProjeto={projetoSelecionado.name}
@@ -124,16 +142,20 @@ function Projetos() {
             onVoltar={handleVoltar}
             dataInicio={projetoSelecionado.data_inicio}
             dataFim={projetoSelecionado.data_fim}
-
           />
-        </div>) : (
+        </div>
+      ) : (
         <div className="projects-area">
           <CreateProjectCard onClick={handleCreateProject} />
 
           {projetosFiltrados.map((projeto, index) => {
             const totalTasks = projeto.tasks?.length || 0;
-            const completedTasks = projeto.tasks?.filter((t) => t.is_completed).length || 0;
-            const progressoProjeto = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            const completedTasks =
+              projeto.tasks?.filter((t) => t.is_completed).length || 0;
+            const progressoProjeto =
+              totalTasks > 0
+                ? Math.round((completedTasks / totalTasks) * 100)
+                : 0;
 
             return (
               <ProjectCard
@@ -162,12 +184,12 @@ function Projetos() {
         onClose={() => setDeleteModalOpen(false)}
         projetoId={selectedProjectId}
         onDeleteSuccess={(id) => {
-          setProjetos(projetos.filter(p => p.id !== id));
+          setProjetos(projetos.filter((p) => p.id !== id));
           setSelectedProjectId(null);
         }}
       />
     </>
-  )
+  );
 }
 
 export default Projetos;
