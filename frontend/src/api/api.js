@@ -196,7 +196,7 @@ export const assignTaskToUser = async (taskId, userId) => {
   console.log("Enviando para API:", { taskId, userId });
   
   const response = await api.post(`/tasks/${taskId}/assign/`, {
-    userId: userId
+    user_id: userId
   }, {
     headers: { Authorization: `Bearer ${token}` }
   });
